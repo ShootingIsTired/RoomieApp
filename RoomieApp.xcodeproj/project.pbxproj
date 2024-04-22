@@ -15,6 +15,11 @@
 		4BCA0C422BD651B0003CFD77 /* RoomieAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */; };
 		4BCA0C442BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */; };
 		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
+		BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9C2BD6A79D00E8E436 /* Home.swift */; };
+		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
+		BA098CA12BD6A7AF00E8E436 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA02BD6A7AF00E8E436 /* Info.plist */; };
+		BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */; };
+		BA098CA62BD6A7B500E8E436 /* KronaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +52,11 @@
 		4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITests.swift; sourceTree = "<group>"; };
 		4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4BCA0C502BD66D5E003CFD77 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		BA098C9C2BD6A79D00E8E436 /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		BA098CA02BD6A7AF00E8E436 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JacquesFrancois-Regular.ttf"; sourceTree = "<group>"; };
+		BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "KronaOne-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,9 +107,13 @@
 		4BCA0C242BD651AE003CFD77 /* RoomieApp */ = {
 			isa = PBXGroup;
 			children = (
+				BA098CA02BD6A7AF00E8E436 /* Info.plist */,
+				BA098C9C2BD6A79D00E8E436 /* Home.swift */,
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
+				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
+				BA098CA42BD6A7B500E8E436 /* Text */,
 				4BCA0C292BD651B0003CFD77 /* Assets.xcassets */,
 				4BCA0C2B2BD651B0003CFD77 /* RoomieApp.entitlements */,
 				4BCA0C2C2BD651B0003CFD77 /* Preview Content */,
@@ -130,6 +144,15 @@
 				4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */,
 			);
 			path = RoomieAppUITests;
+			sourceTree = "<group>";
+		};
+		BA098CA42BD6A7B500E8E436 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */,
+				BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */,
+			);
+			path = Text;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -238,6 +261,9 @@
 			files = (
 				4BCA0C2E2BD651B0003CFD77 /* Preview Assets.xcassets in Resources */,
 				4BCA0C2A2BD651B0003CFD77 /* Assets.xcassets in Resources */,
+				BA098CA12BD6A7AF00E8E436 /* Info.plist in Resources */,
+				BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */,
+				BA098CA62BD6A7B500E8E436 /* KronaOne-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +290,9 @@
 			files = (
 				4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */,
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
+				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
+				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
