@@ -14,6 +14,7 @@
 		4BCA0C382BD651B0003CFD77 /* RoomieAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C372BD651B0003CFD77 /* RoomieAppTests.swift */; };
 		4BCA0C422BD651B0003CFD77 /* RoomieAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */; };
 		4BCA0C442BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */; };
+		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		4BCA0C3D2BD651B0003CFD77 /* RoomieAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RoomieAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITests.swift; sourceTree = "<group>"; };
 		4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4BCA0C502BD66D5E003CFD77 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 			children = (
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
+				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
 				4BCA0C292BD651B0003CFD77 /* Assets.xcassets */,
 				4BCA0C2B2BD651B0003CFD77 /* RoomieApp.entitlements */,
 				4BCA0C2C2BD651B0003CFD77 /* Preview Content */,
@@ -260,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */,
+				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
