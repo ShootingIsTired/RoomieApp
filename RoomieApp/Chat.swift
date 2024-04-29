@@ -8,15 +8,39 @@ struct ChatMessage: Identifiable, Equatable {
 }
 
 struct ChatRoomView: View {
+    @Binding var selectedPage: String?
     @State private var messageText = ""
     @State private var messages: [ChatMessage] = [] // The array that simulates a database
-
+    @State private var showMenuBar = false // State to manage the visibility of the menu
     var body: some View {
+        ZStack(alignment: .leading){
+            Chat
+                .contentShape(Rectangle())
+                .onTapGesture{
+                    if showMenuBar{
+                        showMenuBar = false
+                    }
+                }
+            if showMenuBar {
+                MenuBar(selectedPage: $selectedPage)
+                    .transition(.move(edge: .leading))
+            }
+        }
+    }
+
+    var Chat: some View {
         VStack(spacing: 0) {
             // Header at the top
             HStack {
-                Image(systemName: "line.horizontal.3")
-                    .foregroundColor(.primary)
+                // Toggle button for the menu
+                Button(action: {
+                        // Toggle the visibility of the menu
+                        withAnimation {
+                            showMenuBar.toggle()
+                        }
+                    }) {
+                    Image("menu")
+                    .frame(width: 38, height: 38)}
                 Spacer()
                 Text("CHAT")
                     .font(.custom("Krona One", size: 20))
@@ -58,7 +82,6 @@ struct ChatRoomView: View {
                         scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
                     }
                 }
-
             }
 
             // Text field at the bottom
@@ -90,11 +113,15 @@ struct ChatRoomView: View {
 }
 
 struct ChatRoomView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatRoomView()
-    }
-}
+    struct PreviewWrapper: View {
+        @State var selectedPage: String? = "Chat"
 
-#Preview {
-    ChatRoomView()
+        var body: some View {
+            ChatRoomView(selectedPage: $selectedPage)
+        }
+    }
+
+    static var previews: some View {
+        PreviewWrapper()
+    }
 }

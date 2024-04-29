@@ -21,7 +21,7 @@ struct RoomieAppApp: App {
                   startPoint: UnitPoint(x: 0.5, y: 0),
                   endPoint: UnitPoint(x: 0.5, y: 1)
                 )
-                HomeView()
+                MenuBarView()
             }
         }
     }

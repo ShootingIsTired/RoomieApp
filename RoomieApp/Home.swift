@@ -1,4 +1,5 @@
 //
+//
 //  ContentView.swift
 //  sad_project
 //
@@ -8,6 +9,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var selectedPage: String?
     @State private var showMenuBar = false
     @State private var currentPage = "home"
     var body: some View {
@@ -19,27 +21,34 @@ struct HomeView: View {
                         showMenuBar = false
                     }
                 }
-            if showMenuBar{
-                MenuBar()
-                    .transition(.move(edge: .leading)
-                    )
+            if showMenuBar {
+                MenuBar(selectedPage: $selectedPage)
+                    .transition(.move(edge: .leading))
             }
         }
     }
     var Home: some View{
-        VStack{
-            HStack{
-                Button{
-                    self.showMenuBar.toggle()
-                }label:{
+        VStack(spacing: 0) {
+            HStack {
+                // Toggle button for the menu
+                Button(action: {
+                        // Toggle the visibility of the menu
+                        withAnimation {
+                            showMenuBar.toggle()
+                        }
+                    }) {
                     Image("menu")
                     .frame(width: 38, height: 38)}
-                
+                Spacer()
                 Text("HOME")
-                    .font(Font.custom("Krona One", size: 20))
+                    .font(.custom("Krona One", size: 20))
                     .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
                 Spacer()
             }
+            .padding()
+            .background(Color.white)
+            .shadow(radius: 2)
+            
             VStack{
                 HStack{
                     Text("Today’s Reminders")
@@ -116,12 +125,22 @@ struct HomeView: View {
             }
             .frame(maxWidth: 300)
         }
-        .frame(maxWidth:350, maxHeight:.infinity, alignment:.top)
+        .frame( maxHeight:.infinity, alignment:.top)
     }
         
 }
 
-#Preview {
-    HomeView()
+struct HomeView_Previews: PreviewProvider {
+    struct PreviewWrapper: View {
+        @State var selectedPage: String? = "Home"
+
+        var body: some View {
+            HomeView(selectedPage: $selectedPage)
+        }
+    }
+
+    static var previews: some View {
+        PreviewWrapper()
+    }
 }
 
