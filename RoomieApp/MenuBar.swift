@@ -9,82 +9,103 @@ import Foundation
 import UIKit
 import SwiftUI
 
-struct MenuBar: View{
-    var body: some View{
-        VStack{
-            ZStack{
+// Main View containing the menu bar and page content
+struct MenuBarView: View {
+    @State private var selectedPage: String? = "Home"
+    var body: some View {
+        switch selectedPage {
+            case "Chat":
+                ChatRoomView(selectedPage: $selectedPage)
+            case "Home":
+                HomeView(selectedPage: $selectedPage)
+            default:
+                HomeView(selectedPage: $selectedPage)
+        }
+    }
+}
+
+// MenuBar component with navigation
+struct MenuBar: View {
+    @Binding var selectedPage: String?
+    
+    var body: some View {
+        VStack {
+            ZStack {
                 Text("ROOMIE")
                     .font(Font.custom("Krona One", size: 20))
                     .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             }
             .frame(alignment: .top)
-            VStack(alignment:.leading){
-                Button{}label:{
-                    Text("TEST")
-                      .font(Font.custom("Jacques Francois", size: 18))
-                      .foregroundColor(.black)
-                }
-                  .padding()
-                
-                Button{}label:{
-                    Text("PROFILE")
-                      .font(Font.custom("Jacques Francois", size: 18))
-                      .foregroundColor(.black)
-                }
-                  .padding()
-                Button{
+            VStack(alignment: .leading) {
+                Button("TEST") { selectedPage = "Test" }
+                    .font(.custom("Jacques Francois", size: 18))
+                    .foregroundColor(.black)
+                    .padding()
                     
-                }label:{
-                    Text("HOME")
-                        .font(Font.custom("Jacques Francois", size: 18))
-                        .foregroundColor(.black)
-                }
+                Button("PROFILE") { selectedPage = "Profile" }
+                    .font(.custom("Jacques Francois", size: 18))
+                    .foregroundColor(.black)
                     .padding()
-                Button{}label:{
-                    Text("CHORES")
-                        .font(Font.custom("Jacques Francois", size: 18))
-                        .foregroundColor(.black)
-                }
+                    
+                Button("HOME") { selectedPage = "Home" }
+                    .font(.custom("Jacques Francois", size: 18))
+                    .foregroundColor(.black)
                     .padding()
-                Button{}label:{
-                    Text("SCHEDULE")
-                        .font(Font.custom("Jacques Francois", size: 18))
-                        .foregroundColor(.black)
-                }
+                    
+                Button("CHORES") { selectedPage = "Chores" }
+                    .font(.custom("Jacques Francois", size: 18))
+                    .foregroundColor(.black)
                     .padding()
-                Button{}label:{
-                    Text("CHAT")
-                        .font(Font.custom("Jacques Francois", size: 18))
-                        .foregroundColor(.black)
-                }
+                    
+                Button("SCHEDULE") { selectedPage = "Schedule" }
+                    .font(.custom("Jacques Francois", size: 18))
+                    .foregroundColor(.black)
                     .padding()
+                    
+                Button("CHAT") { selectedPage = "Chat" }
+                    .font(.custom("Jacques Francois", size: 18))
+                    .foregroundColor(.black)
+                    .padding()
+                    
+                Button("LEAVE") { }
+                    .font(.custom("Jacques Francois", size: 16))
+                    .foregroundColor(.black)
+                    .padding()
+                
             }
             .frame(maxHeight: .infinity, alignment: .top)
-                Button{}label:{
+            
+            Button(action: {}) {
+                HStack {
                     Image("logout_outline")
-                      .frame(width: 28, height: 28)
+                        .frame(width: 28, height: 28)
                     Text("LEAVE")
-                      .font(Font.custom("Jacques Francois", size: 16))
-                      .foregroundColor(.black)
+                        .font(Font.custom("Jacques Francois", size: 16))
+                        .foregroundColor(.black)
                 }
+            }
             .frame(alignment: .bottom)
             .padding()
         }
         .frame(width: 168)
         .background(
             LinearGradient(
-            stops: [
-            Gradient.Stop(color: Color(red: 0.97, green: 0.96, blue: 0.93).opacity(0.95), location: 0.03),
-            Gradient.Stop(color: Color(red: 0.98, green: 0.92, blue: 0.71).opacity(0.95), location: 0.32),
-            Gradient.Stop(color: Color(red: 1, green: 0.87, blue: 0.44).opacity(0.95), location: 0.61),
-            ],
-            startPoint: UnitPoint(x: 0.5, y: 0),
-            endPoint: UnitPoint(x: 0.5, y: 1)
+                stops: [
+                    Gradient.Stop(color: Color(red: 0.97, green: 0.96, blue: 0.93).opacity(0.95), location: 0.03),
+                    Gradient.Stop(color: Color(red: 0.98, green: 0.92, blue: 0.71).opacity(0.95), location: 0.32),
+                    Gradient.Stop(color: Color(red: 1, green: 0.87, blue: 0.44).opacity(0.95), location: 0.61),
+                ],
+                startPoint: UnitPoint(x: 0.5, y: 0),
+                endPoint: UnitPoint(x: 0.5, y: 1)
             )
         )
     }
 }
 
-#Preview {
-    MenuBar()
+// Preview provider for MenuBar
+// Preview provider for MenuBarView
+struct MenuBarView_Previews: PreviewProvider {
+    static var previews: some View {
+        MenuBarView()
+    }
 }

@@ -17,7 +17,6 @@
 		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
 		BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9C2BD6A79D00E8E436 /* Home.swift */; };
 		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
-		BA098CA12BD6A7AF00E8E436 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA02BD6A7AF00E8E436 /* Info.plist */; };
 		BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */; };
 		BA098CA62BD6A7B500E8E436 /* KronaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */; };
 /* End PBXBuildFile section */
@@ -261,7 +260,6 @@
 			files = (
 				4BCA0C2E2BD651B0003CFD77 /* Preview Assets.xcassets in Resources */,
 				4BCA0C2A2BD651B0003CFD77 /* Assets.xcassets in Resources */,
-				BA098CA12BD6A7AF00E8E436 /* Info.plist in Resources */,
 				BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */,
 				BA098CA62BD6A7B500E8E436 /* KronaOne-Regular.ttf in Resources */,
 			);
