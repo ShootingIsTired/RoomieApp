@@ -18,6 +18,8 @@ struct MenuBarView: View {
                 ChatRoomView(selectedPage: $selectedPage)
             case "Home":
                 HomeView(selectedPage: $selectedPage)
+            case "Chores":
+            ChoresView(selectedPage:$selectedPage)
             default:
                 HomeView(selectedPage: $selectedPage)
         }
@@ -37,10 +39,10 @@ struct MenuBar: View {
             }
             .frame(alignment: .top)
             VStack(alignment: .leading) {
-                Button("TEST") { selectedPage = "Test" }
-                    .font(.custom("Jacques Francois", size: 18))
-                    .foregroundColor(.black)
-                    .padding()
+//                Button("TEST") { selectedPage = "Test" }
+//                    .font(.custom("Jacques Francois", size: 18))
+//                    .foregroundColor(.black)
+//                    .padding()
                     
                 Button("PROFILE") { selectedPage = "Profile" }
                     .font(.custom("Jacques Francois", size: 18))

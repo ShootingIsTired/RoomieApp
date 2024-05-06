@@ -20,6 +20,11 @@
 		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
 		BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */; };
 		BA098CA62BD6A7B500E8E436 /* KronaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */; };
+		BAC15C1F2BE6E2FB00288F1D /* Chores.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C1E2BE6E2FB00288F1D /* Chores.swift */; };
+		BAC15C212BE75D5800288F1D /* SelectPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C202BE75D5800288F1D /* SelectPerson.swift */; };
+		BAC15C232BE75E6300288F1D /* ChooseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C222BE75E6300288F1D /* ChooseDate.swift */; };
+		BAC15C252BE75E6F00288F1D /* ChooseTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C242BE75E6F00288F1D /* ChooseTime.swift */; };
+		BAC15C282BE8B05B00288F1D /* ChooseFrequency.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +63,11 @@
 		BA098CA02BD6A7AF00E8E436 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JacquesFrancois-Regular.ttf"; sourceTree = "<group>"; };
 		BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "KronaOne-Regular.ttf"; sourceTree = "<group>"; };
+		BAC15C1E2BE6E2FB00288F1D /* Chores.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chores.swift; sourceTree = "<group>"; };
+		BAC15C202BE75D5800288F1D /* SelectPerson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPerson.swift; sourceTree = "<group>"; };
+		BAC15C222BE75E6300288F1D /* ChooseDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseDate.swift; sourceTree = "<group>"; };
+		BAC15C242BE75E6F00288F1D /* ChooseTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseTime.swift; sourceTree = "<group>"; };
+		BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFrequency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +120,8 @@
 			children = (
 				BA098CA02BD6A7AF00E8E436 /* Info.plist */,
 				BA098C9C2BD6A79D00E8E436 /* Home.swift */,
+				BAC15C262BE75FEB00288F1D /* Elements */,
+				BAC15C1E2BE6E2FB00288F1D /* Chores.swift */,
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
 				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
 				51E8A0D22BDF7B2A0036AD8B /* Register.swift */,
@@ -155,6 +167,17 @@
 				BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */,
 			);
 			path = Text;
+			sourceTree = "<group>";
+		};
+		BAC15C262BE75FEB00288F1D /* Elements */ = {
+			isa = PBXGroup;
+			children = (
+				BAC15C202BE75D5800288F1D /* SelectPerson.swift */,
+				BAC15C222BE75E6300288F1D /* ChooseDate.swift */,
+				BAC15C242BE75E6F00288F1D /* ChooseTime.swift */,
+				BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */,
+			);
+			path = Elements;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -292,9 +315,14 @@
 				51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */,
 				4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */,
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
+				BAC15C282BE8B05B00288F1D /* ChooseFrequency.swift in Sources */,
 				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
+				BAC15C212BE75D5800288F1D /* SelectPerson.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
+				BAC15C252BE75E6F00288F1D /* ChooseTime.swift in Sources */,
+				BAC15C232BE75E6300288F1D /* ChooseDate.swift in Sources */,
+				BAC15C1F2BE6E2FB00288F1D /* Chores.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,7 +482,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RoomieApp/Preview Content\"";
-				DEVELOPMENT_TEAM = NK8H79G846;
+				DEVELOPMENT_TEAM = P3X8H99QY3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -491,7 +519,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RoomieApp/Preview Content\"";
-				DEVELOPMENT_TEAM = NK8H79G846;
+				DEVELOPMENT_TEAM = P3X8H99QY3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
