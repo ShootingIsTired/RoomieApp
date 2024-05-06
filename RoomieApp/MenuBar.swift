@@ -18,6 +18,8 @@ struct MenuBarView: View {
                 ChatRoomView(selectedPage: $selectedPage)
             case "Home":
                 HomeView(selectedPage: $selectedPage)
+            case "Profile":
+                ProfileView(selectedPage: $selectedPage)
             default:
                 HomeView(selectedPage: $selectedPage)
         }

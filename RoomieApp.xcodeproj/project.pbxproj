@@ -15,6 +15,7 @@
 		4BCA0C422BD651B0003CFD77 /* RoomieAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */; };
 		4BCA0C442BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */; };
 		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
+		4BE77F212BE5E3D0000D7F55 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE77F202BE5E3D0000D7F55 /* Profile.swift */; };
 		BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9C2BD6A79D00E8E436 /* Home.swift */; };
 		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
 		BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */; };
@@ -51,6 +52,7 @@
 		4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITests.swift; sourceTree = "<group>"; };
 		4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4BCA0C502BD66D5E003CFD77 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		4BE77F202BE5E3D0000D7F55 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		BA098C9C2BD6A79D00E8E436 /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		BA098CA02BD6A7AF00E8E436 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
+				4BE77F202BE5E3D0000D7F55 /* Profile.swift */,
 				BA098CA42BD6A7B500E8E436 /* Text */,
 				4BCA0C292BD651B0003CFD77 /* Assets.xcassets */,
 				4BCA0C2B2BD651B0003CFD77 /* RoomieApp.entitlements */,
@@ -287,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */,
+				4BE77F212BE5E3D0000D7F55 /* Profile.swift in Sources */,
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
 				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
@@ -462,7 +466,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
@@ -470,7 +474,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = SAD.RoomieApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -498,7 +502,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
@@ -506,7 +510,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = SAD.RoomieApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
