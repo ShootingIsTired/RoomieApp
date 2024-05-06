@@ -118,10 +118,7 @@
 				BA098C9C2BD6A79D00E8E436 /* Home.swift */,
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
 				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
-				51E8A0D22BDF7B2A0036AD8B /* Register.swift */,
-				514499972BE8C1B1000BC9F7 /* Login.swift */,
-				514499992BE8C3F4000BC9F7 /* Create Room.swift */,
-				5144999B2BE8C4E1000BC9F7 /* Join Room.swift */,
+				5144999D2BE8D622000BC9F7 /* Intro pages */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
 				BA098CA42BD6A7B500E8E436 /* Text */,
@@ -155,6 +152,17 @@
 				4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */,
 			);
 			path = RoomieAppUITests;
+			sourceTree = "<group>";
+		};
+		5144999D2BE8D622000BC9F7 /* Intro pages */ = {
+			isa = PBXGroup;
+			children = (
+				51E8A0D22BDF7B2A0036AD8B /* Register.swift */,
+				514499972BE8C1B1000BC9F7 /* Login.swift */,
+				514499992BE8C3F4000BC9F7 /* Create Room.swift */,
+				5144999B2BE8C4E1000BC9F7 /* Join Room.swift */,
+			);
+			path = "Intro pages";
 			sourceTree = "<group>";
 		};
 		BA098CA42BD6A7B500E8E436 /* Text */ = {

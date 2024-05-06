@@ -113,7 +113,7 @@ struct RegisterView: View {
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 230, height: 35)
+            .frame(width: 230, height: 42)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(
@@ -128,7 +128,7 @@ struct RegisterView: View {
     var ButtomBorder: some View {
             RoundedRectangle(cornerRadius: 20)
               .foregroundColor(.clear)
-              .frame(width: 82, height: 35)
+              .frame(width: 82, height: 42)
               .background(Color(red: 1, green: 0.84, blue: 0.25))
               .cornerRadius(15)
               .overlay(
