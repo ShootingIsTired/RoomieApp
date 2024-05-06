@@ -1,16 +1,15 @@
 //
-//  Register.swift
+//  Login.swift
 //  RoomieApp
 //
-//  Created by Ru Heng on 2024/4/29.
+//  Created by Ru Heng on 2024/5/6.
 //
 
 import Foundation
 import SwiftUI
 import SwiftData
 
-struct RegisterView: View {
-    @State private var name = ""
+struct LoginView: View {
     @State private var id = ""
     @State private var password = ""
     var body: some View {
@@ -32,19 +31,12 @@ struct RegisterView: View {
                         .aspectRatio(contentMode: .fit)
                     
                     //LOGIN
-                    Text("RIGISTER")
+                    Text("LOGIN")
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("Name:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60
-                                )
-                                .padding(.trailing, 2)
                             Text("ID:")
                                 .font(.headline)
                                 .foregroundColor(.black)
@@ -60,12 +52,6 @@ struct RegisterView: View {
                                 .padding(.trailing, 2)
                         }
                         VStack {
-                            TextField("Please enter your name", text: $name)
-                                .font(Font.custom("Noto Sans", size: 16))
-                                .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
                             TextField("Please enter your uniqueID", text: $id)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
@@ -97,7 +83,7 @@ struct RegisterView: View {
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("LOGIN")
+                        Text("REGISTER")
                             .font(.subheadline)
                             .underline()
                             .foregroundColor(.black)
@@ -139,8 +125,8 @@ struct RegisterView: View {
         }
 }
 
-struct RegisterView_Previews: PreviewProvider {
+struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView()
+        LoginView()
     }
 }

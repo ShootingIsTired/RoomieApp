@@ -1,18 +1,17 @@
 //
-//  Register.swift
+//  Join Room.swift
 //  RoomieApp
 //
-//  Created by Ru Heng on 2024/4/29.
+//  Created by Ru Heng on 2024/5/6.
 //
 
 import Foundation
 import SwiftUI
 import SwiftData
 
-struct RegisterView: View {
-    @State private var name = ""
+struct JoinRoomView: View {
     @State private var id = ""
-    @State private var password = ""
+    @State private var roomID = ""
     var body: some View {
         ZStack{
             LinearGradient(
@@ -32,19 +31,12 @@ struct RegisterView: View {
                         .aspectRatio(contentMode: .fit)
                     
                     //LOGIN
-                    Text("RIGISTER")
+                    Text("JOIN AN EXIST ROOM")
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("Name:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60
-                                )
-                                .padding(.trailing, 2)
                             Text("ID:")
                                 .font(.headline)
                                 .foregroundColor(.black)
@@ -58,21 +50,16 @@ struct RegisterView: View {
                                 .bold()
                                 .frame(width: 100, height: 60)
                                 .padding(.trailing, 2)
+                            
                         }
                         VStack {
-                            TextField("Please enter your name", text: $name)
+                            TextField("Enter Room ID", text: $id)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            TextField("Please enter your uniqueID", text: $id)
-                                .font(Font.custom("Noto Sans", size: 16))
-                                .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                            TextField("Please enter your password", text: $password)
+                            TextField("Enter Your Room Password", text: $roomID)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
@@ -80,14 +67,12 @@ struct RegisterView: View {
                                 .multilineTextAlignment(.center)
                         }
                         
-                        
                     }
-                
                     
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("ENTER")
+                        Text("JOIN")
                             .font(.headline)
                             .foregroundColor(.black)
                             .frame(width: 100.0, height: 42.0)
@@ -97,11 +82,11 @@ struct RegisterView: View {
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("LOGIN")
+                        Text("CREATE ROOM")
                             .font(.subheadline)
                             .underline()
                             .foregroundColor(.black)
-                            .frame(width: 100.0, height: 42.0)
+                            .frame(width: 150.0, height: 42.0)
                     }
                 }
                 .padding()
@@ -139,8 +124,8 @@ struct RegisterView: View {
         }
 }
 
-struct RegisterView_Previews: PreviewProvider {
+struct JoinRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView()
+        JoinRoomView()
     }
 }

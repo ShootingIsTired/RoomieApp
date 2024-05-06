@@ -1,18 +1,17 @@
 //
-//  Register.swift
+//  Create Room.swift
 //  RoomieApp
 //
-//  Created by Ru Heng on 2024/4/29.
+//  Created by Ru Heng on 2024/5/6.
 //
 
 import Foundation
 import SwiftUI
 import SwiftData
 
-struct RegisterView: View {
-    @State private var name = ""
+struct CreateRoomView: View {
     @State private var id = ""
-    @State private var password = ""
+    @State private var roomName = ""
     var body: some View {
         ZStack{
             LinearGradient(
@@ -26,25 +25,18 @@ struct RegisterView: View {
                     )
                     .edgesIgnoringSafeArea(.all)
                 VStack{
-                    Image("Roomie Icon")
+                    Image("Roomie Create Icon")
                         .resizable()
                         .frame(width: 200, height: 200)
                         .aspectRatio(contentMode: .fit)
                     
                     //LOGIN
-                    Text("RIGISTER")
+                    Text("CREATE ROOM")
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("Name:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60
-                                )
-                                .padding(.trailing, 2)
                             Text("ID:")
                                 .font(.headline)
                                 .foregroundColor(.black)
@@ -60,19 +52,13 @@ struct RegisterView: View {
                                 .padding(.trailing, 2)
                         }
                         VStack {
-                            TextField("Please enter your name", text: $name)
+                            TextField("123456", text: $id)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            TextField("Please enter your uniqueID", text: $id)
-                                .font(Font.custom("Noto Sans", size: 16))
-                                .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                            TextField("Please enter your password", text: $password)
+                            TextField("Set Your Room Password", text: $roomName)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
@@ -87,7 +73,7 @@ struct RegisterView: View {
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("ENTER")
+                        Text("CREATE")
                             .font(.headline)
                             .foregroundColor(.black)
                             .frame(width: 100.0, height: 42.0)
@@ -97,7 +83,7 @@ struct RegisterView: View {
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("LOGIN")
+                        Text("JOIN ROOM")
                             .font(.subheadline)
                             .underline()
                             .foregroundColor(.black)
@@ -139,8 +125,8 @@ struct RegisterView: View {
         }
 }
 
-struct RegisterView_Previews: PreviewProvider {
+struct CreateRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView()
+        CreateRoomView()
     }
 }

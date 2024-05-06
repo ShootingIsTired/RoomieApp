@@ -15,6 +15,9 @@
 		4BCA0C422BD651B0003CFD77 /* RoomieAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */; };
 		4BCA0C442BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */; };
 		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
+		514499982BE8C1B1000BC9F7 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499972BE8C1B1000BC9F7 /* Login.swift */; };
+		5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499992BE8C3F4000BC9F7 /* Create Room.swift */; };
+		5144999C2BE8C4E1000BC9F7 /* Join Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144999B2BE8C4E1000BC9F7 /* Join Room.swift */; };
 		51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E8A0D22BDF7B2A0036AD8B /* Register.swift */; };
 		BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9C2BD6A79D00E8E436 /* Home.swift */; };
 		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
@@ -52,6 +55,9 @@
 		4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITests.swift; sourceTree = "<group>"; };
 		4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4BCA0C502BD66D5E003CFD77 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		514499972BE8C1B1000BC9F7 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
+		514499992BE8C3F4000BC9F7 /* Create Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Create Room.swift"; sourceTree = "<group>"; };
+		5144999B2BE8C4E1000BC9F7 /* Join Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Join Room.swift"; sourceTree = "<group>"; };
 		51E8A0D22BDF7B2A0036AD8B /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		BA098C9C2BD6A79D00E8E436 /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
@@ -113,6 +119,9 @@
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
 				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
 				51E8A0D22BDF7B2A0036AD8B /* Register.swift */,
+				514499972BE8C1B1000BC9F7 /* Login.swift */,
+				514499992BE8C3F4000BC9F7 /* Create Room.swift */,
+				5144999B2BE8C4E1000BC9F7 /* Join Room.swift */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
 				BA098CA42BD6A7B500E8E436 /* Text */,
@@ -289,10 +298,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				514499982BE8C1B1000BC9F7 /* Login.swift in Sources */,
 				51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */,
 				4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */,
+				5144999C2BE8C4E1000BC9F7 /* Join Room.swift in Sources */,
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
 				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
+				5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
 			);
