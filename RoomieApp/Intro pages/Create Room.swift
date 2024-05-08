@@ -1,18 +1,17 @@
 //
-//  Register.swift
+//  Create Room.swift
 //  RoomieApp
 //
-//  Created by Ru Heng on 2024/4/29.
+//  Created by Ru Heng on 2024/5/6.
 //
 
 import Foundation
 import SwiftUI
 import SwiftData
 
-struct RegistertView: View {
-    @State private var name = ""
+struct CreateRoomView: View {
     @State private var id = ""
-    @State private var password = ""
+    @State private var roomName = ""
     var body: some View {
         ZStack{
             LinearGradient(
@@ -26,25 +25,18 @@ struct RegistertView: View {
                     )
                     .edgesIgnoringSafeArea(.all)
                 VStack{
-                    Image("Roomie")
+                    Image("Roomie Create Icon")
                         .resizable()
                         .frame(width: 200, height: 200)
                         .aspectRatio(contentMode: .fit)
                     
                     //LOGIN
-                    Text("RIGISTER")
+                    Text("CREATE ROOM")
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("Name:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60
-                                )
-                                .padding(.trailing, 2)
                             Text("ID:")
                                 .font(.headline)
                                 .foregroundColor(.black)
@@ -53,21 +45,22 @@ struct RegistertView: View {
                                 )
                                 .padding(.trailing, 2)
                             Text("Password:")
+                                .font(.headline)
                                 .foregroundColor(.black)
                                 .bold()
                                 .frame(width: 100, height: 60)
                                 .padding(.trailing, 2)
                         }
                         VStack {
-                            TextField("Please enter your name", text: $name)
+                            TextField("123456", text: $id)
+                                .font(Font.custom("Noto Sans", size: 16))
+                                .bold()
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            TextField("Please enter your uniqueID", text: $id)
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                            TextField("Please enter your password", text: $password)
+                            TextField("Set Your Room Password", text: $roomName)
+                                .font(Font.custom("Noto Sans", size: 16))
+                                .bold()
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
@@ -80,7 +73,7 @@ struct RegistertView: View {
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("ENTER")
+                        Text("CREATE")
                             .font(.headline)
                             .foregroundColor(.black)
                             .frame(width: 100.0, height: 42.0)
@@ -90,7 +83,7 @@ struct RegistertView: View {
                     Button(action: {
                         // 按鈕的動作
                     }) {
-                        Text("LOGIN")
+                        Text("JOIN ROOM")
                             .font(.subheadline)
                             .underline()
                             .foregroundColor(.black)
@@ -106,7 +99,7 @@ struct RegistertView: View {
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 250, height: 42)
+            .frame(width: 230, height: 35)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(
@@ -121,7 +114,7 @@ struct RegistertView: View {
     var ButtomBorder: some View {
             RoundedRectangle(cornerRadius: 20)
               .foregroundColor(.clear)
-              .frame(width: 82, height: 42)
+              .frame(width: 82, height: 35)
               .background(Color(red: 1, green: 0.84, blue: 0.25))
               .cornerRadius(15)
               .overlay(
@@ -132,8 +125,8 @@ struct RegistertView: View {
         }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct CreateRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        CreateRoomView()
     }
 }

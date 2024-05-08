@@ -15,6 +15,9 @@
 		4BCA0C422BD651B0003CFD77 /* RoomieAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */; };
 		4BCA0C442BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */; };
 		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
+		514499982BE8C1B1000BC9F7 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499972BE8C1B1000BC9F7 /* Login.swift */; };
+		5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499992BE8C3F4000BC9F7 /* Create Room.swift */; };
+		5144999C2BE8C4E1000BC9F7 /* Join Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144999B2BE8C4E1000BC9F7 /* Join Room.swift */; };
 		51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E8A0D22BDF7B2A0036AD8B /* Register.swift */; };
 		730CBFA12BE56EBB00600AEE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */; };
 		730CBFA42BE56F9D00600AEE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 730CBFA32BE56F9D00600AEE /* FirebaseAnalytics */; };
@@ -83,6 +86,9 @@
 		4BCA0C412BD651B0003CFD77 /* RoomieAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITests.swift; sourceTree = "<group>"; };
 		4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4BCA0C502BD66D5E003CFD77 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		514499972BE8C1B1000BC9F7 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
+		514499992BE8C3F4000BC9F7 /* Create Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Create Room.swift"; sourceTree = "<group>"; };
+		5144999B2BE8C4E1000BC9F7 /* Join Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Join Room.swift"; sourceTree = "<group>"; };
 		51E8A0D22BDF7B2A0036AD8B /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		730CBFDA2BE5710000600AEE /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Todo.swift; path = RoomieApp/Todo.swift; sourceTree = SOURCE_ROOT; };
@@ -177,7 +183,7 @@
 				730CBFD92BE570DB00600AEE /* Model */,
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
 				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
-				51E8A0D22BDF7B2A0036AD8B /* Register.swift */,
+				5144999D2BE8D622000BC9F7 /* Intro pages */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
 				4BE77F202BE5E3D0000D7F55 /* Profile.swift */,
@@ -212,6 +218,17 @@
 				4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */,
 			);
 			path = RoomieAppUITests;
+			sourceTree = "<group>";
+		};
+		5144999D2BE8D622000BC9F7 /* Intro pages */ = {
+			isa = PBXGroup;
+			children = (
+				51E8A0D22BDF7B2A0036AD8B /* Register.swift */,
+				514499972BE8C1B1000BC9F7 /* Login.swift */,
+				514499992BE8C3F4000BC9F7 /* Create Room.swift */,
+				5144999B2BE8C4E1000BC9F7 /* Join Room.swift */,
+			);
+			path = "Intro pages";
 			sourceTree = "<group>";
 		};
 		730CBFD92BE570DB00600AEE /* Model */ = {
@@ -404,12 +421,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				514499982BE8C1B1000BC9F7 /* Login.swift in Sources */,
 				730CBFDB2BE5710000600AEE /* Todo.swift in Sources */,
 				51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */,
 				4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */,
+				5144999C2BE8C4E1000BC9F7 /* Join Room.swift in Sources */,
 				4BE77F212BE5E3D0000D7F55 /* Profile.swift in Sources */,
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
 				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
+				5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
 				730CBFDE2BE5714E00600AEE /* ViewModel.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
