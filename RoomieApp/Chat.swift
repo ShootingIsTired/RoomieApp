@@ -56,7 +56,6 @@ struct ChatRoomView: View {
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(messages) { message in
-                            // Align messages to leading or trailing side based on the sender
                             HStack {
                                 if message.isCurrentUser {
                                     Spacer()

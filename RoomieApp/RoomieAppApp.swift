@@ -6,9 +6,17 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import Firebase
 
 @main
 struct RoomieAppApp: App {
+    
+    init(){
+        FirebaseApp.configure()
+        print("Configured Firebase!")
+    }
+    
     var body: some Scene {
         WindowGroup {
             ZStack{
@@ -26,5 +34,3 @@ struct RoomieAppApp: App {
         }
     }
 }
-
-
