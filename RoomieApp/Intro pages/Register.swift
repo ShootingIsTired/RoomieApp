@@ -8,11 +8,16 @@
 import Foundation
 import SwiftUI
 import SwiftData
+import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
 
 struct RegisterView: View {
     @State private var name = ""
-    @State private var id = ""
-    @State private var password = ""
+        @State private var email = ""
+        @State private var password = ""
+        @State private var birthday = ""
+        @State private var error: String = ""
     var body: some View {
         ZStack{
             LinearGradient(
@@ -45,7 +50,14 @@ struct RegisterView: View {
                                 .frame(width: 100, height: 60
                                 )
                                 .padding(.trailing, 2)
-                            Text("ID:")
+                            Text("Birthday:")
+                                .font(.headline)
+                                .foregroundColor(.black)
+                                .bold()
+                                .frame(width: 100, height: 60
+                                )
+                                .padding(.trailing, 2)
+                            Text("Email:")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .bold()
@@ -66,7 +78,13 @@ struct RegisterView: View {
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            TextField("Please enter your uniqueID", text: $id)
+                            TextField("Please enter your bithday", text: $birthday)
+                                .font(Font.custom("Noto Sans", size: 16))
+                                .bold()
+                                .padding()
+                                .background {textFieldBorder}
+                                .multilineTextAlignment(.center)
+                            TextField("Please enter your email", text: $email)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()

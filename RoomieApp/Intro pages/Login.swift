@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftData
 
 struct LoginView: View {
-    @State private var id = ""
+    @State private var email = ""
     @State private var password = ""
     var body: some View {
         ZStack{
@@ -37,7 +37,7 @@ struct LoginView: View {
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("ID:")
+                            Text("Email:")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .bold()
@@ -52,7 +52,7 @@ struct LoginView: View {
                                 .padding(.trailing, 2)
                         }
                         VStack {
-                            TextField("Please enter your uniqueID", text: $id)
+                            TextField("Please enter your email", text: $email)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
