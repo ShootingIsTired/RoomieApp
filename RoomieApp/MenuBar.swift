@@ -20,12 +20,15 @@ struct MenuBarView: View {
                 HomeView(selectedPage: $selectedPage)
             case "Profile":
                 ProfileView(selectedPage: $selectedPage)
+            case "Login":
+                LoginView(selectedPage: $selectedPage)
+            case "Register":
+                RegisterView(selectedPage: $selectedPage)
             default:
                 HomeView(selectedPage: $selectedPage)
         }
     }
 }
-
 // MenuBar component with navigation
 struct MenuBar: View {
     @Binding var selectedPage: String?
@@ -69,7 +72,7 @@ struct MenuBar: View {
                     .foregroundColor(.black)
                     .padding()
                     
-                Button("LEAVE") { }
+                Button("REGISTER") { selectedPage = "Register" }
                     .font(.custom("Jacques Francois", size: 16))
                     .foregroundColor(.black)
                     .padding()
@@ -77,7 +80,7 @@ struct MenuBar: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
             
-            Button(action: {}) {
+            Button(action: { selectedPage = "Login" }) {
                 HStack {
                     Image("logout_outline")
                         .frame(width: 28, height: 28)

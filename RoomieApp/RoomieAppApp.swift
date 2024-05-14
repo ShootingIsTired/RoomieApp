@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
-import FirebaseCore
 import Firebase
+import FirebaseAuth
 
 @main
 struct RoomieAppApp: App {
-    
+    @StateObject var viewModel = AuthViewModel()
     init(){
         FirebaseApp.configure()
         print("Configured Firebase!")
@@ -30,6 +30,7 @@ struct RoomieAppApp: App {
                   endPoint: UnitPoint(x: 0.5, y: 1)
                 )
                 MenuBarView()
+                    .environmentObject(viewModel)
             }
         }
     }

@@ -1,5 +1,14 @@
 import SwiftUI
 
+struct Member {
+    var name: String
+    var birthday: String
+    var id: String = "B10705000"
+    var department: String = "資管三"
+    var password: String = "123456"
+}
+
+
 struct ProfileView: View {
     @ObservedObject var viewMembers = ViewMembers()
     @ObservedObject var viewRooms = ViewRooms()
