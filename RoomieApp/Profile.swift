@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct Member {
-    var name: String
-    var birthday: String
-    var id: String = "B10705000"
-    var department: String = "資管三"
-    var password: String = "123456"
-}
+//struct Member {
+//    var name: String
+//    var birthday: String
+//    var id: String = "B10705000"
+//    var department: String = "資管三"
+//    var password: String = "123456"
+//}
 
 
 struct ProfileView: View {
@@ -25,7 +25,7 @@ struct ProfileView: View {
     @State private var rules = ["進房間敲門", "吹頭髮去廁所"]
     @State private var isEditingMyInfo = false
     @State private var showPassword = false
-    @State private var currentUser = Member(name: "Asuka", birthday: "05/21", id: "b10705039@ntu.edu.tw", department: "資管三", password: "password123")
+    @State private var currentUser = Member(name: "Asuka", email: "b10705039@ntu.edu.tw", birthday: "05/21", department: "資管三", password: "password123")
     @State private var isEditingRules = false
     @State private var isEditingMembers = false
     @State private var roomName = "女三舍312"
