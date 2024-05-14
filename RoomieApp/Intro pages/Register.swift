@@ -41,7 +41,7 @@ struct RegisterView: View {
                         .aspectRatio(contentMode: .fit)
                     
                     //LOGIN
-                    Text("RIGISTER")
+                    Text("REGISTER")
                         .font(.title)
                         .bold()
                         .frame(width: 200, height: 40)
@@ -109,6 +109,7 @@ struct RegisterView: View {
                     Button {
                         Task {
                             try await viewModel.createMember(withEmail: email, password: password, name: name, birthday: birthday)
+                            
                         }
                     } label: {
                         Text("ENTER")
@@ -137,19 +138,11 @@ struct RegisterView: View {
             }
         }
         }
-
-//    func register() {
-//        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-//            if error != nil {
-//                print(error!.localizedDescription)
-//            }
-//        }
-//    }
     
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 230, height: 42)
+            .frame(width: 230, height: 35)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(
