@@ -1,36 +1,24 @@
 import SwiftUI
 
-struct Member {
-    var name: String
-    var birthday: String
-    var id: String = "B10705000"
-    var department: String = "資管三"
-    var password: String = "123456"
-}
-
-
 struct ProfileView: View {
+    @ObservedObject var viewMembers = ViewMembers()
+    @ObservedObject var viewRooms = ViewRooms()
     let standardWidth = UIScreen.main.bounds.width - 90
     @Binding var selectedPage: String?
-    @State private var showMenuBar = false
-    @State private var showingAddRulePopup = false
     @State private var newRuleText = ""
-    @State private var members = [
-        Member(name: "Asuka", birthday: "05/21"),
-        Member(name: "Emily", birthday: "03/11"),
-        Member(name: "Fiona", birthday: "12/18"),
-        Member(name: "Yuting", birthday: "03/28"),
-        Member(name: "Teresa", birthday: "06/26")
-    ]
-    @State private var rules = ["進房間敲門", "吹頭髮去廁所"]
     @State private var isEditingMyInfo = false
     @State private var showPassword = false
-    @State private var currentUser = Member(name: "Asuka", birthday: "05/21", id: "b10705039@ntu.edu.tw", department: "資管三", password: "password123")
+    @State private var showMenuBar = false
+    @State private var showingAddRulePopup = false
+    @State private var isEditingRoom = false
     @State private var isEditingRules = false
     @State private var isEditingMembers = false
-    @State private var roomName = "女三舍312"
-    @State private var roomID = "a12n32"
-    @State private var isEditingRoom = false
+    
+//    @State private var rules = ["進房間敲門", "吹頭髮去廁所"]
+//    @State private var currentUser = Members(name: "Asuka", status: "資管三", birthday: "05/21", room: "411", email: "b10705039@ntu.edu.tw", password: "password123")
+//    @State private var roomName = "女三舍312"
+//    @State private var roomID = "a12n32"
+    
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -97,28 +85,32 @@ struct ProfileView: View {
                 }
                 .padding(.horizontal)
 
-                ForEach(rules, id: \.self) { rule in
-                    HStack {
-                        Text(rule)
-                            .padding(.vertical, 4)
-                            .padding(.horizontal)
-                            .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                            .cornerRadius(8)
-                        
-                        if isEditingRules {
-                            Button(action: {
-                                withAnimation {
-                                    rules.removeAll { $0 == rule }
+                if let room = viewRooms.rooms.first {
+                    ForEach(room.rules, id: \.self) { rule in
+                        HStack {
+                            Text(rule)
+                                .padding(.vertical, 4)
+                                .padding(.horizontal)
+                                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                                .cornerRadius(8)
+                            
+                            if isEditingRules {
+                                Button(action: {
+                                    withAnimation {
+                                        viewRooms.removeRule(fromRoomID: room.id!, rule: rule)
+                                    }
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.red)
+                                        .imageScale(.large)
                                 }
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.red)
-                                    .imageScale(.large)
                             }
                         }
+                        .frame(width: standardWidth, alignment: .leading)
+                        .padding(.horizontal)
                     }
-                    .frame(width: standardWidth,alignment: .leading)
-                    .padding(.horizontal)
+                } else {
+                    Text("No room available.")
                 }
             }
         }
@@ -140,8 +132,8 @@ struct ProfileView: View {
                 Button(action: {
                     if !newRuleText.isEmpty {
                         withAnimation {
-                            rules.append(newRuleText)
-                            newRuleText = ""  // Clear text after saving
+                            viewRooms.addRule(toRoomID: viewRooms.rooms.first!.id!, rule: newRuleText)
+                            newRuleText = ""
                             showingAddRulePopup = false
                         }
                     }
@@ -197,14 +189,14 @@ struct ProfileView: View {
             .padding(.horizontal)
 
             
-            ForEach(members, id: \.name) { member in
+            ForEach(viewMembers.members, id: \.id) { member in
                 HStack {
                     memberView(member: member)
                     
                     if isEditingMembers {
                         Button(action: {
                             withAnimation {
-                                members.removeAll { $0.name == member.name }
+                                viewMembers.deleteMember(memberID: member.id!)
                             }
                         }) {
                             Image(systemName: "xmark.circle.fill")
@@ -216,7 +208,8 @@ struct ProfileView: View {
             }
         }
     }
-    func memberView(member: Member) -> some View {
+    
+    func memberView(member: Members) -> some View {
         HStack(spacing: 5) {
             Text(member.name)
                 .font(Font.custom("Noto Sans", size: 18))
@@ -224,7 +217,7 @@ struct ProfileView: View {
             Text(member.birthday)
                 .font(Font.custom("Noto Sans", size: 16))
             Spacer()
-            Text(member.department)
+            Text(member.status)
                 .font(Font.custom("Noto Sans", size: 16))
             
         }
@@ -234,6 +227,7 @@ struct ProfileView: View {
         .cornerRadius(8)
         .padding(.horizontal)
     }
+    
     var myInfoSection: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -297,26 +291,32 @@ struct ProfileView: View {
                 .buttonStyle(ColoredButtonStyle())
             }
             .padding(.horizontal)
-
-            Group {
-                if isEditingRoom {
-                    TextField("Room Name", text: $roomName)
-                    TextField("Room ID", text: $roomID)
-                } else {
-                    Text("Room Name: \(roomName)")
-                    Text("Room ID: \(roomID)")
+            if let room = viewRooms.rooms.first {
+                Group {
+                    if isEditingRoom {
+                        TextField("Room Name", text: Binding(
+                            get: { room.name },
+                            set: { newName in
+                                viewRooms.updateRoom(roomID: room.id!, newName: newName)
+                            }
+                        ))
+                        Text("Room ID: \(room.id ?? "unknown")")
+                    } else {
+                        Text("Room Name: \(room.name)")
+                        Text("Room ID: \(room.id ?? "unknown")")
+                    }
                 }
+                .frame(width: standardWidth, alignment: .leading)
+                .padding(.vertical, 4)
+                .padding(.horizontal)
+                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                .cornerRadius(8)
+                .padding(.horizontal)
+            } else {
+                Text("Room data not available")
             }
-            .frame(width: standardWidth, alignment: .leading)
-            .padding(.vertical, 4)
-            .padding(.horizontal)
-            .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-            .cornerRadius(8)
-            .padding(.horizontal)
         }
     }
-
-
 }
 
 struct ColoredButtonStyle: ButtonStyle {
