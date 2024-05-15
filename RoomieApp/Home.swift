@@ -8,9 +8,9 @@
 
 import SwiftUI
 
-struct Task: Identifiable {
+struct Taskk: Identifiable {
     var id = UUID()
-    var date: Date
+//    var date: Date
     var time: Date
     var content: String
     var person: String
@@ -23,9 +23,9 @@ struct HomeView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     
     @State private var showAddTask = false
-    @State private var tasks:[Task] = [
-        Task(date:Date(),time:Date(), content:"abcd",person:"test1"), 
-        Task(date:Date(),time:Date(), content:"abcd",person:"Unassigned"),Task(date:Date(),time:Date(), content:"abcd",person:"Non Specific")
+    @State private var tasks:[Taskk] = [
+        Taskk(/*date:Date(),*/time:Date(), content:"abcd",person:"test1"),
+        Taskk(/*date:Date(),*/time:Date(), content:"abcd",person:"Unassigned"),Taskk(/*date:Date(),*/time:Date(), content:"abcd",person:"Non Specific")
     ]
     
     @State private var today = Date()
@@ -80,7 +80,7 @@ struct HomeView: View {
     func addNewTask(){
         if !task
             .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let newTask = Task(date:selectedDate, time:selectedTime, content:task, person:selectedPerson)
+            let newTask = Taskk(/*date:selectedDate,*/ time:selectedTime, content:task, person:selectedPerson)
             tasks.append(newTask)
             task = ""
             selectedPerson = "Unassigned"
@@ -92,7 +92,7 @@ struct HomeView: View {
     func saveEditTask() {
         if let index = tasks.firstIndex(where: { $0.id == currentTaskId }) {
             tasks[index].content = task
-            tasks[index].date = selectedDate
+//            tasks[index].date = selectedDate
             tasks[index].time = selectedTime
             tasks[index].person = selectedPerson
         }
@@ -180,7 +180,7 @@ struct HomeView: View {
                             {
                                 if !editReminder{
                                     HStack{
-                                        Text(formattedDate(task.date))
+                                        Text(formattedDate(task.time))
                                             .frame(width:50,alignment:.leading)
                                         Spacer()
                                         Text(formattedTime(task.time))
@@ -214,12 +214,12 @@ struct HomeView: View {
                                     Button{
                                         currentTaskId = task.id // Set the current task ID
                                             self.task = task.content
-                                            self.selectedDate = task.date
+//                                            self.selectedDate = task.date
                                             self.selectedTime = task.time
                                             self.selectedPerson = task.person
                                             self.showEditTask = true
                                     }label:{
-                                        Text(formattedDate(task.date))
+                                        Text(formattedDate(task.time))
                                             .frame(width:50,alignment:.leading)
                                         Spacer()
                                         Text(formattedTime(task.time))
@@ -303,7 +303,7 @@ struct HomeView: View {
                         Button{
                             editUnassigned = false
                             task = ""
-                            selectedDate = Date()
+//                            selectedDate = Date()
                             selectedTime = Date()
                             selectedPerson = "Unassigned"
                         }label:{
@@ -333,7 +333,7 @@ struct HomeView: View {
                                 if !editUnassigned{
                                     HStack
                                     {
-                                        Text(formattedDate(task.date))
+                                        Text(formattedDate(task.time))
                                             .frame(width:50,alignment:.leading)
                                         Spacer()
                                         Text(formattedTime(task.time))
@@ -359,13 +359,13 @@ struct HomeView: View {
                                     Button{
                                         currentTaskId = task.id // Set the current task ID
                                             self.task = task.content
-                                            self.selectedDate = task.date
+//                                            self.selectedDate = task.date
                                             self.selectedTime = task.time
                                             self.selectedPerson = task.person
                                             self.showEditTask = true
                                     }label:
                                     {
-                                        Text(formattedDate(task.date))
+                                        Text(formattedDate(task.time))
                                             .frame(width:50,alignment:.leading)
                                         Spacer()
                                         Text(formattedTime(task.time))
