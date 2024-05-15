@@ -53,6 +53,20 @@ struct ProfileView: View {
         .sheet(isPresented: $showingAddRulePopup) {
             addRulePopup()
         }
+        .onAppear {
+            Task {
+                if let user = authViewModel.currentUser {
+                    await authViewModel.fetchRoom(for: user)
+                }
+            }
+            // Initialize local state with current user data
+            if let user = authViewModel.currentUser {
+                editedName = user.name
+                editedBirthday = user.birthday
+                editedEmail = user.email
+                editedPassword = user.password
+            }
+        }
     }
     var header: some View {
         HStack {
@@ -88,54 +102,62 @@ struct ProfileView: View {
                 }
             }
         }
-    var rulesSection: some View {
-            VStack(alignment: .leading) {
-                HStack{
-                    Text("Rules")
-                        .font(Font.custom("Noto Sans", size: 20))
-                    Spacer()
-                    Button("ADD") {
-                        showingAddRulePopup = true
-                    }
-                    .buttonStyle(ColoredButtonStyle())
-                    Button(isEditingRules ? "DONE" : "EDIT") {
-                        withAnimation {
-                            isEditingRules.toggle()
-                        }
-                    }
-                    .buttonStyle(ColoredButtonStyle())
-                }
-                .padding(.horizontal)
+    
+    func removeRule(_ rule: String) {
+        Task {
+            await authViewModel.removeRule(rule: rule)
+        }
+    }
 
-                if let room = viewRooms.rooms.first {
-                    ForEach(room.rules, id: \.self) { rule in
-                        HStack {
-                            Text(rule)
-                                .padding(.vertical, 4)
-                                .padding(.horizontal)
-                                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                                .cornerRadius(8)
-                            
-                            if isEditingRules {
-                                Button(action: {
-                                    withAnimation {
-                                        viewRooms.removeRule(fromRoomID: room.id!, rule: rule)
-                                    }
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.red)
-                                        .imageScale(.large)
+    var rulesSection: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Rules")
+                    .font(Font.custom("Noto Sans", size: 20))
+                Spacer()
+                Button("ADD") {
+                    showingAddRulePopup = true
+                }
+                .buttonStyle(ColoredButtonStyle())
+                Button(isEditingRules ? "DONE" : "EDIT") {
+                    withAnimation {
+                        isEditingRules.toggle()
+                    }
+                }
+                .buttonStyle(ColoredButtonStyle())
+            }
+            .padding(.horizontal)
+
+            if let room = authViewModel.currentRoom {
+                ForEach(room.rules, id: \.self) { rule in
+                    HStack {
+                        Text(rule)
+                            .padding(.vertical, 4)
+                            .padding(.horizontal)
+                            .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                            .cornerRadius(8)
+                        
+                        if isEditingRules {
+                            Button(action: {
+                                withAnimation {
+                                    removeRule(rule)
                                 }
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.red)
+                                    .imageScale(.large)
                             }
                         }
-                        .frame(width: standardWidth, alignment: .leading)
-                        .padding(.horizontal)
                     }
-                } else {
-                    Text("No room available.")
+                    .frame(width: standardWidth, alignment: .leading)
+                    .padding(.horizontal)
                 }
+            } else {
+                Text("No room available.")
             }
         }
+    }
+
     
     func addRulePopup() -> some View {
         VStack(spacing: 20) {
@@ -154,9 +176,11 @@ struct ProfileView: View {
                 Button(action: {
                     if !newRuleText.isEmpty {
                         withAnimation {
-                            viewRooms.addRule(toRoomID: viewRooms.rooms.first!.id!, rule: newRuleText)
-                            newRuleText = ""
-                            showingAddRulePopup = false
+                            Task {
+                                await authViewModel.addRule(rule: newRuleText)
+                                newRuleText = ""
+                                showingAddRulePopup = false
+                            }
                         }
                     }
                 }) {
@@ -258,6 +282,17 @@ struct ProfileView: View {
                 Spacer()
                 Button(isEditingMyInfo ? "DONE" : "EDIT") {
                     withAnimation {
+                        if isEditingMyInfo {
+                            // Update member info in Firestore when done editing
+                            Task {
+                                await authViewModel.updateMember(
+                                    name: editedName,
+                                    email: editedEmail,
+                                    birthday: editedBirthday,
+                                    password: editedPassword
+                                )
+                            }
+                        }
                         isEditingMyInfo.toggle()
                     }
                 }
@@ -267,10 +302,10 @@ struct ProfileView: View {
 
             Group {
                 if isEditingMyInfo {
-                    TextField("Name", text: Binding(get: { authViewModel.currentUser?.name ?? "" }, set: { authViewModel.currentUser?.name = $0 }))
-                    TextField("Birthday", text: Binding(get: { authViewModel.currentUser?.birthday ?? "" }, set: { authViewModel.currentUser?.birthday = $0 }))
-                    TextField("Email", text: Binding(get: { authViewModel.currentUser?.email ?? "" }, set: { authViewModel.currentUser?.email = $0 }))
-                    TextField("Password", text: Binding(get: { authViewModel.currentUser?.password ?? "" }, set: { authViewModel.currentUser?.password = $0 }))
+                    TextField("Name", text: $editedName)
+                    TextField("Birthday", text: $editedBirthday)
+                    TextField("Email", text: $editedEmail)
+                    TextField("Password", text: $editedPassword)
                 } else {
                     Text("Name: \(authViewModel.currentUser?.name ?? "Unknown")")
                     Text("Birthday: \(authViewModel.currentUser?.birthday ?? "Unknown")")

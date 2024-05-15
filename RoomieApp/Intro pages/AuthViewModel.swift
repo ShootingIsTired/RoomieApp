@@ -113,7 +113,8 @@ class AuthViewModel: ObservableObject {
                 self.currentUser = member
                 print("FetchMember: Current user is \(String(describing: self.currentUser))")
                 if let user = currentUser {
-                                await fetchRoom(for: user)}
+                    await fetchRoom(for: user)
+                }
             } catch {
                 print("Document could not be parsed, Error: \(error)") // Parsing error
             }
@@ -148,23 +149,27 @@ class AuthViewModel: ObservableObject {
     func fetchRoom(for user: Member) async {
         do {
             guard let roomRef = user.room else {
-                print("Room reference is nil")
+                print("Error1: Room reference is nil")
                 return
             }
+
+            // Print the path of the room document reference for debugging
+            print("Room Reference Path: \(roomRef.path)")
+
             let document = try await roomRef.getDocument()
-            
+
             if let data = document.data() {
-                print("Room document data: \(data)") // Print raw document data for debugging
+                print("Room document data: \(data)")
             } else {
-                print("Room document does not exist")
+                print("Error2: Room document does not exist")
                 return
             }
-            
+
             if let room = try? document.data(as: Rooms.self) {
                 self.currentRoom = room
                 print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
             } else {
-                print("Room document could not be parsed")
+                print("Error3: Room document could not be parsed")
             }
         } catch {
             print("Debug: Failed to fetch room with error \(error.localizedDescription)")
@@ -172,20 +177,79 @@ class AuthViewModel: ObservableObject {
     }
 
     
-    func updateRoom(roomID: String, newName: String) async {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+    func updateRoom(newName: String) async {
+            guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
+                print("Error: Current room or room ID is nil")
+                return
+            }
+            do {
+                let roomRef = Firestore.firestore().collection("rooms").document(roomID)
+                try await roomRef.updateData(["name": newName])
+                if let user = currentUser {
+                    await fetchRoom(for: user)
+                } else {
+                    print("Debug: currentUser is nil")
+                }
+            } catch {
+                print("Debug: Failed to update room with error \(error.localizedDescription)")
+            }
+        }
+    func addRule(rule: String) async {
+        guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
+            print("Error: Current room or room ID is nil")
+            return
+        }
+
+        // Make a mutable copy of the rules array
+        var updatedRules = currentRoom.rules
+
+        // Add the new rule to the mutable copy
+        updatedRules.append(rule)
+
+        // Update Firestore with the modified rules
         do {
             let roomRef = Firestore.firestore().collection("rooms").document(roomID)
-            try await roomRef.updateData(["name": newName])
+            try await roomRef.updateData(["rules": updatedRules])
+            // Fetch the updated room to ensure local state is consistent
             if let user = currentUser {
                 await fetchRoom(for: user)
             } else {
                 print("Debug: currentUser is nil")
             }
         } catch {
-            print("Debug: Failed to update room with error \(error.localizedDescription)")
+            print("Debug: Failed to add rule with error \(error.localizedDescription)")
         }
-        
-        
+    }
+
+    func removeRule(rule: String) async {
+        guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
+            print("Error: Current room or room ID is nil")
+            return
+        }
+
+        // Make a mutable copy of the rules array
+        var updatedRules = currentRoom.rules
+
+        // Remove the rule from the mutable copy
+        if let ruleIndex = updatedRules.firstIndex(of: rule) {
+            updatedRules.remove(at: ruleIndex)
+        } else {
+            print("Error: Rule not found in current room")
+            return
+        }
+
+        // Update Firestore with the modified rules
+        do {
+            let roomRef = Firestore.firestore().collection("rooms").document(roomID)
+            try await roomRef.updateData(["rules": updatedRules])
+            // Fetch the updated room to ensure local state is consistent
+            if let user = currentUser {
+                await fetchRoom(for: user)
+            } else {
+                print("Debug: currentUser is nil")
+            }
+        } catch {
+            print("Debug: Failed to remove rule with error \(error.localizedDescription)")
+        }
     }
 }
