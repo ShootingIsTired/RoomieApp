@@ -41,7 +41,7 @@ class AuthViewModel: ObservableObject {
             self.firebaseUserSession = result.user
             IsLoggedIn = true
             await fetchMember()
-            print("login")
+            print("user login success:")
             print(email, ",", password)
         } catch {
             print("Debug: Fail to sign in with user \(error.localizedDescription)")
@@ -70,6 +70,8 @@ class AuthViewModel: ObservableObject {
             try Auth.auth().signOut() //sign out on backend
             self.firebaseUserSession = nil
             self.currentUser = nil
+            IsLoggedIn = false
+            print("user logout success")
         } catch {
             print("Debug: Fail to sign out with error \(error.localizedDescription)")
         }
@@ -156,7 +158,7 @@ class AuthViewModel: ObservableObject {
     }
     
     //Add Room to Member
-    func addRoomAndUpdateMember(newRoom: Rooms) async {
+    func addNewRoomAndUpdateMember(newRoom: Rooms) async {
         // Step 1: Create the room in Firestore
         do {
             let roomRef = try Firestore.firestore().collection("rooms").addDocument(from: newRoom)
@@ -171,7 +173,7 @@ class AuthViewModel: ObservableObject {
     }
     
     // Function to update the current user's room name and password
-    func updateCurrentUserRoom(newName: String, newPassword: String) async {
+    func addNewRoomInfo(newName: String, newPassword: String) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         do {
@@ -195,7 +197,7 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func updateRoomForCurrentUser(roomName: String, roomPassword: String) async {
+    func joinRoom(roomName: String, roomPassword: String) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
 
         do {

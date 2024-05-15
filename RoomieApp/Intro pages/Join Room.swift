@@ -11,7 +11,10 @@ import SwiftData
 
 struct JoinRoomView: View {
     @State private var id = ""
-    @State private var roomID = ""
+    @State private var roomName = ""
+    @State private var roomPassword = ""
+    @EnvironmentObject var viewModel: AuthViewModel
+    
     var body: some View {
         ZStack{
             LinearGradient(
@@ -37,7 +40,7 @@ struct JoinRoomView: View {
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("ID:")
+                            Text("Room Name:")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .bold()
@@ -53,13 +56,13 @@ struct JoinRoomView: View {
                             
                         }
                         VStack {
-                            TextField("Enter Room ID", text: $id)
+                            TextField("Enter Room Name", text: $roomName)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            TextField("Enter Your Room Password", text: $roomID)
+                            TextField("Enter Your Room Password", text: $roomPassword)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
@@ -70,7 +73,9 @@ struct JoinRoomView: View {
                     }
                     
                     Button(action: {
-                        // 按鈕的動作
+                        Task{
+                            await viewModel.joinRoom(roomName: roomName, roomPassword: roomPassword)
+                        }
                     }) {
                         Text("JOIN")
                             .font(.headline)

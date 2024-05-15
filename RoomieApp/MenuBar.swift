@@ -35,7 +35,7 @@ struct MenuBarView: View {
 // MenuBar component with navigation
 struct MenuBar: View {
     @Binding var selectedPage: String?
-    
+    @EnvironmentObject var authViewModel: AuthViewModel
     var body: some View {
         VStack {
             ZStack {
@@ -75,15 +75,21 @@ struct MenuBar: View {
                     .foregroundColor(.black)
                     .padding()
                     
-                Button("REGISTER") { selectedPage = "Register" }
-                    .font(.custom("Jacques Francois", size: 16))
-                    .foregroundColor(.black)
-                    .padding()
+//                Button("REGISTER") { selectedPage = "Register" }
+//                    .font(.custom("Jacques Francois", size: 16))
+//                    .foregroundColor(.black)
+//                    .padding()
                 
             }
             .frame(maxHeight: .infinity, alignment: .top)
             
-            Button(action: { selectedPage = "Login" }) {
+            Button{
+                Task{
+                    selectedPage = "Login"
+                    authViewModel.signOut()
+                }
+            }
+            label:{
                 HStack {
                     Image("logout_outline")
                         .frame(width: 28, height: 28)

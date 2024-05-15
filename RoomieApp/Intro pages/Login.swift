@@ -102,7 +102,7 @@ struct LoginView: View {
                 //Register Buttom
                 NavigationLink {
                     RegisterView(selectedPage: $selectedPage)
-                        .navigationBarBackButtonHidden()
+//                        .navigationBarBackButtonHidden()
                 } label: {
                     HStack {
                         Text("Don't Have Account?")

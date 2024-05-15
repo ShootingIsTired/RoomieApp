@@ -106,6 +106,7 @@ struct RegisterView: View {
                         
                         
                     }
+                    
                     NavigationLink(destination: LoginView(selectedPage: $selectedPage)
                         .navigationBarBackButtonHidden(), isActive: $isActive) {
                         Button {
@@ -120,23 +121,22 @@ struct RegisterView: View {
                                 .frame(width: 100.0, height: 42.0)
                                 .background(ButtomBorder)
                         }
-                        .disabled(!formIsValid)
-                        .opacity(formIsValid ? 1.0 : 0.5)
-                    }
+                    }.disabled(!formIsValid)
+                    .opacity(formIsValid ? 1.0 : 0.5)
                     
                                         
-                    NavigationLink {
-                        LoginView(selectedPage: $selectedPage)
-                            .navigationBarBackButtonHidden()
-                    } label: {
-                        VStack {
-                            Text("LOGIN")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.black)
-                                .frame(width: 100.0, height: 42.0)
-                        }
-                    }
+//                    NavigationLink {
+//                        LoginView(selectedPage: $selectedPage)
+//                            .navigationBarBackButtonHidden()
+//                    } label: {
+//                        VStack {
+//                            Text("LOGIN")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 100.0, height: 42.0)
+//                        }
+//                    }
                 }
                 .padding()
             }
