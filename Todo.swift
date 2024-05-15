@@ -54,10 +54,10 @@ struct Members: Identifiable, Codable {
     var name: String
     var status: String
     var birthday: String
+    var room: String
     var email: String
     var password: String
-    var room: String?
-    var index: Int? = 0
+    var index: Int
 }
 
 struct Rooms: Identifiable, Codable {
@@ -71,13 +71,3 @@ struct Rooms: Identifiable, Codable {
     var chats: [Chats]?
 }
 
-struct Member:Identifiable, Codable {
-    @DocumentID var id: String? = "0000"
-    var name: String
-    var status: String
-    var birthday: String
-    var email: String
-    var password: String
-    var room: String?
-    var index: Int? = 0
-}

@@ -3,27 +3,24 @@ import Firebase
 
 class ViewRooms: ObservableObject {
     
-    @Published var rooms: [Rooms] = []
-    @Published var currentRoom: Rooms?
-    @Published var currentUser: Member?
+    @Published var rooms = [Rooms]()
     
     private var db = Firestore.firestore()
     
     // MARK: - Fetch Rooms
-    func fetchRoom(for user: Member) async {
-            do {
-                guard let roomID = user.room else { return }
-                let document = try await Firestore.firestore().document(roomID).getDocument()
-                if let room = try? document.data(as: Rooms.self) {
-                    self.currentRoom = room
-                    self.rooms = [room]
-                } else {
-                    print("Room document does not exist or could not be parsed")
+    func getRoom() {
+        db.collection("rooms").getDocuments { (snapshot, error) in
+            if let snapshot = snapshot {
+                DispatchQueue.main.async {
+                    self.rooms = snapshot.documents.compactMap { document in
+                        try? document.data(as: Rooms.self)
+                    }
                 }
-            } catch {
-                print("Debug: Failed to fetch room with error \(error.localizedDescription)")
+            } else if let error = error {
+                print("Error getting rooms: \(error.localizedDescription)")
             }
         }
+    }
     
     // MARK: - Delete a Room
     func deleteRoom(roomID: String) {
@@ -40,19 +37,14 @@ class ViewRooms: ObservableObject {
     }
     
     // MARK: - Update a Room
-    func updateRoom(roomID: String, newName: String) async {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        do {
-            let roomRef = Firestore.firestore().collection("rooms").document(roomID)
-            try await roomRef.updateData(["name": newName])
-            
-            if let user = currentUser {
-                await fetchRoom(for: user)
-            } else {
-                print("Debug: currentUser is nil")
+    func updateRoom(roomID: String, newName: String) {
+        if let index = rooms.firstIndex(where: { $0.id == roomID }) {
+            rooms[index].name = newName  // Update the name locally
+            do {
+                try db.collection("rooms").document(roomID).setData(["name": newName], merge: true) // Update name in Firestore
+            } catch let error {
+                print("Error updating room name: \(error.localizedDescription)")
             }
-        } catch {
-            print("Debug: Failed to update room with error \(error.localizedDescription)")
         }
     }
 

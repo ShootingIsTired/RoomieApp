@@ -1,15 +1,16 @@
 import SwiftUI
 
-struct Member {
-    var name: String
-    var birthday: String
-    var id: String = "B10705000"
-    var department: String = "資管三"
-    var password: String = "123456"
-}
+//struct Member {
+//    var name: String
+//    var birthday: String
+//    var id: String = "B10705000"
+//    var department: String = "資管三"
+//    var password: String = "123456"
+//}
 
 
 struct ProfileView: View {
+    @ObservedObject var authViewModel = AuthViewModel()
     @ObservedObject var viewMembers = ViewMembers()
     @ObservedObject var viewRooms = ViewRooms()
     let standardWidth = UIScreen.main.bounds.width - 90
@@ -22,6 +23,7 @@ struct ProfileView: View {
     @State private var isEditingRoom = false
     @State private var isEditingRules = false
     @State private var isEditingMembers = false
+    
     
 //    @State private var rules = ["進房間敲門", "吹頭髮去廁所"]
 //    @State private var currentUser = Members(name: "Asuka", status: "資管三", birthday: "05/21", room: "411", email: "b10705039@ntu.edu.tw", password: "password123")
@@ -254,17 +256,17 @@ struct ProfileView: View {
 
             Group {
                 if isEditingMyInfo {
-                    TextField("Name", text: $currentUser.name)
-                    TextField("ID", text: $currentUser.id)
-                    TextField("Birthday", text: $currentUser.birthday)
-                    TextField("Password", text: $currentUser.password)
+                    TextField("Name", text: Binding(get: { authViewModel.currentUser?.name ?? "" }, set: { authViewModel.currentUser?.name = $0 }))
+                    TextField("Birthday", text: Binding(get: { authViewModel.currentUser?.birthday ?? "" }, set: { authViewModel.currentUser?.birthday = $0 }))
+                    TextField("Email", text: Binding(get: { authViewModel.currentUser?.email ?? "" }, set: { authViewModel.currentUser?.email = $0 }))
+                    TextField("Password", text: Binding(get: { authViewModel.currentUser?.password ?? "" }, set: { authViewModel.currentUser?.password = $0 }))
                 } else {
-                    Text("Name: \(currentUser.name)")
-                    Text("ID: \(currentUser.id)")
-                    Text("Birthday: \(currentUser.birthday)")
+                    Text("Name: \(authViewModel.currentUser?.name ?? "Unknown")")
+                    Text("Birthday: \(authViewModel.currentUser?.birthday ?? "Unknown")")
+                    Text("Email: \(authViewModel.currentUser?.id ?? "Unknown")")
                     HStack {
                         if showPassword {
-                            Text("Password: \(currentUser.password)")
+                            Text("Password: \(authViewModel.currentUser?.password ?? "Unknown")")
                         } else {
                             Text("Password: **********")
                         }
@@ -306,7 +308,9 @@ struct ProfileView: View {
                         TextField("Room Name", text: Binding(
                             get: { room.name },
                             set: { newName in
-                                viewRooms.updateRoom(roomID: room.id!, newName: newName)
+                                Task {
+                                    await viewRooms.updateRoom(roomID: room.id!, newName: newName)
+                                }
                             }
                         ))
                         Text("Room ID: \(room.id ?? "unknown")")
@@ -344,7 +348,15 @@ struct ColoredButtonStyle: ButtonStyle {
 }
 
 struct ProfileView_Previews: PreviewProvider {
+    struct PreviewWrapper: View {
+        @State var selectedPage: String? = "Profile"
+
+        var body: some View {
+            ProfileView(selectedPage: $selectedPage)
+        }
+    }
+
     static var previews: some View {
-        ProfileView(selectedPage: .constant("Profile"))
+        PreviewWrapper()
     }
 }

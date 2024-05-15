@@ -108,7 +108,6 @@ struct MenuBar: View {
 }
 
 // Preview provider for MenuBar
-// Preview provider for MenuBarView
 struct MenuBarView_Previews: PreviewProvider {
     static var previews: some View {
         MenuBarView()
