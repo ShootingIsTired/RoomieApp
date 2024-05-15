@@ -32,8 +32,8 @@ struct RoomieAppApp: App {
                 )
                 ContentView(selectedPage: $selectedPage)
                     .environmentObject(viewModel)
-                LoginView(selectedPage: .constant("Login"))
-                                .environmentObject(viewModel)
+//                LoginView(selectedPage: .constant("Login"))
+//                                .environmentObject(viewModel)
 //                MenuBarView()
 //                    .environmentObject(viewModel)
             }
