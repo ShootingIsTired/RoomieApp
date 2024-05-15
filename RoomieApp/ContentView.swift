@@ -9,7 +9,6 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
-//    @ObservedObject var model = ViewModel()
     @EnvironmentObject var viewModel: AuthViewModel
     @Binding var selectedPage: String?
     var body: some View {
@@ -39,12 +38,3 @@ struct ContentView_Previews: PreviewProvider {
         PreviewWrapper()
     }
 }
-
-//struct ContentView_Previews: PreviewProvider{
-//    static var previews: some View{
-//        ContentView(selectedPage: $selectedPage)
-//    }
-//}
-//#Preview {
-//    ContentView()
-//}

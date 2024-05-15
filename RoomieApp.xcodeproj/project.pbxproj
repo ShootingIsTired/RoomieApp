@@ -510,7 +510,7 @@
 				4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */,
 				730CBFDE2BE5714E00600AEE /* ViewModel.swift in Sources */,
 				518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */,
-				510A913C2BF3618E0089FE76 /* AuthViewModel.swift in Sources */,
+				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A362BF3D8F30093287A /* AuthViewModel.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A342BF3D8CC0093287A /* ViewMembers.swift in Sources */,
