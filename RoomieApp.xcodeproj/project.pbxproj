@@ -28,6 +28,7 @@
 		514499982BE8C1B1000BC9F7 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499972BE8C1B1000BC9F7 /* Login.swift */; };
 		5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499992BE8C3F4000BC9F7 /* Create Room.swift */; };
 		5144999C2BE8C4E1000BC9F7 /* Join Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144999B2BE8C4E1000BC9F7 /* Join Room.swift */; };
+		518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518A9B132BF3E5F500C89949 /* Get Room.swift */; };
 		51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E8A0D22BDF7B2A0036AD8B /* Register.swift */; };
 		730CBFA12BE56EBB00600AEE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */; };
 		730CBFA42BE56F9D00600AEE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 730CBFA32BE56F9D00600AEE /* FirebaseAnalytics */; };
@@ -63,6 +64,15 @@
 		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
 		BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */; };
 		BA098CA62BD6A7B500E8E436 /* KronaOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */; };
+		BAC15C1F2BE6E2FB00288F1D /* Chores.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C1E2BE6E2FB00288F1D /* Chores.swift */; };
+		BAC15C212BE75D5800288F1D /* SelectPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C202BE75D5800288F1D /* SelectPerson.swift */; };
+		BAC15C232BE75E6300288F1D /* ChooseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C222BE75E6300288F1D /* ChooseDate.swift */; };
+		BAC15C252BE75E6F00288F1D /* ChooseTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C242BE75E6F00288F1D /* ChooseTime.swift */; };
+		BAC15C282BE8B05B00288F1D /* ChooseFrequency.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */; };
+		BAC15C2A2BEC229800288F1D /* AddTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C292BEC229800288F1D /* AddTask.swift */; };
+		BAC15C2C2BEC30DF00288F1D /* EditTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C2B2BEC30DF00288F1D /* EditTask.swift */; };
+		BAC15C2E2BECB42C00288F1D /* EditChore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C2D2BECB42C00288F1D /* EditChore.swift */; };
+		BAC15C302BED6B9400288F1D /* AddChore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C2F2BED6B9400288F1D /* AddChore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +115,7 @@
 		514499972BE8C1B1000BC9F7 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		514499992BE8C3F4000BC9F7 /* Create Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Create Room.swift"; sourceTree = "<group>"; };
 		5144999B2BE8C4E1000BC9F7 /* Join Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Join Room.swift"; sourceTree = "<group>"; };
+		518A9B132BF3E5F500C89949 /* Get Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Get Room.swift"; sourceTree = "<group>"; };
 		51E8A0D22BDF7B2A0036AD8B /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		730CBFDA2BE5710000600AEE /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Todo.swift; path = RoomieApp/Todo.swift; sourceTree = SOURCE_ROOT; };
@@ -114,6 +125,15 @@
 		BA098CA02BD6A7AF00E8E436 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JacquesFrancois-Regular.ttf"; sourceTree = "<group>"; };
 		BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "KronaOne-Regular.ttf"; sourceTree = "<group>"; };
+		BAC15C1E2BE6E2FB00288F1D /* Chores.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chores.swift; sourceTree = "<group>"; };
+		BAC15C202BE75D5800288F1D /* SelectPerson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPerson.swift; sourceTree = "<group>"; };
+		BAC15C222BE75E6300288F1D /* ChooseDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseDate.swift; sourceTree = "<group>"; };
+		BAC15C242BE75E6F00288F1D /* ChooseTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseTime.swift; sourceTree = "<group>"; };
+		BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFrequency.swift; sourceTree = "<group>"; };
+		BAC15C292BEC229800288F1D /* AddTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTask.swift; sourceTree = "<group>"; };
+		BAC15C2B2BEC30DF00288F1D /* EditTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTask.swift; sourceTree = "<group>"; };
+		BAC15C2D2BECB42C00288F1D /* EditChore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChore.swift; sourceTree = "<group>"; };
+		BAC15C2F2BED6B9400288F1D /* AddChore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +215,8 @@
 				730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */,
 				BA098CA02BD6A7AF00E8E436 /* Info.plist */,
 				BA098C9C2BD6A79D00E8E436 /* Home.swift */,
+				BAC15C262BE75FEB00288F1D /* Elements */,
+				BAC15C1E2BE6E2FB00288F1D /* Chores.swift */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
 				4BFF3A2F2BF3D87D0093287A /* Profile.swift */,
@@ -252,6 +274,7 @@
 				514499972BE8C1B1000BC9F7 /* Login.swift */,
 				514499992BE8C3F4000BC9F7 /* Create Room.swift */,
 				5144999B2BE8C4E1000BC9F7 /* Join Room.swift */,
+				518A9B132BF3E5F500C89949 /* Get Room.swift */,
 			);
 			path = "Intro pages";
 			sourceTree = "<group>";
@@ -283,6 +306,21 @@
 				BA098CA32BD6A7B500E8E436 /* KronaOne-Regular.ttf */,
 			);
 			path = Text;
+			sourceTree = "<group>";
+		};
+		BAC15C262BE75FEB00288F1D /* Elements */ = {
+			isa = PBXGroup;
+			children = (
+				BAC15C202BE75D5800288F1D /* SelectPerson.swift */,
+				BAC15C222BE75E6300288F1D /* ChooseDate.swift */,
+				BAC15C242BE75E6F00288F1D /* ChooseTime.swift */,
+				BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */,
+				BAC15C292BEC229800288F1D /* AddTask.swift */,
+				BAC15C2B2BEC30DF00288F1D /* EditTask.swift */,
+				BAC15C2F2BED6B9400288F1D /* AddChore.swift */,
+				BAC15C2D2BECB42C00288F1D /* EditChore.swift */,
+			);
+			path = Elements;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -460,17 +498,28 @@
 				4BFF3A302BF3D87D0093287A /* Profile.swift in Sources */,
 				4BE77F212BE5E3D0000D7F55 /* (null) in Sources */,
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
+				BAC15C282BE8B05B00288F1D /* ChooseFrequency.swift in Sources */,
 				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
+				BAC15C302BED6B9400288F1D /* AddChore.swift in Sources */,
+				BAC15C212BE75D5800288F1D /* SelectPerson.swift in Sources */,
+				BAC15C2C2BEC30DF00288F1D /* EditTask.swift in Sources */,
 				4B07BD8A2BF19DB8002C44A4 /* ViewRooms.swift in Sources */,
 				5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
 				4BFF3A322BF3D8C70093287A /* ViewCurrentUser.swift in Sources */,
 				4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */,
 				730CBFDE2BE5714E00600AEE /* ViewModel.swift in Sources */,
+				518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */,
+				510A913C2BF3618E0089FE76 /* AuthViewModel.swift in Sources */,
 				4BFF3A362BF3D8F30093287A /* AuthViewModel.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A342BF3D8CC0093287A /* ViewMembers.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
+				BAC15C2E2BECB42C00288F1D /* EditChore.swift in Sources */,
+				BAC15C2A2BEC229800288F1D /* AddTask.swift in Sources */,
+				BAC15C252BE75E6F00288F1D /* ChooseTime.swift in Sources */,
+				BAC15C232BE75E6300288F1D /* ChooseDate.swift in Sources */,
+				BAC15C1F2BE6E2FB00288F1D /* Chores.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,7 +679,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RoomieApp/Preview Content\"";
-				DEVELOPMENT_TEAM = NK8H79G846;
+				DEVELOPMENT_TEAM = P3X8H99QY3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -667,7 +716,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RoomieApp/Preview Content\"";
-				DEVELOPMENT_TEAM = NK8H79G846;
+				DEVELOPMENT_TEAM = P3X8H99QY3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;

@@ -104,14 +104,47 @@ struct LoginView: View {
                     RegisterView(selectedPage: $selectedPage)
                         .navigationBarBackButtonHidden()
                 } label: {
-                    VStack {
+                    HStack {
+                        Text("Don't Have Account?")
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                            .frame(width: 150.0, height: 22.0)
                         Text("REGISTER")
                             .font(.subheadline)
                             .underline()
                             .foregroundColor(.black)
-                            .frame(width: 100.0, height: 42.0)
+                            .frame(width: 100.0, height: 22.0)
                     }
                 }
+                
+                //Join and Create Room Buttom
+                HStack{
+                    NavigationLink {
+                        JoinRoomView()
+//                            .navigationBarBackButtonHidden()
+                    } label: {
+                        VStack {
+                            Text("Join Room")
+                                .font(.subheadline)
+                                .underline()
+                                .foregroundColor(.black)
+                                .frame(width: 90.0, height: 22.0)
+                        }
+                    }
+                    NavigationLink {
+                        CreateRoomView()
+//                            .navigationBarBackButtonHidden()
+                    } label: {
+                        VStack {
+                            Text("Create Room")
+                                .font(.subheadline)
+                                .underline()
+                                .foregroundColor(.black)
+                                .frame(width: 90.0, height: 22.0)
+                        }
+                    }
+                }
+                
             }
             .padding()
             }

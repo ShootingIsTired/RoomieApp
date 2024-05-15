@@ -9,28 +9,42 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
-    
-    @ObservedObject var model = ViewModel()
-    
+//    @ObservedObject var model = ViewModel()
+    @EnvironmentObject var viewModel: AuthViewModel
+    @Binding var selectedPage: String?
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-            List(model.list, id: \.self){ item in
-                Text(item.name)
+        Group{
+            if viewModel.IsLoggedIn == false{
+                // 1. 還沒登入
+                LoginView(selectedPage: $selectedPage)
             }
+            else {
+                // 2. 登入且有房間
+                MenuBarView()
+            }
+            // 3. 登入但沒有房間
         }
-        .padding()
-    }
-    
-    init(){
-        model.getData()
     }
 
 }
+struct ContentView_Previews: PreviewProvider {
+    struct PreviewWrapper: View {
+        @State var selectedPage: String? = "Root"
+        var body: some View {
+            ContentView(selectedPage: $selectedPage)
+        }
+    }
 
-#Preview {
-    ContentView()
+    static var previews: some View {
+        PreviewWrapper()
+    }
 }
+
+//struct ContentView_Previews: PreviewProvider{
+//    static var previews: some View{
+//        ContentView(selectedPage: $selectedPage)
+//    }
+//}
+//#Preview {
+//    ContentView()
+//}

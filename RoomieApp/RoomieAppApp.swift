@@ -12,6 +12,7 @@ import FirebaseAuth
 @main
 struct RoomieAppApp: App {
     @StateObject var viewModel = AuthViewModel()
+    @State private var selectedPage: String? = "Root"
     init(){
         FirebaseApp.configure()
         print("Configured Firebase!")
@@ -29,8 +30,10 @@ struct RoomieAppApp: App {
                   startPoint: UnitPoint(x: 0.5, y: 0),
                   endPoint: UnitPoint(x: 0.5, y: 1)
                 )
-                LoginView(selectedPage: .constant("Login"))
-                                .environmentObject(viewModel)
+                ContentView(selectedPage: $selectedPage)
+                    .environmentObject(viewModel)
+//                LoginView(selectedPage: .constant("Login"))
+//                                .environmentObject(viewModel)
 //                MenuBarView()
 //                    .environmentObject(viewModel)
             }

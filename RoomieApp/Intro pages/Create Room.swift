@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftData
 
 struct CreateRoomView: View {
-    @State private var id = ""
+    @State private var id: String = "123456"
     @State private var roomName = ""
     var body: some View {
         ZStack{
@@ -37,7 +37,7 @@ struct CreateRoomView: View {
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                     HStack {
                         VStack {
-                            Text("ID:")
+                            Text("Room ID:")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .bold()
@@ -52,7 +52,7 @@ struct CreateRoomView: View {
                                 .padding(.trailing, 2)
                         }
                         VStack {
-                            TextField("123456", text: $id)
+                            Text(id)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
@@ -80,14 +80,17 @@ struct CreateRoomView: View {
                             .background(ButtomBorder)
                     }
                     
-                    Button(action: {
-                        // 按鈕的動作
-                    }) {
-                        Text("JOIN ROOM")
-                            .font(.subheadline)
-                            .underline()
-                            .foregroundColor(.black)
-                            .frame(width: 100.0, height: 42.0)
+                    NavigationLink {
+                        JoinRoomView()
+                            .navigationBarBackButtonHidden()
+                    } label: {
+                        VStack {
+                            Text("Join Room")
+                                .font(.subheadline)
+                                .underline()
+                                .foregroundColor(.black)
+                                .frame(width: 90.0, height: 22.0)
+                        }
                     }
                 }
                 .padding()
