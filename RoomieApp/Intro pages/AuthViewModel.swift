@@ -16,6 +16,7 @@ protocol AuthenticationFormProtocol {
 class AuthViewModel: ObservableObject {
     @Published var firebaseUserSession: FirebaseAuth.User?
     @Published var currentUser: Member?
+    @Published var IsLoggedIn = false
     @Published var currentRoom: Rooms?
     @Published var userIsLoggedIn = false
     
@@ -38,6 +39,7 @@ class AuthViewModel: ObservableObject {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.firebaseUserSession = result.user
+            IsLoggedIn = true
             await fetchMember()
             userIsLoggedIn = true
             print("login")

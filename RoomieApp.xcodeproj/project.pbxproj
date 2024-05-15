@@ -28,6 +28,7 @@
 		514499982BE8C1B1000BC9F7 /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499972BE8C1B1000BC9F7 /* Login.swift */; };
 		5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514499992BE8C3F4000BC9F7 /* Create Room.swift */; };
 		5144999C2BE8C4E1000BC9F7 /* Join Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144999B2BE8C4E1000BC9F7 /* Join Room.swift */; };
+		518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518A9B132BF3E5F500C89949 /* Get Room.swift */; };
 		51E8A0D32BDF7B2B0036AD8B /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E8A0D22BDF7B2A0036AD8B /* Register.swift */; };
 		730CBFA12BE56EBB00600AEE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */; };
 		730CBFA42BE56F9D00600AEE /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 730CBFA32BE56F9D00600AEE /* FirebaseAnalytics */; };
@@ -114,6 +115,7 @@
 		514499972BE8C1B1000BC9F7 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		514499992BE8C3F4000BC9F7 /* Create Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Create Room.swift"; sourceTree = "<group>"; };
 		5144999B2BE8C4E1000BC9F7 /* Join Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Join Room.swift"; sourceTree = "<group>"; };
+		518A9B132BF3E5F500C89949 /* Get Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Get Room.swift"; sourceTree = "<group>"; };
 		51E8A0D22BDF7B2A0036AD8B /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		730CBFDA2BE5710000600AEE /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Todo.swift; path = RoomieApp/Todo.swift; sourceTree = SOURCE_ROOT; };
@@ -272,6 +274,7 @@
 				514499972BE8C1B1000BC9F7 /* Login.swift */,
 				514499992BE8C3F4000BC9F7 /* Create Room.swift */,
 				5144999B2BE8C4E1000BC9F7 /* Join Room.swift */,
+				518A9B132BF3E5F500C89949 /* Get Room.swift */,
 			);
 			path = "Intro pages";
 			sourceTree = "<group>";
@@ -506,6 +509,8 @@
 				4BFF3A322BF3D8C70093287A /* ViewCurrentUser.swift in Sources */,
 				4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */,
 				730CBFDE2BE5714E00600AEE /* ViewModel.swift in Sources */,
+				518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */,
+				510A913C2BF3618E0089FE76 /* AuthViewModel.swift in Sources */,
 				4BFF3A362BF3D8F30093287A /* AuthViewModel.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A342BF3D8CC0093287A /* ViewMembers.swift in Sources */,

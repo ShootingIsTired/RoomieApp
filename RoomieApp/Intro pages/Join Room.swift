@@ -79,14 +79,17 @@ struct JoinRoomView: View {
                             .background(ButtomBorder)
                     }
                     
-                    Button(action: {
-                        // 按鈕的動作
-                    }) {
-                        Text("CREATE ROOM")
-                            .font(.subheadline)
-                            .underline()
-                            .foregroundColor(.black)
-                            .frame(width: 150.0, height: 42.0)
+                    NavigationLink {
+                        CreateRoomView()
+                            .navigationBarBackButtonHidden()
+                    } label: {
+                        VStack {
+                            Text("Create Room")
+                                .font(.subheadline)
+                                .underline()
+                                .foregroundColor(.black)
+                                .frame(width: 90.0, height: 22.0)
+                        }
                     }
                 }
                 .padding()
