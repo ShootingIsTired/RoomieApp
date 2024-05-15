@@ -24,32 +24,40 @@
 //
 
 import Foundation
-
 import SwiftUI
 
 struct Chore: Identifiable {
     var id = UUID()
-    var task: String
+    var content: String
     var person: String
     var isDone: Bool
     var frequency: Int
+    var last_date: Date
 }
 
 struct ChoresView: View {
     @Binding var selectedPage: String?
     @State private var showMenuBar = false // State to manage the visibility of the menu
     @State private var chores: [Chore] = [
-        Chore(task: "倒水", person: "Asuka", isDone: true, frequency: 1),
-        Chore(task: "掃地", person: "Emily", isDone: false, frequency: 2),
-        Chore(task: "買冷氣卡", person: "Fiona", isDone: false, frequency: 3)
+        Chore(content: "倒水", person: "Asuka", isDone: false, frequency: 1, last_date: Date()),
+        Chore(content: "掃地", person: "Emily", isDone: false, frequency: 2, last_date: Date()),
+        Chore(content: "買冷氣卡", person: "Fiona", isDone: false, frequency: 3, last_date:Date())
     ]
-
+    
     @State private var showAddChore = false
+    @State private var showEditChore = false
     
     @State private var chore = ""
     @State private var person = "Unassigned"
     @State var people :[String] = ["test1","test2","test3"]
     @State private var frequency = 0
+    
+    //    private var listHeight: CGFloat {
+    //            CGFloat(chores.count * 45) // Assuming each row is 60 points tall
+    //        }
+    
+    @State private var editing = false
+    @State private var currentChoreId = UUID()
     
     var body: some View{
         ZStack(alignment: .leading){
@@ -62,179 +70,238 @@ struct ChoresView: View {
                     if showAddChore{
                         showAddChore = false
                     }
+                    if showEditChore{
+                        showEditChore = false
+                    }
                 }
             if showMenuBar {
                 MenuBar(selectedPage: $selectedPage)
                     .transition(.move(edge: .leading))
             }
             if showAddChore{
-                AddChore
+                AddChore(chore: $chore, selectedPerson: $person,
+                         selectedFrequency: $frequency, people: people, onAddChore: {addNewChore()
+                    showAddChore = false}, onCancel: {showAddChore = false})
+            }
+            if showEditChore{
+                EditChore(chore: $chore, selectedPerson: $person,selectedFrequency: $frequency, people: people, onSaveEdit: {saveEditCohre()
+                    showEditChore = false}, onCancelEdit: {showEditChore = false})
             }
         }
-    }
-    
-    var AddChore: some View{
-        VStack {
-            Spacer()
-            VStack{
-                HStack{
-                    Text("Add a new chore:")
-                        .foregroundColor(.black)
-                    Spacer()
-                    Button{
-                        self.showAddChore = false
-                    }label:{
-                        Image("close-circle_outline")
-                        .frame(width: 18, height: 18)}
-                }
-                HStack{
-                    Text("Chore")
-                    Spacer()
-                }
-                RoundedRectangle(cornerRadius: 25.0)
-                    .stroke(.black.opacity(0.33), lineWidth: 1)
-                    .frame(width: 253, height: 30)
-                    .background(Color(red: 0.96, green: 0.96, blue: 0.86).opacity(0.33))
-                    .overlay(
-                        TextField("Type in here", text: $chore)
-                            .padding(10)
-                    )
-                HStack{
-                    SelectPerson(selectedPerson: $person, people: people)}
-                HStack{
-                    ChooseFrequency(selectedFrequency: $frequency)
-                }
-                Button{
-                    if (frequency > 0 && person != "Unassigned"){
-                        addNewChore()
-                        self.showAddChore = false
-                    }
-                }label:{
-                    Text("Save")
-                        .padding(5)
-                        .foregroundColor(.black)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(.black, lineWidth: 1)
-                                .background(Color(red: 0.95, green: 0.75, blue: 0.09))
-                        )
-                }
-            }
-            .padding(10)
-            .frame(width:300)
-            Spacer()
-        }
-        .frame(maxWidth:.infinity, maxHeight: 400)
-        .background(.white)
-        .border(.black)
-        .cornerRadius(15)
     }
     
     var Chores: some View {
-//        NavigationView {
-            VStack {
-                HStack {
-                    // Toggle button for the menu
-                    Button(action: {
-                            // Toggle the visibility of the menu
-                            withAnimation {
-                                showMenuBar.toggle()
-                            }
-                        }) {
-                        Image("menu")
-                        .frame(width: 38, height: 38)}
-                    Spacer()
-                    Text("CHORES")
-                        .font(.custom("Krona One", size: 20))
-                        .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
-                    Spacer()
-                }
-                .padding()
-                .background(Color.white)
-                .shadow(radius: 2)
-                
-                // Headers
-                HStack {
-                    Text("Chores")
-                        .fontWeight(.semibold)
-                    Spacer()
-                    Text("Next Person")
-                        .fontWeight(.semibold)
-                    Spacer()
-                    Text("Status")
-                        .fontWeight(.semibold)
-                }
-                .padding(.horizontal, 16)
-
-                // Chore List
-                List {
-                    ForEach($chores) { $chore in
-                        HStack {
-                            Text(chore.task)
-                                .frame(width: 100, alignment: .leading)
-                            Spacer()
-                            Text(chore.person)
-                                .frame(width: 100, alignment: .leading)
-                            Spacer()
-                            Button(action: {
-                                chore.isDone.toggle()
-                            }) {
-                                Text(chore.isDone ? "Done" : "Not Yet")
-                                    .fontWeight(.bold)
-                                    .foregroundColor(chore.isDone ? .green : .red)
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 16)
-                                    .background(chore.isDone ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
-                                    .cornerRadius(20)
-                            }
-                            .fixedSize() // This will prevent the button from resizing
-                        }
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+        //        NavigationView {
+        VStack {
+            HStack {
+                // Toggle button for the menu
+                Button(action: {
+                    // Toggle the visibility of the menu
+                    withAnimation {
+                        showMenuBar.toggle()
                     }
-                    .onDelete(perform: deleteChore)
-                }
-                .listStyle(PlainListStyle())
-                .padding(.horizontal, 16)
-
+                }) {
+                    Image("menu")
+                    .frame(width: 38, height: 38)}
                 Spacer()
-
-                // Add Chore Button
-                Button{
-                    self.showAddChore = true
-                } label:{
-                    Text("+ ADD CHORES")
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.yellow)
-                        .cornerRadius(10)
+                Text("CHORES")
+                    .font(.custom("Krona One", size: 20))
+                    .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
+                Spacer()
+            }
+            .padding()
+            .background(Color.white)
+            .shadow(radius: 2)
+            HStack{
+                Text("Chores Assignment")
+                    .bold()
+                    .padding(.trailing)
+                Spacer()
+                if !editing{
+                    Button{
+                        self.editing = true
+                    }label:{
+                        Text("EDIT")
+                    .padding(5)
+                    .cornerRadius(8)
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke()
+            )
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(red: 1, green: 0.87, blue: 0.44))
+            )
+            .foregroundColor(.black)
                 }
-                .padding(.horizontal, 16)
-//            }
-//            .navigationBarHidden(true)
-//            .background()
-//            .background(Color(red: 0.88, green: 0.96, blue: 1.0).edgesIgnoringSafeArea(.all))
+                else{
+                    Button{
+                        self.editing = false
+                    }label:{
+                        Text("BACK")
+                    .padding(5)
+                    .cornerRadius(8)
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke()
+            )
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(red: 1, green: 0.87, blue: 0.44))
+            )
+            .foregroundColor(.black)
+                }
+            }
+            .padding()
+            VStack{
+                HStack {
+                    HStack{
+                        Text("Chores")
+                            .fontWeight(.semibold)
+                            .frame(width:130)
+                        Spacer()
+                        Text("Next Person")
+                            .fontWeight(.semibold)
+                            .frame(width:100)
+                        Spacer()
+                        Text("Status")
+                            .fontWeight(.semibold)
+                            .frame(width:60)
+                    }
+                    .padding()
+                }.background(Color(red: 1, green: 0.87, blue: 0.44))
+                    .padding(.horizontal)
+                //                        .padding(.bottom,0)
+                //                        .listRowBackground(Color(red: 1, green: 0.87, blue: 0.44))
+                ScrollView{
+                    VStack{
+                        ForEach($chores){
+                            $chore in
+                            if !editing && !chore.isDone{
+                                HStack{
+                                    Text(chore.content)
+                                        .frame(width:130/*, alignment:.leading*/)
+                                    Spacer()
+                                    Text(chore.person).frame(width:100/*, alignment:.leading*/)
+                                    Spacer()
+                                    Button{
+                                        chore.isDone.toggle()
+                                    }label:{
+                                        Text("DONE")
+                                    .padding(5)
+                                    .cornerRadius(8)
+                            }
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke()
+                            )
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(red: 1, green: 0.87, blue: 0.44))
+                            )
+                            .foregroundColor(.black)
+                                }
+                            }
+                            else{
+                                Button{
+                                    self.chore = chore.content
+                                    person = chore.person
+                                    showEditChore = true
+                                }label:{
+                                    HStack{
+                                        Text(chore.content)
+                                            .frame(width:130/*, alignment:.leading*/)
+                                        Spacer()
+                                        Text(chore.person).frame(width:100/*, alignment:.leading*/)
+                                        Spacer()
+                                        Button{
+                                            currentChoreId = chore.id
+                                            chore.isDone = true
+                                            deleteChore()
+                                        }label:{
+                                            Text("DONE")
+                                        .padding(5)
+                                        .cornerRadius(8)
+                                }
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke()
+                                )
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color(red: 1, green: 0.87, blue: 0.44))
+                                )
+                                .foregroundColor(.black)
+    //                                    .frame(width:60)
+                                    }
+                                }
+                            }
+                        }
+                        .foregroundColor(.black)
+                        .padding()
+                    }
+                    .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                    //                        .padding(.top,0)
+                    //                        .listRowBackground(Color(red: 0.96, green: 0.96, blue: 0.93))
+                    //                    }
+                    //                    .listStyle(PlainListStyle())
+                    //                    .padding(.horizontal)
+                }
+                //                .frame(height:listHeight)
+                .frame(/*maxHeight:.infinity,*/ alignment:.top)
+                .padding(.horizontal)
+                }
+            Button{
+                showAddChore = true
+                person = "Unassigned"
+            }label:{
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: 200, height: 50)
+                    .background(Color(red: 0.96, green: 0.96, blue: 0.86))
+                    .cornerRadius(8)
+                    .overlay(
+                        Text("+ ADD CHORES"
+                            ).foregroundStyle(.black)
+                    )
+            }.padding()
+            Spacer()
+            //            }
+            //            .navigationBarHidden(true)
+            //            .background()
+            //            .background(Color(red: 0.88, green: 0.96, blue: 1.0).edgesIgnoringSafeArea(.all))
         }
     }
+
     
-    func deleteChore(at offsets: IndexSet) {
-        chores.remove(atOffsets: offsets)
-    }
-    
-    func addChore() {
-        // Logic for adding a chore
-        
+    func deleteChore(/*at offsets: IndexSet*/) {
+        //        chores.remove(atOffsets: offsets)
+        if let index = chores.firstIndex(where: {$0.id == currentChoreId}){
+            chores.remove(at: index)
+        }
     }
     
     func addNewChore() {
         // Logic for adding a chore
         if !chore
             .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let newChore = Chore(task: chore, person: person, isDone: false, frequency: frequency)
+            let newChore = Chore(content: chore, person: person, isDone: false, frequency: frequency, last_date:Date())
             chores.append(newChore)
             chore = ""
+            person = "Unassigned"
+            
         }
+    }
+    
+    func saveEditCohre(){
+        if let index = chores.firstIndex(where: {$0.id == currentChoreId}){
+            chores[index].content = chore
+            chores[index].person = person
+        }
+        chore = ""
+        person = "Unassigned"
     }
 }
 

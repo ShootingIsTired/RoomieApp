@@ -25,6 +25,10 @@
 		BAC15C232BE75E6300288F1D /* ChooseDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C222BE75E6300288F1D /* ChooseDate.swift */; };
 		BAC15C252BE75E6F00288F1D /* ChooseTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C242BE75E6F00288F1D /* ChooseTime.swift */; };
 		BAC15C282BE8B05B00288F1D /* ChooseFrequency.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */; };
+		BAC15C2A2BEC229800288F1D /* AddTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C292BEC229800288F1D /* AddTask.swift */; };
+		BAC15C2C2BEC30DF00288F1D /* EditTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C2B2BEC30DF00288F1D /* EditTask.swift */; };
+		BAC15C2E2BECB42C00288F1D /* EditChore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C2D2BECB42C00288F1D /* EditChore.swift */; };
+		BAC15C302BED6B9400288F1D /* AddChore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC15C2F2BED6B9400288F1D /* AddChore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +72,10 @@
 		BAC15C222BE75E6300288F1D /* ChooseDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseDate.swift; sourceTree = "<group>"; };
 		BAC15C242BE75E6F00288F1D /* ChooseTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseTime.swift; sourceTree = "<group>"; };
 		BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFrequency.swift; sourceTree = "<group>"; };
+		BAC15C292BEC229800288F1D /* AddTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTask.swift; sourceTree = "<group>"; };
+		BAC15C2B2BEC30DF00288F1D /* EditTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTask.swift; sourceTree = "<group>"; };
+		BAC15C2D2BECB42C00288F1D /* EditChore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChore.swift; sourceTree = "<group>"; };
+		BAC15C2F2BED6B9400288F1D /* AddChore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddChore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +184,10 @@
 				BAC15C222BE75E6300288F1D /* ChooseDate.swift */,
 				BAC15C242BE75E6F00288F1D /* ChooseTime.swift */,
 				BAC15C272BE8B05B00288F1D /* ChooseFrequency.swift */,
+				BAC15C292BEC229800288F1D /* AddTask.swift */,
+				BAC15C2B2BEC30DF00288F1D /* EditTask.swift */,
+				BAC15C2F2BED6B9400288F1D /* AddChore.swift */,
+				BAC15C2D2BECB42C00288F1D /* EditChore.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -317,9 +329,13 @@
 				4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */,
 				BAC15C282BE8B05B00288F1D /* ChooseFrequency.swift in Sources */,
 				BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */,
+				BAC15C302BED6B9400288F1D /* AddChore.swift in Sources */,
 				BAC15C212BE75D5800288F1D /* SelectPerson.swift in Sources */,
+				BAC15C2C2BEC30DF00288F1D /* EditTask.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
+				BAC15C2E2BECB42C00288F1D /* EditChore.swift in Sources */,
+				BAC15C2A2BEC229800288F1D /* AddTask.swift in Sources */,
 				BAC15C252BE75E6F00288F1D /* ChooseTime.swift in Sources */,
 				BAC15C232BE75E6300288F1D /* ChooseDate.swift in Sources */,
 				BAC15C1F2BE6E2FB00288F1D /* Chores.swift in Sources */,

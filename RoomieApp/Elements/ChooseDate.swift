@@ -14,18 +14,19 @@ struct ChooseDate: View {
 
     var body: some View {
         HStack{
-            Button{
-                self.showDatePicker.toggle()
-            }label:{
+//            Button{
+//                self.showDatePicker.toggle()
+//            }label:
+            HStack{
                 Image("calendar-check")
                     .frame(width: 16, height: 16)
                 Text("Choose Date")
                     .foregroundColor(.black)
 //                        .underline()
             }
-            if showDatePicker{
+//            if showDatePicker{
                 DatePicker("",selection: $selectedDate, displayedComponents: .date)
-            }
+//            }
         }
     }
 }

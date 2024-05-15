@@ -14,15 +14,17 @@ struct ChooseTime: View {
 
     var body: some View {
         HStack {
-            Button(action: {
-                self.showTimePicker.toggle()
-            }) {
+//            Button{
+//                self.showTimePicker.toggle()
+//            }label:
+            HStack
+            {
                 Image("clock")
                     .frame(width: 16, height: 16)
                 Text("Choose Time")
                     .foregroundColor(.black)
             }
-            if showTimePicker {
+//            if showTimePicker {
                 DatePicker(
                     "",
                     selection: $selectedTime,
@@ -32,7 +34,7 @@ struct ChooseTime: View {
                 .onDisappear {
                     self.showTimePicker = false
                 }
-            }
+//            }
         }
     }
 }
