@@ -24,6 +24,11 @@ struct ProfileView: View {
     @State private var isEditingRules = false
     @State private var isEditingMembers = false
     
+    @State private var editedName: String = ""
+    @State private var editedBirthday: String = ""
+    @State private var editedEmail: String = ""
+    @State private var editedPassword: String = ""
+    
     
 //    @State private var rules = ["進房間敲門", "吹頭髮去廁所"]
 //    @State private var currentUser = Members(name: "Asuka", status: "資管三", birthday: "05/21", room: "411", email: "b10705039@ntu.edu.tw", password: "password123")
@@ -34,6 +39,12 @@ struct ProfileView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             Profile
+                .contentShape(Rectangle())
+                .onTapGesture{
+                    if showMenuBar{
+                        showMenuBar = false
+                    }
+                }
             if showMenuBar {
                 MenuBar(selectedPage: $selectedPage)
                     .transition(.move(edge: .leading))
