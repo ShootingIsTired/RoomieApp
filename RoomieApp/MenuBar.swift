@@ -12,6 +12,7 @@ import SwiftUI
 // Main View containing the menu bar and page content
 struct MenuBarView: View {
     @State private var selectedPage: String? = "Home"
+    @EnvironmentObject var authViewModel: AuthViewModel
     var body: some View {
         switch selectedPage {
             case "Chat":
@@ -19,7 +20,7 @@ struct MenuBarView: View {
             case "Home":
                 HomeView(selectedPage: $selectedPage)
             case "Profile":
-                ProfileView(selectedPage: $selectedPage)
+            ProfileView(selectedPage: $selectedPage).environmentObject(authViewModel)
             case "Login":
                 LoginView(selectedPage: $selectedPage)
             case "Register":

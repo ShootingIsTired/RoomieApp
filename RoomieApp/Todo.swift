@@ -8,6 +8,8 @@
 // TEST FILE
 
 import Foundation
+
+import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 struct Todo: Identifiable, Hashable{
@@ -71,13 +73,25 @@ struct Rooms: Identifiable, Codable {
     var chats: [Chats]?
 }
 
-struct Member:Identifiable, Codable {
-    @DocumentID var id: String? = "0000"
+struct Member: Identifiable, Codable {
+    var id: String?
     var name: String
     var status: String
     var birthday: String
     var email: String
     var password: String
-    var room: String?
+    var room: DocumentReference?
     var index: Int? = 0
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case status
+        case birthday
+        case email
+        case password
+        case room
+        case index
+    }
 }
+

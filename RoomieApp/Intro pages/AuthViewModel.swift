@@ -17,6 +17,7 @@ class AuthViewModel: ObservableObject {
     @Published var firebaseUserSession: FirebaseAuth.User?
     @Published var currentUser: Member?
     @Published var currentRoom: Rooms?
+    @Published var userIsLoggedIn = false
     
     init(firebaseUserSession: FirebaseAuth.User? = nil, currentUser: Member? = nil) {
         self.firebaseUserSession = firebaseUserSession
@@ -25,7 +26,9 @@ class AuthViewModel: ObservableObject {
             await fetchMember()
             if let user = currentUser {
                 await fetchRoom(for: user)
+                print(user)
             }
+        
         }
     }
     
@@ -36,7 +39,9 @@ class AuthViewModel: ObservableObject {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.firebaseUserSession = result.user
             await fetchMember()
+            userIsLoggedIn = true
             print("login")
+            print(email, ",", password)
         } catch {
             print("Debug: Fail to sign in with user \(error.localizedDescription)")
             throw error
@@ -91,16 +96,30 @@ class AuthViewModel: ObservableObject {
     func fetchMember() async {
         do {
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            let snapshot = try await Firestore.firestore().collection("members").document(uid).getDocument()
-            if let member = try? snapshot.data(as: Member.self) {
-                self.currentUser = member
+            let documentRef = Firestore.firestore().collection("members").document(uid)
+            let snapshot = try await documentRef.getDocument()
+            
+            if let data = snapshot.data() {
+                print("Document data: \(data)") // Print raw document data for debugging
             } else {
-                print("Document does not exist or could not be parsed")
+                print("Document does not exist") // Document does not exist
+                return
+            }
+            
+            do {
+                let member = try snapshot.data(as: Member.self)
+                self.currentUser = member
+                print("FetchMember: Current user is \(String(describing: self.currentUser))")
+                if let user = currentUser {
+                                await fetchRoom(for: user)}
+            } catch {
+                print("Document could not be parsed, Error: \(error)") // Parsing error
             }
         } catch {
             print("Debug: Current user is \(String(describing: self.currentUser)), Error: \(error)")
         }
     }
+
     
     func updateMember(name: String? = nil, email: String? = nil, schoolid: String? = nil, birthday: String? = nil, department: String? = nil, password: String? = nil) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -126,17 +145,30 @@ class AuthViewModel: ObservableObject {
     
     func fetchRoom(for user: Member) async {
         do {
-            guard let roomID = user.room else { return }
-            let document = try await Firestore.firestore().document(roomID).getDocument()
-            if let room = try? document.data(as: Rooms.self) {  // Use try? to handle the optional
-                self.currentRoom = room
+            guard let roomRef = user.room else {
+                print("Room reference is nil")
+                return
+            }
+            let document = try await roomRef.getDocument()
+            
+            if let data = document.data() {
+                print("Room document data: \(data)") // Print raw document data for debugging
             } else {
-                print("Room document does not exist or could not be parsed")
+                print("Room document does not exist")
+                return
+            }
+            
+            if let room = try? document.data(as: Rooms.self) {
+                self.currentRoom = room
+                print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
+            } else {
+                print("Room document could not be parsed")
             }
         } catch {
             print("Debug: Failed to fetch room with error \(error.localizedDescription)")
         }
     }
+
     
     func updateRoom(roomID: String, newName: String) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }

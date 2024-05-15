@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct ProfileView: View {
-    @ObservedObject var authViewModel = AuthViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
     @ObservedObject var viewMembers = ViewMembers()
     @ObservedObject var viewRooms = ViewRooms()
     let standardWidth = UIScreen.main.bounds.width - 90
@@ -263,7 +263,7 @@ struct ProfileView: View {
                 } else {
                     Text("Name: \(authViewModel.currentUser?.name ?? "Unknown")")
                     Text("Birthday: \(authViewModel.currentUser?.birthday ?? "Unknown")")
-                    Text("Email: \(authViewModel.currentUser?.id ?? "Unknown")")
+                    Text("Email: \(authViewModel.currentUser?.email ?? "Unknown")")
                     HStack {
                         if showPassword {
                             Text("Password: \(authViewModel.currentUser?.password ?? "Unknown")")
@@ -350,9 +350,10 @@ struct ColoredButtonStyle: ButtonStyle {
 struct ProfileView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
         @State var selectedPage: String? = "Profile"
+        @StateObject var authViewModel = AuthViewModel()
 
         var body: some View {
-            ProfileView(selectedPage: $selectedPage)
+            ProfileView(selectedPage: $selectedPage).environmentObject(authViewModel)
         }
     }
 

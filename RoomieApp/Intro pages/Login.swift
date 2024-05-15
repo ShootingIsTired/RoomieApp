@@ -14,14 +14,12 @@ import FirebaseAuth
 
 struct LoginView: View {
     @Binding var selectedPage: String?
-    @State private var UserIsLoggedIn = false
     @State private var email = ""
     @State private var password = ""
     @EnvironmentObject var viewModel: AuthViewModel
     var body: some View {
-        
-        if UserIsLoggedIn {
-            MenuBar(selectedPage: $selectedPage)
+        if viewModel.userIsLoggedIn {
+            ProfileView(selectedPage: $selectedPage)
                 .transition(.move(edge: .leading))
         }else{
             Login
@@ -172,7 +170,7 @@ struct LoginView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
         @State var selectedPage: String? = "Login"
         var body: some View {
-            LoginView(selectedPage: $selectedPage)
+            LoginView(selectedPage: $selectedPage).environmentObject(AuthViewModel())
         }
     }
 

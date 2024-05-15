@@ -29,8 +29,10 @@ struct RoomieAppApp: App {
                   startPoint: UnitPoint(x: 0.5, y: 0),
                   endPoint: UnitPoint(x: 0.5, y: 1)
                 )
-                MenuBarView()
-                    .environmentObject(viewModel)
+                LoginView(selectedPage: .constant("Login"))
+                                .environmentObject(viewModel)
+//                MenuBarView()
+//                    .environmentObject(viewModel)
             }
         }
     }

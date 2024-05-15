@@ -12,6 +12,7 @@ struct HomeView: View {
     @Binding var selectedPage: String?
     @State private var showMenuBar = false
     @State private var currentPage = "home"
+    @EnvironmentObject var viewModel: AuthViewModel
     var body: some View {
         ZStack(alignment: .leading){
             Home

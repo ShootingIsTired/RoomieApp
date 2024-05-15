@@ -11,19 +11,31 @@ class ViewRooms: ObservableObject {
     
     // MARK: - Fetch Rooms
     func fetchRoom(for user: Member) async {
-            do {
-                guard let roomID = user.room else { return }
-                let document = try await Firestore.firestore().document(roomID).getDocument()
-                if let room = try? document.data(as: Rooms.self) {
-                    self.currentRoom = room
-                    self.rooms = [room]
-                } else {
-                    print("Room document does not exist or could not be parsed")
-                }
-            } catch {
-                print("Debug: Failed to fetch room with error \(error.localizedDescription)")
+        do {
+            guard let roomRef = user.room else {
+                print("Room reference is nil")
+                return
             }
+            let document = try await roomRef.getDocument()
+            
+            if let data = document.data() {
+                print("Room document data: \(data)") // Print raw document data for debugging
+            } else {
+                print("Room document does not exist")
+                return
+            }
+            
+            if let room = try? document.data(as: Rooms.self) {
+                self.currentRoom = room
+                print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
+            } else {
+                print("Room document could not be parsed")
+            }
+        } catch {
+            print("Debug: Failed to fetch room with error \(error.localizedDescription)")
         }
+    }
+
     
     // MARK: - Delete a Room
     func deleteRoom(roomID: String) {
