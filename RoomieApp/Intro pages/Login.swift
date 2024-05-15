@@ -18,7 +18,7 @@ struct LoginView: View {
     @State private var password = ""
     @EnvironmentObject var viewModel: AuthViewModel
     var body: some View {
-        if viewModel.userIsLoggedIn {
+        if viewModel.IsLoggedIn {
             ProfileView(selectedPage: $selectedPage)
                 .transition(.move(edge: .leading))
         }else{

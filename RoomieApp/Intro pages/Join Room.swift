@@ -81,7 +81,6 @@ struct JoinRoomView: View {
                     
                     NavigationLink {
                         CreateRoomView()
-                            .navigationBarBackButtonHidden()
                     } label: {
                         VStack {
                             Text("Create Room")

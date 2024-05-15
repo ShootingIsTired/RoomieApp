@@ -13,19 +13,21 @@ struct ContentView: View {
     @Binding var selectedPage: String?
     var body: some View {
         Group{
-            if viewModel.IsLoggedIn == false{
+            if !viewModel.IsLoggedIn {
                 // 1. 還沒登入
                 LoginView(selectedPage: $selectedPage)
-            }
-            else {
-                // 2. 登入且有房間
+            } else if !viewModel.userHasRoom {
+                // 2. 登入但沒有房間
+                GetRoomView()
+            } else {
+                // 3. 登入且有房間
                 MenuBarView()
             }
-            // 3. 登入但沒有房間
         }
     }
 
 }
+
 struct ContentView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
         @State var selectedPage: String? = "Root"
