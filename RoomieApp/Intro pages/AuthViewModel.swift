@@ -99,6 +99,8 @@ class AuthViewModel: ObservableObject {
         }
     }
     
+    
+    
     func fetchMember() async {
         do {
             guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -230,36 +232,77 @@ class AuthViewModel: ObservableObject {
 
     
 //Room
-    
     func fetchRoom(for user: Member) async {
-        do {
-            guard let roomRef = user.room else {
-                print("Error1: Room reference is nil")
-                return
+            do {
+                guard let roomRef = user.room else {
+                    print("Error1: Room reference is nil")
+                    return
+                }
+
+                // Print the path of the room document reference for debugging
+                print("Room Reference Path: \(roomRef.path)")
+
+                let document = try await roomRef.getDocument()
+
+                if let data = document.data() {
+                    print("Room document data: \(data)")
+                } else {
+                    print("Error2: Room document does not exist")
+                    return
+                }
+
+                if let room = try? document.data(as: Rooms.self) {
+                    self.currentRoom = room
+                    print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
+
+                    // Fetch nested collections
+                    if let roomId = room.id {
+                        print("Fetching sub-collections for room \(roomId)")
+
+                        self.currentRoom?.membersData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/members", as: Members.self)
+                        print("Fetched members: \(self.currentRoom?.membersData ?? [])")
+
+                        self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
+                        print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
+
+                        self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
+                        print("Fetched schedules: \(self.currentRoom?.schedulesData ?? [])")
+
+                        self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
+                        print("Fetched chores: \(self.currentRoom?.choresData ?? [])")
+
+                        self.currentRoom?.chatsData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chats", as: Chats.self)
+                        print("Fetched chats: \(self.currentRoom?.chatsData ?? [])")
+
+                        print("Nested collections fetched successfully")
+                    } else {
+                        print("Error: Room ID is nil")
+                    }
+                } else {
+                    print("Error3: Room document could not be parsed")
+                }
+            } catch {
+                print("Debug: Failed to fetch room with error \(error.localizedDescription)")
             }
-
-            // Print the path of the room document reference for debugging
-            print("Room Reference Path: \(roomRef.path)")
-
-            let document = try await roomRef.getDocument()
-
-            if let data = document.data() {
-                print("Room document data: \(data)")
-            } else {
-                print("Error2: Room document does not exist")
-                return
-            }
-
-            if let room = try? document.data(as: Rooms.self) {
-                self.currentRoom = room
-                print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
-            } else {
-                print("Error3: Room document could not be parsed")
-            }
-        } catch {
-            print("Debug: Failed to fetch room with error \(error.localizedDescription)")
         }
-    }
+    
+
+    func fetchSubCollection<T: Decodable>(collectionPath: String, as type: T.Type) async -> [T] {
+            var results = [T]()
+            do {
+                let querySnapshot = try await Firestore.firestore().collection(collectionPath).getDocuments()
+                for document in querySnapshot.documents {
+                    if let data = try? document.data(as: T.self) {
+                        results.append(data)
+                    }
+                }
+            } catch {
+                print("Failed to fetch sub-collection at \(collectionPath) with error \(error.localizedDescription)")
+            }
+            return results
+        }
+
+
 
     
     func updateRoom(roomID: String, newName: String) async {

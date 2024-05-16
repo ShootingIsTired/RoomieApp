@@ -23,12 +23,12 @@ struct Tasks: Identifiable, Codable {
     @DocumentID var id: String?
     var time: Date
     var status: String
-    var assigned_person: String
+    var assigned_person: DocumentReference
 }
 
 struct Schedules: Identifiable, Codable {
     @DocumentID var id: String?
-    var member: String
+    var member: DocumentReference
     var content: String
     var start_time: Date  // Using Date which conforms to Codable
     var end_time: Date
@@ -47,7 +47,7 @@ struct Chores: Identifiable, Codable {
 struct Chats:Identifiable, Codable {
     @DocumentID var id: String?
     var content: String
-    var member: String
+    var member: DocumentReference
     var post_time: Date
 }
 
@@ -66,11 +66,17 @@ struct Rooms: Identifiable, Codable {
     @DocumentID var id: String?
     var name: String
     var rules: [String]
-    var members: [Members]?
-    var tasks: [Tasks]?
-    var schedules: [Schedules]?
-    var chores: [Chores]?
-    var chats: [Chats]?
+    var members: [DocumentReference]?
+    var tasks: [DocumentReference]?
+    var schedules: [DocumentReference]?
+    var chores: [DocumentReference]?
+    var chats: [DocumentReference]?
+    
+    var membersData: [Members]?
+    var tasksData: [Tasks]?
+    var schedulesData: [Schedules]?
+    var choresData: [Chores]?
+    var chatsData: [Chats]?
 }
 
 struct Member: Identifiable, Codable {
