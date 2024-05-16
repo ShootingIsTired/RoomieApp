@@ -259,7 +259,7 @@ class AuthViewModel: ObservableObject {
                     if let roomId = room.id {
                         print("Fetching sub-collections for room \(roomId)")
 
-                        self.currentRoom?.membersData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/members", as: Members.self)
+                        self.currentRoom?.membersData = await fetchMembersInRoom(roomId: roomId)
                         print("Fetched members: \(self.currentRoom?.membersData ?? [])")
 
                         self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
@@ -301,8 +301,62 @@ class AuthViewModel: ObservableObject {
             }
             return results
         }
+//    func fetchMembersInRoom(roomId: String) async -> [Members] {
+//            var members = [Members]()
+//            do {
+//                let querySnapshot = try await Firestore.firestore().collection("members")
+//                    .whereField("room", isEqualTo: Firestore.firestore().document("rooms/\(roomId)"))
+//                    .getDocuments()
+//                for document in querySnapshot.documents {
+//                    if let member = try? document.data(as: Members.self) {
+//                        members.append(member)
+//                    }
+//                }
+//            } catch {
+//                print("Failed to fetch members in room \(roomId) with error \(error.localizedDescription)")
+//            }
+//            return members
+//        }
+    func fetchMembersInRoom(roomId: String) async -> [Member] {
+        var members = [Member]()
+        do {
+            // Print a message indicating the function has started
+            print("Starting fetchMembersInRoom for roomId: \(roomId)")
 
+            // Fetch the members sub-collection from the specified room
+            let querySnapshot = try await Firestore.firestore().collection("rooms/\(roomId)/members").getDocuments()
+            print("Successfully fetched members sub-collection for roomId: \(roomId)")
 
+            for document in querySnapshot.documents {
+                // Print the document ID of each member document found
+                print("Processing document with ID: \(document.data())")
+
+                // Extract the member reference from each document
+                if let memberRef = document.data()["member"] as? DocumentReference {
+                    print("Found member reference: \(memberRef.path)")
+
+                    // Fetch the member document using the reference
+                    let memberSnapshot = try await memberRef.getDocument()
+                    print("Successfully fetched member document for reference: \(memberRef.path)")
+
+                    if let member = try? memberSnapshot.data(as: Member.self) {
+                        // Add the member to the members array
+                        members.append(member)
+                        print("Fetched member from reference \(memberRef.path) and added to members array")
+                    } else {
+                        print("Failed to decode member data from document at path: \(memberRef.path)")
+                    }
+                } else {
+                    print("No valid member reference found in document with ID: \(document.documentID)")
+                }
+            }
+        } catch {
+            print("Failed to fetch members in room \(roomId) with error \(error.localizedDescription)")
+        }
+        // Print the number of members fetched
+        print("Fetched \(members.count) members for roomId: \(roomId)")
+        return members
+    }
 
     
     func updateRoom(roomID: String, newName: String) async {

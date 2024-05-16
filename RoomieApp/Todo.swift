@@ -22,7 +22,7 @@ struct Todo: Identifiable, Hashable{
 struct Tasks: Identifiable, Codable {
     @DocumentID var id: String?
     var time: Date
-    var status: String
+    var content: String
     var assigned_person: DocumentReference
 }
 
@@ -51,14 +51,19 @@ struct Chats:Identifiable, Codable {
     var post_time: Date
 }
 
-struct Members: Identifiable, Codable {
+struct MemberRefs:Identifiable, Codable {
     @DocumentID var id: String?
+    var member: DocumentReference
+}
+
+struct Members: Identifiable, Codable {
+    var id: String?
     var name: String
     var status: String
     var birthday: String
     var email: String
     var password: String
-    var room: String?
+    var room: DocumentReference?
     var index: Int? = 0
 }
 
@@ -72,7 +77,7 @@ struct Rooms: Identifiable, Codable {
     var chores: [DocumentReference]?
     var chats: [DocumentReference]?
     
-    var membersData: [Members]?
+    var membersData: [Member]?
     var tasksData: [Tasks]?
     var schedulesData: [Schedules]?
     var choresData: [Chores]?
