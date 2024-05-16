@@ -14,6 +14,7 @@ import FirebaseAuth
 
 struct RegisterView: View {
     @Binding var selectedPage: String?
+    @State private var isActive = false
     @State private var name = ""
     @State private var email = ""
     @State private var password = ""
@@ -105,34 +106,37 @@ struct RegisterView: View {
                         
                         
                     }
-
-                    Button {
-                        Task {
-                            try await viewModel.createMember(withEmail: email, password: password, name: name, birthday: birthday)
-                            
-                        }
-                    } label: {
-                        Text("ENTER")
-                            .font(.headline)
-                            .foregroundColor(.black)
-                            .frame(width: 100.0, height: 42.0)
-                            .background(ButtomBorder)
-                    }
-                    .disabled(!formIsValid)
-                    .opacity(formIsValid ? 1.0 : 0.5)
-                                        
-                    NavigationLink {
-                        LoginView(selectedPage: $selectedPage)
-                            .navigationBarBackButtonHidden()
-                    } label: {
-                        VStack {
-                            Text("LOGIN")
-                                .font(.subheadline)
-                                .underline()
+                    
+                    NavigationLink(destination: LoginView(selectedPage: $selectedPage)
+                        .navigationBarBackButtonHidden(), isActive: $isActive) {
+                        Button {
+                            Task {
+                                try await viewModel.createMember(withEmail: email, password: password, name: name, birthday: birthday)
+                                isActive = true
+                            }
+                        } label: {
+                            Text("ENTER")
+                                .font(.headline)
                                 .foregroundColor(.black)
                                 .frame(width: 100.0, height: 42.0)
+                                .background(ButtomBorder)
                         }
-                    }
+                    }.disabled(!formIsValid)
+                    .opacity(formIsValid ? 1.0 : 0.5)
+                    
+                                        
+//                    NavigationLink {
+//                        LoginView(selectedPage: $selectedPage)
+//                            .navigationBarBackButtonHidden()
+//                    } label: {
+//                        VStack {
+//                            Text("LOGIN")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 100.0, height: 42.0)
+//                        }
+//                    }
                 }
                 .padding()
             }

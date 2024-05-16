@@ -18,7 +18,7 @@ struct LoginView: View {
     @State private var password = ""
     @EnvironmentObject var viewModel: AuthViewModel
     var body: some View {
-        if viewModel.userIsLoggedIn {
+        if viewModel.IsLoggedIn {
             ProfileView(selectedPage: $selectedPage)
                 .transition(.move(edge: .leading))
         }else{
@@ -102,7 +102,7 @@ struct LoginView: View {
                 //Register Buttom
                 NavigationLink {
                     RegisterView(selectedPage: $selectedPage)
-                        .navigationBarBackButtonHidden()
+//                        .navigationBarBackButtonHidden()
                 } label: {
                     HStack {
                         Text("Don't Have Account?")
