@@ -6,7 +6,10 @@
 //
 
 import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 import FirebaseFirestoreSwift
+
 
 protocol AuthenticationFormProtocol {
     var formIsValid: Bool { get }
@@ -261,6 +264,33 @@ class AuthViewModel: ObservableObject {
     
     func updateRoom(roomID: String, newName: String) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        do {
+            let roomRef = Firestore.firestore().collection("rooms").document(roomID)
+            try await roomRef.updateData(["name": newName])
+            // Fetch the updated room to ensure local state is consistent
+            if let user = currentUser {
+                await fetchRoom(for: user)
+            } else {
+                print("Debug: currentUser is nil")
+            }
+        } catch {
+            print("Debug: Failed to add rule with error \(error.localizedDescription)")
+        }
+    }
+    
+    func addRule(rule: String) async {
+        guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
+            print("Error: Current room or room ID is nil")
+            return
+        }
+
+        // Make a mutable copy of the rules array
+        var updatedRules = currentRoom.rules
+
+        // Add the new rule to the mutable copy
+        updatedRules.append(rule)
+
+        // Update Firestore with the modified rules
         do {
             let roomRef = Firestore.firestore().collection("rooms").document(roomID)
             try await roomRef.updateData(["rules": updatedRules])
