@@ -233,59 +233,64 @@ class AuthViewModel: ObservableObject {
     
 //Room
     func fetchRoom(for user: Member) async {
-            do {
-                guard let roomRef = user.room else {
-                    print("Error1: Room reference is nil")
-                    return
-                }
-
-                // Print the path of the room document reference for debugging
-                print("Room Reference Path: \(roomRef.path)")
-
-                let document = try await roomRef.getDocument()
-
-                if let data = document.data() {
-                    print("Room document data: \(data)")
-                } else {
-                    print("Error2: Room document does not exist")
-                    return
-                }
-
-                if let room = try? document.data(as: Rooms.self) {
-                    self.currentRoom = room
-                    print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
-
-                    // Fetch nested collections
-                    if let roomId = room.id {
-                        print("Fetching sub-collections for room \(roomId)")
-
-                        self.currentRoom?.membersData = await fetchMembersInRoom(roomId: roomId)
-                        print("Fetched members: \(self.currentRoom?.membersData ?? [])")
-
-                        self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
-                        print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
-
-                        self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
-                        print("Fetched schedules: \(self.currentRoom?.schedulesData ?? [])")
-
-                        self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
-                        print("Fetched chores: \(self.currentRoom?.choresData ?? [])")
-
-                        self.currentRoom?.chatsData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chats", as: Chats.self)
-                        print("Fetched chats: \(self.currentRoom?.chatsData ?? [])")
-
-                        print("Nested collections fetched successfully")
-                    } else {
-                        print("Error: Room ID is nil")
-                    }
-                } else {
-                    print("Error3: Room document could not be parsed")
-                }
-            } catch {
-                print("Debug: Failed to fetch room with error \(error.localizedDescription)")
+        do {
+            guard let roomRef = user.room else {
+                print("Error1: Room reference is nil")
+                return
             }
+
+            // Print the path of the room document reference for debugging
+            print("Room Reference Path: \(roomRef.path)")
+
+            let document = try await roomRef.getDocument()
+
+            if let data = document.data() {
+                print("Room document data: \(data)")
+            } else {
+                print("Error2: Room document does not exist")
+                return
+            }
+
+            if let room = try? document.data(as: Rooms.self) {
+                self.currentRoom = room
+                print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
+
+                // Fetch nested collections
+                if let roomId = room.id {
+                    print("Fetching sub-collections for room \(roomId)")
+
+                    self.currentRoom?.membersData = await fetchMembersInRoom(roomId: roomId)
+                    DispatchQueue.main.async {
+                        // Ensuring the UI updates on the main thread
+                        self.objectWillChange.send()
+                    }
+                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
+                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
+
+                    self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
+                    print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
+
+                    self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
+                    print("Fetched schedules: \(self.currentRoom?.schedulesData ?? [])")
+
+                    self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
+                    print("Fetched chores: \(self.currentRoom?.choresData ?? [])")
+
+                    self.currentRoom?.chatsData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chats", as: Chats.self)
+                    print("Fetched chats: \(self.currentRoom?.chatsData ?? [])")
+
+                    print("Nested collections fetched successfully")
+                } else {
+                    print("Error: Room ID is nil")
+                }
+            } else {
+                print("Error3: Room document could not be parsed")
+            }
+        } catch {
+            print("Debug: Failed to fetch room with error \(error.localizedDescription)")
         }
-    
+    }
+
 
     func fetchSubCollection<T: Decodable>(collectionPath: String, as type: T.Type) async -> [T] {
             var results = [T]()
@@ -320,29 +325,21 @@ class AuthViewModel: ObservableObject {
     func fetchMembersInRoom(roomId: String) async -> [Member] {
         var members = [Member]()
         do {
-            // Print a message indicating the function has started
-            print("Starting fetchMembersInRoom for roomId: \(roomId)")
-
             // Fetch the members sub-collection from the specified room
             let querySnapshot = try await Firestore.firestore().collection("rooms/\(roomId)/members").getDocuments()
             print("Successfully fetched members sub-collection for roomId: \(roomId)")
 
             for document in querySnapshot.documents {
-                // Print the document ID of each member document found
-                print("Processing document with ID: \(document.data())")
-
                 // Extract the member reference from each document
                 if let memberRef = document.data()["member"] as? DocumentReference {
                     print("Found member reference: \(memberRef.path)")
 
                     // Fetch the member document using the reference
                     let memberSnapshot = try await memberRef.getDocument()
-                    print("Successfully fetched member document for reference: \(memberRef.path)")
 
                     if let member = try? memberSnapshot.data(as: Member.self) {
                         // Add the member to the members array
                         members.append(member)
-                        print("Fetched member from reference \(memberRef.path) and added to members array")
                     } else {
                         print("Failed to decode member data from document at path: \(memberRef.path)")
                     }

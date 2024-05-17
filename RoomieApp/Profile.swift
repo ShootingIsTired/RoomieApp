@@ -11,8 +11,8 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
-    @ObservedObject var viewMembers = ViewMembers()
-    @ObservedObject var viewRooms = ViewRooms()
+//    @ObservedObject var viewMembers = ViewMembers()
+//    @ObservedObject var viewRooms = ViewRooms()
     let standardWidth = UIScreen.main.bounds.width - 90
     @Binding var selectedPage: String?
     @State private var newRuleText = ""
@@ -221,7 +221,7 @@ struct ProfileView: View {
     
     var membersSection: some View {
         VStack(alignment: .leading) {
-            HStack{
+            HStack {
                 Text("Members")
                     .font(Font.custom("Noto Sans", size: 20))
                 Spacer()
@@ -234,38 +234,49 @@ struct ProfileView: View {
             }
             .padding(.horizontal)
 
-            
-            ForEach(viewMembers.members, id: \.id) { member in
-                HStack {
-                    memberView(member: member)
-                    
-                    if isEditingMembers {
-                        Button(action: {
-                            withAnimation {
-                                viewMembers.deleteMember(memberID: member.id!)
+
+            if let members = authViewModel.currentRoom?.membersData {
+                VStack {
+                    // Use an indexed loop to manually iterate over the members array
+                    ForEach(Array(members.enumerated()), id: \.element.id) { index, member in
+                        HStack {
+                            memberView(memberInRoom: member)
+
+                            if isEditingMembers {
+                                Button(action: {
+                                    withAnimation {
+                                        if let memberID = member.id {
+                                            //authViewModel.deleteMember(memberID: memberID)
+                                        }
+                                    }
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.red)
+                                        .imageScale(.large)
+                                }
                             }
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.red)
-                                .imageScale(.large)
                         }
                     }
                 }
+            } else {
+                Text("No members available.")
             }
+
+
         }
     }
-    
-    func memberView(member: Members) -> some View {
+
+
+    func memberView(memberInRoom: Member) -> some View {
         HStack(spacing: 5) {
-            Text(member.name)
+            Text(memberInRoom.name)
                 .font(Font.custom("Noto Sans", size: 18))
             Spacer()
-            Text(member.birthday)
+            Text(memberInRoom.birthday)
                 .font(Font.custom("Noto Sans", size: 16))
             Spacer()
-            Text(member.status)
+            Text(memberInRoom.status)
                 .font(Font.custom("Noto Sans", size: 16))
-            
         }
         .padding(.vertical, 4)
         .padding(.horizontal)
@@ -273,7 +284,7 @@ struct ProfileView: View {
         .cornerRadius(8)
         .padding(.horizontal)
     }
-    
+
     var myInfoSection: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -348,14 +359,14 @@ struct ProfileView: View {
                 .buttonStyle(ColoredButtonStyle())
             }
             .padding(.horizontal)
-            if let room = viewRooms.rooms.first {
+            if let room = authViewModel.currentRoom {
                 Group {
                     if isEditingRoom {
                         TextField("Room Name", text: Binding(
                             get: { room.name },
                             set: { newName in
                                 Task {
-                                    await viewRooms.updateRoom(roomID: room.id!, newName: newName)
+                                    await authViewModel.updateRoom(roomID: room.id!, newName: newName)
                                 }
                             }
                         ))

@@ -76,7 +76,6 @@ struct Rooms: Identifiable, Codable {
     var schedules: [DocumentReference]?
     var chores: [DocumentReference]?
     var chats: [DocumentReference]?
-    
     var membersData: [Member]?
     var tasksData: [Tasks]?
     var schedulesData: [Schedules]?
@@ -85,7 +84,7 @@ struct Rooms: Identifiable, Codable {
 }
 
 struct Member: Identifiable, Codable {
-    var id: String?
+    @DocumentID var id: String?
     var name: String
     var status: String
     var birthday: String
