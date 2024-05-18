@@ -46,6 +46,10 @@ class AuthViewModel: ObservableObject {
             await fetchMember()
             print("user login success:")
             print(email, ",", password)
+            if let user = currentUser {
+                await fetchRoom(for: user)
+                print(user)
+            }
         } catch {
             print("Debug: Fail to sign in with user \(error.localizedDescription)")
             throw error
@@ -73,6 +77,9 @@ class AuthViewModel: ObservableObject {
             try Auth.auth().signOut() //sign out on backend
             self.firebaseUserSession = nil
             self.currentUser = nil
+            self.IsLoggedIn = false
+            self.currentRoom = nil
+            self.userHasRoom = false
             IsLoggedIn = false
             print("user logout success")
         } catch {
@@ -140,28 +147,27 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    
-    func updateMember(name: String? = nil, email: String? = nil, schoolid: String? = nil, birthday: String? = nil, department: String? = nil, password: String? = nil, room: DocumentReference? = nil) async {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        do {
-            var updatedData: [String: Any] = [:]
-            if let name = name { updatedData["name"] = name }
-            if let email = email { updatedData["email"] = email }
-            if let schoolid = schoolid { updatedData["schoolid"] = schoolid }
-            if let birthday = birthday { updatedData["birthday"] = birthday }
-            if let department = department { updatedData["department"] = department }
-            if let room = room { updatedData["room"] = room }
+    func updateMember(name: String? = nil, email: String? = nil, schoolid: String? = nil, birthday: String? = nil, department: String? = nil, password: String? = nil, room: DocumentReference? = nil,index: Int? = nil) async {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
             
-            // Update the user document in Firestore
-            try await Firestore.firestore().collection("members").document(uid).updateData(updatedData)
-            
-            // Update the local state
-            await fetchMember()
-        } catch {
-            print("Debug: Fail to update member with error \(error.localizedDescription)")
+            do {
+                var updatedData: [String: Any] = [:]
+                if let name = name { updatedData["name"] = name }
+                if let email = email { updatedData["email"] = email }
+                if let schoolid = schoolid { updatedData["schoolid"] = schoolid }
+                if let birthday = birthday { updatedData["birthday"] = birthday }
+                if let department = department { updatedData["department"] = department }
+                if let room = room { updatedData["room"] = room }
+                
+                // Update the user document in Firestore
+                try await Firestore.firestore().collection("members").document(uid).updateData(updatedData)
+                
+                // Update the local state
+                await fetchMember()
+            } catch {
+                print("Debug: Fail to update member with error \(error.localizedDescription)")
+            }
         }
-    }
     
     //Add Room to Member
     func addNewRoomAndUpdateMember(newRoom: Rooms) async {
@@ -203,37 +209,49 @@ class AuthViewModel: ObservableObject {
     }
     
     func joinRoom(roomName: String, roomID: String) async {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+            guard let uid = Auth.auth().currentUser?.uid else { return }
 
-        do {
-            // Step 1: Query Firestore for the room with the provided name and password
-            let querySnapshot = try await Firestore.firestore().collection("rooms")
-                .whereField("name", isEqualTo: roomName)
-                .whereField(FieldPath.documentID(), isEqualTo: roomID)
-                .getDocuments()
-            
-            // Step 2: Check if a room was found
-            guard let roomDocument = querySnapshot.documents.first else {
-                        print("No room found with the provided name and id")
-                        return
-                    }
-                    
-            let roomReference = roomDocument.reference // Get the room's DocumentReference
-            // Step 3: Update the current user's room property with this DocumentReference
-            await updateMember(room: roomReference)
-            await fetchMember()
-            print("Room updated successfully for the current user")
-        } catch {
-            print("Error updating room for the current user: \(error.localizedDescription)")
+            do {
+                // Step 1: Query Firestore for the room with the provided name and password
+                let querySnapshot = try await Firestore.firestore().collection("rooms")
+                    .whereField("name", isEqualTo: roomName)
+                    .whereField(FieldPath.documentID(), isEqualTo: roomID)
+                    .getDocuments()
+                
+                // Step 2: Check if a room was found
+                guard let roomDocument = querySnapshot.documents.first else {
+                            print("No room found with the provided name and id")
+                            return
+                        }
+                        
+                let roomReference = roomDocument.reference // Get the room's DocumentReference
+                // Step 3: Add the member's DocumentReference to the room's members sub-collection
+                let memberReference = Firestore.firestore().collection("members").document(uid)
+                try await roomReference.collection("members").document(uid).setData([
+                    "member": memberReference
+                ])
+                print("Member added to room's members sub-collection successfully")
+                
+                // Step 4: Calculate the current number of members in the room's members sub-collection and set the index
+                let membersCollection = try await roomReference.collection("members").getDocuments()
+                let newIndex = membersCollection.documents.count
+                
+                // Step 5: Update the current user's room property and index with this DocumentReference
+                await updateMember(room: roomReference, index: newIndex)
+                await fetchMember()
+                print("Room updated successfully for the current user")
+            } catch {
+                print("Error updating room for the current user: \(error.localizedDescription)")
+            }
         }
-    }
     
-
     
 //Room
     func fetchRoom(for user: Member) async {
         do {
             guard let roomRef = user.room else {
+                userHasRoom = false
+                currentRoom = nil
                 print("Error1: Room reference is nil")
                 return
             }
@@ -246,8 +264,9 @@ class AuthViewModel: ObservableObject {
             if let data = document.data() {
                 print("Room document data: \(data)")
             } else {
-                print("Error2: Room document does not exist")
-                return
+                userHasRoom = false
+                currentRoom = nil
+                print("Error2: Room document does not exist or could not be parsed")
             }
 
             if let room = try? document.data(as: Rooms.self) {
@@ -286,6 +305,8 @@ class AuthViewModel: ObservableObject {
                 print("Error3: Room document could not be parsed")
             }
         } catch {
+            userHasRoom = false
+            currentRoom = nil
             print("Debug: Failed to fetch room with error \(error.localizedDescription)")
         }
     }
