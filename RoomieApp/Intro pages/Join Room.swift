@@ -12,7 +12,8 @@ import SwiftData
 struct JoinRoomView: View {
     @State private var id = ""
     @State private var roomName = ""
-    @State private var roomPassword = ""
+    @State private var roomID = ""
+    @State private var isActive = false
     @EnvironmentObject var viewModel: AuthViewModel
     
     var body: some View {
@@ -47,7 +48,7 @@ struct JoinRoomView: View {
                                 .frame(width: 100, height: 60
                                 )
                                 .padding(.trailing, 2)
-                            Text("Password:")
+                            Text("Room ID:")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .bold()
@@ -62,7 +63,7 @@ struct JoinRoomView: View {
                                 .padding()
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            TextField("Enter Your Room Password", text: $roomPassword)
+                            TextField("Enter Your Room ID", text: $roomID)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
@@ -72,17 +73,21 @@ struct JoinRoomView: View {
                         
                     }
                     
-                    Button(action: {
-                        Task{
-                            await viewModel.joinRoom(roomName: roomName, roomPassword: roomPassword)
+                    NavigationLink(destination: MenuBarView()
+                        .navigationBarBackButtonHidden(), isActive: $isActive) {
+                            Button{
+                                Task{
+                                    await viewModel.joinRoom(roomName: roomName, roomID: roomID)
+                                    isActive = true
+                                }
+                            } label: {
+                                Text("JOIN")
+                                    .font(.headline)
+                                    .foregroundColor(.black)
+                                    .frame(width: 100.0, height: 42.0)
+                                    .background(ButtomBorder)
+                            }
                         }
-                    }) {
-                        Text("JOIN")
-                            .font(.headline)
-                            .foregroundColor(.black)
-                            .frame(width: 100.0, height: 42.0)
-                            .background(ButtomBorder)
-                    }
                     
                     NavigationLink {
                         CreateRoomView()
