@@ -242,7 +242,8 @@ struct ProfileView: View {
                         HStack {
                             memberView(memberInRoom: member)
 
-                            if isEditingMembers {
+                            if isEditingMembers && member.id != authViewModel.currentUser?.id {
+                                // Show delete button only for members other than the current user
                                 Button(action: {
                                     withAnimation {
                                         if let memberID = member.id {
