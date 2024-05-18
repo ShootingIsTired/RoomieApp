@@ -32,7 +32,6 @@ class AuthViewModel: ObservableObject {
                 await fetchRoom(for: user)
                 print(user)
             }
-        
         }
     }
     
@@ -211,38 +210,37 @@ class AuthViewModel: ObservableObject {
     func joinRoom(roomName: String, roomID: String) async {
             guard let uid = Auth.auth().currentUser?.uid else { return }
 
-            do {
-                // Step 1: Query Firestore for the room with the provided name and password
-                let querySnapshot = try await Firestore.firestore().collection("rooms")
-                    .whereField("name", isEqualTo: roomName)
-                    .whereField(FieldPath.documentID(), isEqualTo: roomID)
-                    .getDocuments()
-                
-                // Step 2: Check if a room was found
-                guard let roomDocument = querySnapshot.documents.first else {
-                            print("No room found with the provided name and id")
-                            return
-                        }
-                        
-                let roomReference = roomDocument.reference // Get the room's DocumentReference
-                // Step 3: Add the member's DocumentReference to the room's members sub-collection
-                let memberReference = Firestore.firestore().collection("members").document(uid)
-                try await roomReference.collection("members").document(uid).setData([
-                    "member": memberReference
-                ])
-                print("Member added to room's members sub-collection successfully")
-                
-                // Step 4: Calculate the current number of members in the room's members sub-collection and set the index
-                let membersCollection = try await roomReference.collection("members").getDocuments()
-                let newIndex = membersCollection.documents.count
-                
-                // Step 5: Update the current user's room property and index with this DocumentReference
-                await updateMember(room: roomReference, index: newIndex)
-                await fetchMember()
-                print("Room updated successfully for the current user")
-            } catch {
-                print("Error updating room for the current user: \(error.localizedDescription)")
-            }
+        do {
+            // Step 1: Query Firestore for the room with the provided name and password
+            let querySnapshot = try await Firestore.firestore().collection("rooms")
+                .whereField("name", isEqualTo: roomName)
+                .whereField(FieldPath.documentID(), isEqualTo: roomID)
+                .getDocuments()
+            
+            // Step 2: Check if a room was found
+            guard let roomDocument = querySnapshot.documents.first else {
+                        print("No room found with the provided name and id")
+                        return
+                    }
+                    
+            let roomReference = roomDocument.reference // Get the room's DocumentReference
+            // Step 3: Add the member's DocumentReference to the room's members sub-collection
+            let memberReference = Firestore.firestore().collection("members").document(uid)
+            try await roomReference.collection("members").document(uid).setData([
+                "member": memberReference
+            ])
+            print("Member added to room's members sub-collection successfully")
+            
+            // Step 4: Calculate the current number of members in the room's members sub-collection and set the index
+            let membersCollection = try await roomReference.collection("members").getDocuments()
+            let newIndex = membersCollection.documents.count
+            
+            // Step 5: Update the current user's room property and index with this DocumentReference
+            await updateMember(room: roomReference, index: newIndex)
+            await fetchMember()
+            print("Room updated successfully for the current user")
+        } catch {
+            print("Error updating room for the current user: \(error.localizedDescription)")
         }
     
     
@@ -282,8 +280,8 @@ class AuthViewModel: ObservableObject {
                         // Ensuring the UI updates on the main thread
                         self.objectWillChange.send()
                     }
-                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
-                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
+//                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
+//                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
 
                     self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
                     print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
