@@ -308,22 +308,7 @@ class AuthViewModel: ObservableObject {
             }
             return results
         }
-//    func fetchMembersInRoom(roomId: String) async -> [Members] {
-//            var members = [Members]()
-//            do {
-//                let querySnapshot = try await Firestore.firestore().collection("members")
-//                    .whereField("room", isEqualTo: Firestore.firestore().document("rooms/\(roomId)"))
-//                    .getDocuments()
-//                for document in querySnapshot.documents {
-//                    if let member = try? document.data(as: Members.self) {
-//                        members.append(member)
-//                    }
-//                }
-//            } catch {
-//                print("Failed to fetch members in room \(roomId) with error \(error.localizedDescription)")
-//            }
-//            return members
-//        }
+
     func fetchMembersInRoom(roomId: String) async -> [Member] {
         var members = [Member]()
         do {
@@ -356,7 +341,39 @@ class AuthViewModel: ObservableObject {
         print("Fetched \(members.count) members for roomId: \(roomId)")
         return members
     }
+    
+    func deleteMemberFromRoom(memberID: String) async {
+        do {
+            guard let roomID = currentRoom?.id else {
+                print("Error: No current room ID available")
+                return
+            }
+            
+            // Step 1: Delete the member reference from the room's members sub-collection
+            let membersSubCollectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("members")
+            let querySnapshot = try await membersSubCollectionRef.whereField("member", isEqualTo: Firestore.firestore().collection("members").document(memberID)).getDocuments()
+            
+            for document in querySnapshot.documents {
+                try await document.reference.delete()
+            }
 
+            // Step 2: Update the top-level member document to remove the room reference
+            let memberRef = Firestore.firestore().collection("members").document(memberID)
+            try await memberRef.updateData(["room": FieldValue.delete()])
+            
+            // Check if the deleted member is the current user
+            if memberID == firebaseUserSession?.uid {
+                signOut()  // Log out the current user
+            }
+
+            // Refresh the room's member data locally
+            if let currentUser = currentUser {
+                await fetchRoom(for: currentUser)
+            }
+        } catch {
+            print("Failed to delete member from room wit3h error: \(error.localizedDescription)")
+        }
+    }
     
     func updateRoom(roomID: String, newName: String) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }

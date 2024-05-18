@@ -246,7 +246,9 @@ struct ProfileView: View {
                                 Button(action: {
                                     withAnimation {
                                         if let memberID = member.id {
-                                            //authViewModel.deleteMember(memberID: memberID)
+                                            Task {
+                                                await authViewModel.deleteMemberFromRoom(memberID: memberID)
+                                            }
                                         }
                                     }
                                 }) {
