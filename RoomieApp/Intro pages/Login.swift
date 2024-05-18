@@ -104,7 +104,7 @@ struct LoginView: View {
                     RegisterView(selectedPage: $selectedPage)
 //                        .navigationBarBackButtonHidden()
                 } label: {
-                    HStack {
+                    VStack {
                         Text("Don't Have Account?")
                             .font(.subheadline)
                             .foregroundColor(.black)
@@ -118,32 +118,32 @@ struct LoginView: View {
                 }
                 
                 //Join and Create Room Buttom
-                HStack{
-                    NavigationLink {
-                        JoinRoomView()
-//                            .navigationBarBackButtonHidden()
-                    } label: {
-                        VStack {
-                            Text("Join Room")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.black)
-                                .frame(width: 90.0, height: 22.0)
-                        }
-                    }
-                    NavigationLink {
-                        CreateRoomView()
-//                            .navigationBarBackButtonHidden()
-                    } label: {
-                        VStack {
-                            Text("Create Room")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.black)
-                                .frame(width: 90.0, height: 22.0)
-                        }
-                    }
-                }
+//                HStack{
+//                    NavigationLink {
+//                        JoinRoomView()
+////                            .navigationBarBackButtonHidden()
+//                    } label: {
+//                        VStack {
+//                            Text("Join Room")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 90.0, height: 22.0)
+//                        }
+//                    }
+//                    NavigationLink {
+//                        CreateRoomView()
+////                            .navigationBarBackButtonHidden()
+//                    } label: {
+//                        VStack {
+//                            Text("Create Room")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 90.0, height: 22.0)
+//                        }
+//                    }
+//                }
                 
             }
             .padding()

@@ -64,7 +64,7 @@ struct Members: Identifiable, Codable {
     var email: String
     var password: String
     var room: DocumentReference?
-    var index: Int? = 0
+    var index: Int? = 999
 }
 
 struct Rooms: Identifiable, Codable {
