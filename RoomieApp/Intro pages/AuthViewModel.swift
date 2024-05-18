@@ -108,6 +108,7 @@ class AuthViewModel: ObservableObject {
             let snapshot = try await documentRef.getDocument()
             
             if let data = snapshot.data() {
+                IsLoggedIn = true
                 print("Document data: \(data)") // Print raw document data for debugging
             } else {
                 print("Document does not exist") // Document does not exist
@@ -124,6 +125,7 @@ class AuthViewModel: ObservableObject {
                 // Check if the user has a room
                 if let roomRef = member.room {
                     self.userHasRoom = true
+                    await fetchRoom(for: member)
                     print("User has a room: \(roomRef)")
                 } else {
                     self.userHasRoom = false
