@@ -26,7 +26,9 @@ struct MenuBarView: View {
             case "Register":
                 RegisterView(selectedPage: $selectedPage)
             case "Chores":
-            ChoresView(selectedPage:$selectedPage)
+                ChoresView(selectedPage:$selectedPage)
+            case "Schedule":
+                ScheduleView(selectedPage:$selectedPage).environmentObject(authViewModel)
             default:
                 HomeView(selectedPage: $selectedPage)
         }
