@@ -13,13 +13,13 @@ struct ContentView: View {
     @Binding var selectedPage: String?
     var body: some View {
         Group{
-            if !viewModel.IsLoggedIn {
+            if viewModel.currentUser == nil {
                 // 1. 還沒登入
                 LoginView(selectedPage: $selectedPage)
-            } else if !viewModel.userHasRoom {
+            } else if viewModel.currentRoom == nil {
                 // 2. 登入但沒有房間
                 GetRoomView()
-            } else {
+            } else if viewModel.currentRoom != nil && viewModel.currentUser != nil {
                 // 3. 登入且有房間
                 MenuBarView()
             }
