@@ -32,7 +32,6 @@ class AuthViewModel: ObservableObject {
                 await fetchRoom(for: user)
                 print(user)
             }
-        
         }
     }
     
@@ -73,6 +72,7 @@ class AuthViewModel: ObservableObject {
             try Auth.auth().signOut() //sign out on backend
             self.firebaseUserSession = nil
             self.currentUser = nil
+            self.currentRoom = nil
             IsLoggedIn = false
             print("user logout success")
         } catch {
@@ -141,7 +141,7 @@ class AuthViewModel: ObservableObject {
     }
 
     
-    func updateMember(name: String? = nil, email: String? = nil, schoolid: String? = nil, birthday: String? = nil, department: String? = nil, password: String? = nil, room: DocumentReference? = nil) async {
+    func updateMember(name: String? = nil, email: String? = nil, schoolid: String? = nil, birthday: String? = nil, department: String? = nil, password: String? = nil, room: DocumentReference? = nil,index: Int? = nil) async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         do {
@@ -219,8 +219,19 @@ class AuthViewModel: ObservableObject {
                     }
                     
             let roomReference = roomDocument.reference // Get the room's DocumentReference
-            // Step 3: Update the current user's room property with this DocumentReference
-            await updateMember(room: roomReference)
+            // Step 3: Add the member's DocumentReference to the room's members sub-collection
+            let memberReference = Firestore.firestore().collection("members").document(uid)
+            try await roomReference.collection("members").document(uid).setData([
+                "member": memberReference
+            ])
+            print("Member added to room's members sub-collection successfully")
+            
+            // Step 4: Calculate the current number of members in the room's members sub-collection and set the index
+            let membersCollection = try await roomReference.collection("members").getDocuments()
+            let newIndex = membersCollection.documents.count
+            
+            // Step 5: Update the current user's room property and index with this DocumentReference
+            await updateMember(room: roomReference, index: newIndex)
             await fetchMember()
             print("Room updated successfully for the current user")
         } catch {
@@ -263,8 +274,8 @@ class AuthViewModel: ObservableObject {
                         // Ensuring the UI updates on the main thread
                         self.objectWillChange.send()
                     }
-                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
-                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
+//                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
+//                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
 
                     self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
                     print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
