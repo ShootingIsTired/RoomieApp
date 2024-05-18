@@ -44,11 +44,17 @@ struct Chores: Identifiable, Codable {
     var last_time: Date
 }
 
-struct Chats:Identifiable, Codable {
+struct Chats:Identifiable, Codable, Equatable {
     @DocumentID var id: String?
     var content: String
     var member: DocumentReference
     var post_time: Date
+    var isCurrentUser: Bool? 
+    
+    // Implement the Equatable protocol
+    static func ==(lhs: Chats, rhs: Chats) -> Bool {
+        return lhs.id == rhs.id && lhs.content == rhs.content && lhs.post_time == rhs.post_time
+    }
 }
 
 struct MemberRefs:Identifiable, Codable {

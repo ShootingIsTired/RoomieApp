@@ -22,6 +22,8 @@ class AuthViewModel: ObservableObject {
     @Published var IsLoggedIn = false
     @Published var currentRoom: Rooms?
     @Published var userHasRoom = false
+    private var lastDocumentSnapshot: DocumentSnapshot?
+    @Published var isMoreDataAvailable = true
     
     init(firebaseUserSession: FirebaseAuth.User? = nil, currentUser: Member? = nil) {
         self.firebaseUserSession = firebaseUserSession
@@ -245,69 +247,46 @@ class AuthViewModel: ObservableObject {
         
         
         //Room
-        func fetchRoom(for user: Member) async {
-            do {
-                guard let roomRef = user.room else {
-                    userHasRoom = false
-                    currentRoom = nil
-                    print("Error1: Room reference is nil")
-                    return
-                }
-                
-                // Print the path of the room document reference for debugging
-                print("Room Reference Path: \(roomRef.path)")
-                
-                let document = try await roomRef.getDocument()
-                
-                if let data = document.data() {
-                    print("Room document data: \(data)")
-                } else {
-                    userHasRoom = false
-                    currentRoom = nil
-                    print("Error2: Room document does not exist or could not be parsed")
-                }
-                
-                if let room = try? document.data(as: Rooms.self) {
-                    self.currentRoom = room
-                    print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
-                    
-                    // Fetch nested collections
-                    if let roomId = room.id {
-                        print("Fetching sub-collections for room \(roomId)")
-                        
-                        self.currentRoom?.membersData = await fetchMembersInRoom(roomId: roomId)
-                        DispatchQueue.main.async {
-                            // Ensuring the UI updates on the main thread
-                            self.objectWillChange.send()
-                        }
-                        //                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
-                        //                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
-                        
-                        self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
-                        print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
-                        
-                        self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
-                        print("Fetched schedules: \(self.currentRoom?.schedulesData ?? [])")
-                        
-                        self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
-                        print("Fetched chores: \(self.currentRoom?.choresData ?? [])")
-                        
-                        self.currentRoom?.chatsData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chats", as: Chats.self)
-                        print("Fetched chats: \(self.currentRoom?.chatsData ?? [])")
-                        
-                        print("Nested collections fetched successfully")
-                    } else {
-                        print("Error: Room ID is nil")
-                    }
-                } else {
-                    print("Error3: Room document could not be parsed")
-                }
-            } catch {
+    func fetchRoom(for user: Member) async {
+        do {
+            guard let roomRef = user.room else {
                 userHasRoom = false
                 currentRoom = nil
-                print("Debug: Failed to fetch room with error \(error.localizedDescription)")
+                print("Error1: Room reference is nil")
+                return
             }
+            
+            let document = try await roomRef.getDocument()
+            if let room = try? document.data(as: Rooms.self) {
+                self.currentRoom = room
+                if let roomId = room.id {
+                    print("Fetching sub-collections for room \(roomId)")
+                    
+                    // Fetch all related sub-collections and start listening to chats
+                    self.currentRoom?.membersData = await fetchMembersInRoom(roomId: roomId)
+                    self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
+                    self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
+                    self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
+                    fetchChats(roomID: roomId)  // Start listening to chat messages
+
+                    DispatchQueue.main.async {
+                        self.objectWillChange.send()
+                    }
+                } else {
+                    print("Error: Room ID is nil")
+                }
+            } else {
+                userHasRoom = false
+                currentRoom = nil
+                print("Error: Room document could not be parsed")
+            }
+        } catch {
+            userHasRoom = false
+            currentRoom = nil
+            print("Failed to fetch room with error \(error.localizedDescription)")
         }
+    }
+
         
         
         func fetchSubCollection<T: Decodable>(collectionPath: String, as type: T.Type) async -> [T] {
@@ -465,5 +444,52 @@ class AuthViewModel: ObservableObject {
                 print("Debug: Failed to remove rule with error \(error.localizedDescription)")
             }
         }
+    // AuthViewModel
+
+    // Function to fetch and listen for new chat messages
+    func fetchChats(roomID: String) {
+        let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+        chatsRef.order(by: "post_time", descending: false).addSnapshotListener { [weak self] snapshot, error in
+            guard let documents = snapshot?.documents else {
+                print("No documents in 'chats'")
+                return
+            }
+            self?.currentRoom?.chatsData = documents.compactMap { document -> Chats? in
+                var chat = try? document.data(as: Chats.self)
+                if let uid = self?.currentUser?.id, let chatMemberID = chat?.member.documentID {
+                    chat?.isCurrentUser = (uid == chatMemberID)
+                }
+                return chat
+            }
+            DispatchQueue.main.async {
+                // Notify the UI to update as the chatsData array has changed.
+                self?.objectWillChange.send()
+            }
+        }
     }
+
+
+    // Function to send a new chat message
+    func sendChatMessage(roomID: String, content: String) {
+        let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+        guard let currentUser = currentUser else { return }
+
+        let newChat = Chats(content: content, member: Firestore.firestore().collection("members").document(currentUser.id ?? ""), post_time: Date(), isCurrentUser: true)
+
+        // Add the chat locally first to make it appear immediately
+        self.currentRoom?.chatsData?.append(newChat)
+
+        do {
+            _ = try chatsRef.addDocument(from: newChat) { error in
+                if let error = error {
+                    print("Error sending chat message: \(error.localizedDescription)")
+                    // Optionally handle error, e.g., remove the chat from `chatsData` if not successful
+                }
+            }
+        } catch let error {
+            print("Error sending chat message: \(error.localizedDescription)")
+        }
+    }
+    
+}
 
