@@ -12,6 +12,8 @@ import SwiftData
 struct GetRoomView: View {
     @State private var id: String = "123456"
     @State private var roomName = ""
+    @State private var isActiveJoin = false
+    @State private var isActiveCreate = false
     var body: some View {
         NavigationView{
             ZStack{
@@ -37,36 +39,40 @@ struct GetRoomView: View {
                             .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
                         HStack {
                             VStack {
-                                NavigationLink {
-                                    JoinRoomView()
-                                } label: {
-                                    VStack {
-                                        Text("Join an Exist Room")
-                                            .font(.headline)
-                                            .foregroundColor(.black)
-                                            .frame(width: 400.0, height: 42.0)
-                                            .background(ButtomBorder)
+                                NavigationLink(destination: JoinRoomView()
+                                    .navigationBarBackButtonHidden(), isActive: $isActiveJoin) {
+                                        Button {
+                                            Task {
+//                                                try await 
+                                                isActiveJoin = true
+                                            }
+                                        } label: {
+                                            VStack {
+                                                Text("Join an Exist Room")
+                                                    .font(.headline)
+                                                    .foregroundColor(.black)
+                                                    .frame(width: 400.0, height: 42.0)
+                                                    .background(ButtomBorder)
+                                            }
+                                        }
                                     }
-                                }
-                                
-                                NavigationLink {
-                                    CreateRoomView()
-                                } label: {
-                                    VStack {
-                                        Text("Create a New Room")
-                                            .font(.headline)
-                                            .foregroundColor(.black)
-                                            .frame(width: 400.0, height: 42.0)
-                                            .background(ButtomBorder)
+                                NavigationLink(destination: CreateRoomView()
+                                    .navigationBarBackButtonHidden(), isActive: $isActiveCreate) {
+                                        Button {
+                                            Task {                                                isActiveCreate = true
+                                            }
+                                        } label: {
+                                            VStack {
+                                                Text("Create a New Room")
+                                                    .font(.headline)
+                                                    .foregroundColor(.black)
+                                                    .frame(width: 400.0, height: 42.0)
+                                                    .background(ButtomBorder)
+                                            }
+                                        }
                                     }
-                                }
                             }
-                            
-                            
                         }
-                    
-                       
-                        
                     }
                     .padding()
                 }

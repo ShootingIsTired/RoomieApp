@@ -51,12 +51,6 @@ struct CreateRoomView: View {
                                 .bold()
                                 .frame(width: 100, height: 60)
                                 .padding(.trailing, 2)
-                            Text("Password:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60)
-                                .padding(.trailing, 2)
                         }
                         VStack {
                             Text(id)
@@ -66,12 +60,6 @@ struct CreateRoomView: View {
                                 .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
                             TextField("Set Your Room Name", text: $roomName)
-                                .font(Font.custom("Noto Sans", size: 16))
-                                .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                            TextField("Set Your Room Password", text: $roomPassword)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
