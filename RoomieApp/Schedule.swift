@@ -73,7 +73,7 @@ struct ScheduleView: View {
         LazyVStack(spacing: 0) {
             ForEach(8..<24) { hour in
                 HStack(alignment: .top) {
-                    Text(String(format: "%02d:00", hour))
+                    Text(String(format: "%02d", hour))
                         .frame(width: 40, alignment: .trailing)
                         .padding(.trailing, 10)
                     Rectangle()
@@ -141,9 +141,9 @@ extension Schedules {
         switch mode {
         case "Normal":
             return .blue
-        case "Do not Disturb":
+        case "Alone":
             return .red
-        case "Alone in Room":
+        case "Quiet":
             return .yellow
         default:
             return .gray
@@ -186,6 +186,7 @@ extension AuthViewModel {
                     self.objectWillChange.send()
                 }
             }
+        print(self.currentRoom?.schedulesData ?? "---")
     }
 }
 
