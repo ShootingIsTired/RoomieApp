@@ -507,5 +507,84 @@ class AuthViewModel: ObservableObject {
                 }
             }
     }
+    
+//    func fetchChores(roomID: String) async {
+//        guard !roomID.isEmpty else {
+//               print("Error: No room ID provided")
+//               return
+//           }
+//
+//           do {
+//               let choresCollectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores")
+//               let querySnapshot = try await choresCollectionRef.getDocuments()
+//
+//               let choresData = querySnapshot.documents.compactMap { document -> Chores? in
+//                   try? document.data(as: Chores.self)
+//               }
+//               DispatchQueue.main.async {
+//                   self.currentRoom?.choresData = choresData
+//                   self.objectWillChange.send()
+//               }
+//           } catch let error {
+//               print("Error fetching chores: \(error.localizedDescription)")
+//           }
+//       }
+    
+    func fetchChores(roomID: String) {
+        guard !roomID.isEmpty else {
+            print("Error: No room ID provided")
+            return
+        }
+
+        let choresCollectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores")
+        choresCollectionRef.addSnapshotListener { [weak self] (querySnapshot, error) in
+            guard let documents = querySnapshot?.documents else {
+                print("Error fetching chores: \(String(describing: error))")
+                return
+            }
+            let choresData = documents.compactMap { document -> Chores? in
+                try? document.data(as: Chores.self)
+            }
+            DispatchQueue.main.async {
+                self?.currentRoom?.choresData = choresData
+                self?.objectWillChange.send()
+            }
+        }
+    }
+
+    func addChores(content: String, frequency: Int, roomID: String) async {
+        guard !roomID.isEmpty else {
+            print("Error: No room ID provided")
+            return
+        }
+
+        let newChore = Chores(content: content, last_index: 0, status: false, frequency: frequency,  last_time: Date())
+        
+//        // Add the chat locally first to make it appear immediately
+        self.currentRoom?.choresData?.append(newChore)
+
+        do {
+            let _ = try Firestore.firestore().collection("rooms").document(roomID).collection("chores").addDocument(from: newChore)
+            print("Chore added successfully")
+        } catch let error {
+            print("Error adding chore: \(error.localizedDescription)")
+        }
+    }
+    
+    func toggleChoreStatus(_ chore: Chores) async {
+        guard let choreID = chore.id, let roomID = currentRoom?.id else { return }
+
+        let choreRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
+        
+        do {
+            try await choreRef.updateData([
+                "status": !chore.status  // Toggle the current status
+            ])
+            print("Chore status updated successfully")
+        } catch let error {
+            print("Error updating chore status: \(error.localizedDescription)")
+        }
+    }
+
 }
 
