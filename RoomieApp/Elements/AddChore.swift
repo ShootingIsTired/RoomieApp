@@ -4,87 +4,68 @@
 import Foundation
 import SwiftUI
 
-
-import Foundation
-import SwiftUI
-
 struct AddChore: View {
-    @Binding var chore: String
-    @Binding var selectedPerson: String
-    @Binding var selectedFrequency: Int
+    @Environment(\.presentationMode) var presentationMode  // To manage the view's dismissal
+    @State private var chore: String = ""
+    @State private var selectedPerson: String = "Unassigned"
+    @State private var frequencyText: Int = 1  // Use Int directly for frequency
+    @State private var memberNames: [String] = ["Unassigned"]
     @EnvironmentObject var authViewModel: AuthViewModel
-    let people: [String]
-    let onAddChore: () -> Void
-    let onCancel: () -> Void
 
     var body: some View {
         VStack {
-            Spacer()
-            VStack {
-                HStack{
-                    Text("Add a new Chore:")
-                        .font(.headline)
-                    Spacer()
-                    Button(action: onCancel) {
-                        Image(systemName: "xmark.circle")
-//                            .frame(width:18, height:18)
-                    }.foregroundColor(.black)
-                }
+            TextField("Type in here", text: $chore)
                 .padding()
-                TextField("Type in here", text: $chore)
-                    .padding()
-                    .foregroundColor(chore.isEmpty ? .gray : .black)
-                    .textFieldStyle(.plain)
-                    .background(Color(red: 0.96, green: 0.96, blue: 0.86).opacity(0.33))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8) // Stroke outline
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                HStack{
-                    SelectPerson(selectedPerson: $selectedPerson, people: people)
-                }.padding([.horizontal,.top])
-                HStack{
-                    ChooseFrequency(selectedFrequency: $selectedFrequency)
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(5)
+
+            Picker("Assign to", selection: $selectedPerson) {
+                ForEach(memberNames, id: \.self) { name in
+                    Text(name).tag(name)
                 }
-                Button(action: onAddChore) {
-                    
-                    Text("SAVE")
-                        .padding(5)
-                        .cornerRadius(30)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke()
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(Color(red: 0.95, green: 0.75, blue: 0.09))
-                )
-                .foregroundColor(.black)
-                .padding()
+            }
+            .pickerStyle(MenuPickerStyle())
+            .padding()
+
+            Stepper(value: $frequencyText, in: 1...365, step: 1) {
+                Text("Frequency in days: \(frequencyText)")
             }
             .padding()
-            .background(Color.white)
-            .cornerRadius(12)
-            .shadow(radius: 10)
-            Spacer()
+
+            Button("SAVE", action: addChores)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
         }
-        .background(Color.black.opacity(0.5).edgesIgnoringSafeArea(.all))
+        .padding()
+        .onAppear(perform: loadMembers)
+    }
+
+    private func loadMembers() {
+        guard let roomId = authViewModel.currentRoom?.id else { return }
+        Task {
+            let members = await authViewModel.fetchMembersInRoom(roomId: roomId)
+            memberNames = members.map { $0.name }
+            print("Members loaded: \(memberNames)")
+        }
+    }
+
+    private func addChores() {
+        guard let roomId = authViewModel.currentRoom?.id else { return }
+        Task {
+            await authViewModel.addChores(content: chore, frequency: frequencyText, roomID: roomId)
+            // Dismiss the view after the chore is added
+            presentationMode.wrappedValue.dismiss()
+        }
     }
 }
 
-struct AddChoreView_Previews: PreviewProvider {
+// Previews
+struct AddChore_Previews: PreviewProvider {
     static var previews: some View {
-        AddChore(
-            chore: .constant("Complete the project"),
-            selectedPerson: .constant("Unassigned"),
-            selectedFrequency: .constant(1),
-            people: ["Non Specific", "test1", "test2", "test3"],
-            onAddChore: { print("Task added") },
-            onCancel: { print("Cancelled") }
-        )
-        .previewLayout(.sizeThatFits)
-        .padding(10)
+        AddChore()
+            .environmentObject(AuthViewModel())
     }
 }
 

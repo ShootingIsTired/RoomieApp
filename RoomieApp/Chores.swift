@@ -1,7 +1,6 @@
 //  Chores.swift
 //  RoomieApp
 import SwiftUI
-import SwiftUI
 
 struct ChoresView: View {
     @Binding var selectedPage: String?
@@ -11,48 +10,37 @@ struct ChoresView: View {
 
     var body: some View {
         ZStack(alignment: .leading) {
-            VStack {
-                choresContent
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        if showMenuBar {
-                            showMenuBar = false
-                        }
+            choresContent
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if showMenuBar {
+                        showMenuBar = false
                     }
-                addButton
-            }
-            .sheet(isPresented: $showAddChore) {
-                AddChore(
-                    chore: .constant(""),
-                    selectedPerson: .constant("Unassigned"),
-                    selectedFrequency: .constant(1),
-                    people: ["Person1", "Person2", "Person3"],
-                    onAddChore: {
-                        // Define what happens when the chore is added
-                        showAddChore = false
-                    },
-                    onCancel: {
-                        // Define the cancel action
+                    if showAddChore {
                         showAddChore = false
                     }
-                ).environmentObject(authViewModel)
-            }
+                }
 
             if showMenuBar {
                 MenuBar(selectedPage: $selectedPage)
                     .transition(.move(edge: .leading))
             }
         }
+        .sheet(isPresented: $showAddChore) {
+                    AddChore()
+                        .environmentObject(authViewModel)
+        }
     }
 
     var choresContent: some View {
         VStack(spacing: 0) {
             header
+            addButton
             Spacer()
             choresListView
         }
     }
-
+    
     var header: some View {
         HStack {
             Button(action: {
@@ -73,7 +61,7 @@ struct ChoresView: View {
         .background(Color.white)
         .shadow(radius: 2)
     }
-
+    
     var addButton: some View {
         Button(action: {
             showAddChore = true
@@ -85,11 +73,9 @@ struct ChoresView: View {
                 .cornerRadius(10)
                 .shadow(radius: 5)
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color.white)
+        .padding(.horizontal)
     }
-
+    
     var choresListView: some View {
         ScrollView {
             LazyVStack(spacing: 8) {
@@ -105,7 +91,7 @@ struct ChoresView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private func choreRow(_ chore: Chores) -> some View {
         HStack {
@@ -119,9 +105,9 @@ struct ChoresView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-
+            
             Spacer()
-
+            
             Button(action: {
                 // Toggle the status in Firestore
                 Task {
@@ -140,7 +126,7 @@ struct ChoresView: View {
         .background(Color.gray.opacity(0.2))
         .cornerRadius(10)
     }
-
+    
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -154,7 +140,6 @@ struct ChoresView_Previews: PreviewProvider {
         ChoresView(selectedPage: .constant("Chores")).environmentObject(AuthViewModel())
     }
 }
-
 
 //import SwiftUI
 //
