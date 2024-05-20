@@ -25,6 +25,9 @@ class AuthViewModel: ObservableObject {
     @Published var newRoomReference: DocumentReference?
     @Published var newRoomID: String?
     
+    private var lastDocumentSnapshot: DocumentSnapshot?
+        @Published var isMoreDataAvailable = true
+    
     init(firebaseUserSession: FirebaseAuth.User? = nil, currentUser: Member? = nil, newRoomReference:DocumentReference? = nil,newRoomID: String? = nil) {
         self.firebaseUserSession = firebaseUserSession
         self.currentUser = currentUser
@@ -255,67 +258,43 @@ class AuthViewModel: ObservableObject {
         
         
         //Room
-        func fetchRoom(for user: Member) async {
+    func fetchRoom(for user: Member) async {
             do {
                 guard let roomRef = user.room else {
                     userHasRoom = false
                     currentRoom = nil
-                    print("fetchRoom: Room reference is nil")
+                    print("Error1: Room reference is nil")
                     return
                 }
                 
-                // Print the path of the room document reference for debugging
-                print("Room Reference Path: \(roomRef.path)")
-                
                 let document = try await roomRef.getDocument()
-                
-                if let data = document.data() {
-                    print("Room document data: \(data)")
-                } else {
-                    userHasRoom = false
-                    currentRoom = nil
-                    print("Error2: Room document does not exist or could not be parsed")
-                }
-                
                 if let room = try? document.data(as: Rooms.self) {
                     self.currentRoom = room
-                    print("FetchRoom: Current room is \(String(describing: self.currentRoom))")
-                    
-                    // Fetch nested collections
                     if let roomId = room.id {
                         print("Fetching sub-collections for room \(roomId)")
                         
+                        // Fetch all related sub-collections and start listening to chats
                         self.currentRoom?.membersData = await fetchMembersInRoom(roomId: roomId)
+                        self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
+                        self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
+                        self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
+                        fetchChats(roomID: roomId)  // Start listening to chat messages
+                        fetchTasks(roomID: roomId)
                         DispatchQueue.main.async {
-                            // Ensuring the UI updates on the main thread
                             self.objectWillChange.send()
                         }
-                        //                    print("Fetched members: \(self.currentRoom?.membersData ?? [])")
-                        //                    print("------\(String(describing: self.currentRoom?.membersData?.count)), \(String(describing: self.currentRoom?.membersData?[0]))")
-                        
-                        self.currentRoom?.tasksData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/tasks", as: Tasks.self)
-                        print("Fetched tasks: \(self.currentRoom?.tasksData ?? [])")
-                        
-                        self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
-                        print("Fetched schedules: \(self.currentRoom?.schedulesData ?? [])")
-                        
-                        self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
-                        print("Fetched chores: \(self.currentRoom?.choresData ?? [])")
-                        
-                        self.currentRoom?.chatsData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chats", as: Chats.self)
-                        print("Fetched chats: \(self.currentRoom?.chatsData ?? [])")
-                        
-                        print("Nested collections fetched successfully")
                     } else {
                         print("Error: Room ID is nil")
                     }
                 } else {
-                    print("Error3: Room document could not be parsed")
+                    userHasRoom = false
+                    currentRoom = nil
+                    print("Error: Room document could not be parsed")
                 }
             } catch {
                 userHasRoom = false
                 currentRoom = nil
-                print("Debug: Failed to fetch room with error \(error.localizedDescription)")
+                print("Failed to fetch room with error \(error.localizedDescription)")
             }
         }
         
@@ -475,5 +454,157 @@ class AuthViewModel: ObservableObject {
                 print("Debug: Failed to remove rule with error \(error.localizedDescription)")
             }
         }
+    
+    func fetchChats(roomID: String) {
+            let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+            chatsRef.order(by: "post_time", descending: false).addSnapshotListener { [weak self] snapshot, error in
+                guard let documents = snapshot?.documents else {
+                    print("No documents in 'chats'")
+                    return
+                }
+                self?.currentRoom?.chatsData = documents.compactMap { document -> Chats? in
+                    var chat = try? document.data(as: Chats.self)
+                    if let uid = self?.currentUser?.id, let chatMemberID = chat?.member.documentID {
+                        chat?.isCurrentUser = (uid == chatMemberID)
+                    }
+                    return chat
+                }
+                DispatchQueue.main.async {
+                    // Notify the UI to update as the chatsData array has changed.
+                    self?.objectWillChange.send()
+                }
+            }
+        }
+
+
+        // Function to send a new chat message
+        func sendChatMessage(roomID: String, content: String) {
+            let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+            guard let currentUser = currentUser else { return }
+
+            let newChat = Chats(content: content, member: Firestore.firestore().collection("members").document(currentUser.id ?? ""), post_time: Date(), isCurrentUser: true)
+
+            // Add the chat locally first to make it appear immediately
+            self.currentRoom?.chatsData?.append(newChat)
+
+            do {
+                _ = try chatsRef.addDocument(from: newChat) { error in
+                    if let error = error {
+                        print("Error sending chat message: \(error.localizedDescription)")
+                        // Optionally handle error, e.g., remove the chat from `chatsData` if not successful
+                    }
+                }
+            } catch let error {
+                print("Error sending chat message: \(error.localizedDescription)")
+            }
+        }
+    
+    func fetchTasks(roomID: String){
+        let tasksRef = Firestore.firestore().collection("rooms").document(roomID).collection("tasks")
+        tasksRef.order(by: "time", descending: true).addSnapshotListener { [weak self] snapshot, error in
+            guard let documents = snapshot?.documents else {
+                print("No documents in 'tasks'")
+                return
+            }
+            self?.currentRoom?.tasksData = documents.compactMap { document -> Tasks? in
+                let task = try? document.data(as: Tasks.self)
+
+                return task
+            }
+            DispatchQueue.main.async {
+                // Notify the UI to update as the chatsData array has changed.
+                self?.objectWillChange.send()
+            }
+        }
     }
+    
+    func addNewTask(roomID: String, time: Date, content: String, assigned_person: String){
+        let tasksRef = Firestore.firestore().collection("rooms").document(roomID).collection("tasks")
+        
+        if assigned_person != "Unassigned" && assigned_person != "Non Specific"{
+            let memberRef = Firestore.firestore().collection("members").document(assigned_person)
+                    
+                    let newTask = Tasks(time: time, content: content, assigned_person: memberRef, isUnassigned: false)
+                    
+                    self.currentRoom?.tasksData?.append(newTask)
+                    
+                    do{
+                        _ = try tasksRef.addDocument(from: newTask){ error in
+                            if let error = error {
+                                print("Error add task: \(error.localizedDescription)")
+                            }
+                        }
+                    } catch let error {
+                        print("Error add task: \(error.localizedDescription)")
+                    }
+        }
+        if assigned_person == "Unassigned"{
+            let newTask = Tasks(time: time, content: content, isUnassigned: true)
+            
+            self.currentRoom?.tasksData?.append(newTask)
+            
+            do{
+                _ = try tasksRef.addDocument(from: newTask){ error in
+                    if let error = error {
+                        print("Error add task: \(error.localizedDescription)")
+                    }
+                }
+            } catch let error {
+                print("Error add task: \(error.localizedDescription)")
+            }
+        }
+        if assigned_person == "Non Specific"{
+            let newTask = Tasks(time: time, content: content, isUnassigned: false)
+            
+            self.currentRoom?.tasksData?.append(newTask)
+            
+            do{
+                _ = try tasksRef.addDocument(from: newTask){ error in
+                    if let error = error {
+                        print("Error add task: \(error.localizedDescription)")
+                    }
+                }
+            } catch let error {
+                print("Error add task: \(error.localizedDescription)")
+            }
+        }
+    }
+
+        func updateTask(roomID: String, taskID: String, time: Date? = nil, content: String? = nil, assigned_person: String? = nil) async {
+            do {
+                var updatedData: [String: Any] = [:]
+                if let time = time { updatedData["time"] = time }
+                if let content = content { updatedData["content"] = content }
+                if let assigned_person = assigned_person {
+                    if assigned_person != "Unassigned" && assigned_person != "Non Specific" {
+                        updatedData["assigned_person"] = Firestore.firestore().collection("members").document(assigned_person)
+                        updatedData["isUnassigned"] = false
+                    } else if assigned_person == "Unassigned" {
+                        updatedData["assigned_person"] = NSNull()
+                        updatedData["isUnassigned"] = true
+                    } else if assigned_person == "Non Specific" {
+                        updatedData["assigned_person"] = NSNull()
+                        updatedData["isUnassigned"] = false
+                    }
+                }
+                print("Updating task ID: \(taskID) in room ID: \(roomID) with data: \(updatedData)")
+                try await Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID).updateData(updatedData)
+                print("Debug: Successfully updated task")
+                await fetchTasks(roomID: roomID)
+            } catch {
+                print("Debug: Fail to update task with error \(error.localizedDescription)")
+            }
+        }
+    
+    func removeTask(roomID: String, taskID: String) async {
+        do {
+            let taskDocument = Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID)
+            try await taskDocument.delete()
+            print("Debug: Successfully deleted task with ID \(taskID)")
+            await fetchTasks(roomID: roomID)
+        } catch {
+            print("Debug: Failed to delete task with error \(error.localizedDescription)")
+        }
+    }
+}
 
