@@ -6,8 +6,9 @@ struct ChoresView: View {
     @Binding var selectedPage: String?
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var isEditing = false
-    @State private var showAddChore = false // For adding a new chore
+    @State private var showAddChore = false
     @State private var editingChore: Chores?
+    @State private var showingEditChore = false
 
     var body: some View {
         NavigationView {
@@ -33,36 +34,43 @@ struct ChoresView: View {
 
                 List {
                     ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
-                        ChoreRow(chore: chore, isEditing: $isEditing)
+                        ChoreRow(
+                            chore: chore,
+                            isEditing: $isEditing,
+                            onEdit: {
+                                print("Editing chore")
+                                editingChore = chore
+                                showingEditChore = true
+                            },
+                            onDelete: {
+                                print("Deleting chore")
+                                guard let roomId = authViewModel.currentRoom?.id, let choreId = chore.id else { return }
+                                Task {
+                                    await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
+                                }
+                            }
+                        )
                     }
-                    .onDelete(perform: deleteChore)
                 }
             }
             .navigationBarTitle("Chores", displayMode: .inline)
-            .sheet(isPresented: $showAddChore) {
-                // Present AddChore view
-                AddChore().environmentObject(authViewModel)
-            }
-            
-        }
-    }
-
-    private func deleteChore(at offsets: IndexSet) {
-        guard let roomId = authViewModel.currentRoom?.id else { return }
-        offsets.forEach { index in
-            if let choreId = authViewModel.currentRoom?.choresData?[index].id {
-                Task {
-                    await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
+            .sheet(isPresented: $showingEditChore) {
+                if let editingChore = editingChore {
+                    EditChore(chore: .constant(editingChore)).environmentObject(authViewModel)
                 }
+            }
+            .sheet(isPresented: $showAddChore) {
+                AddChore().environmentObject(authViewModel)
             }
         }
     }
 }
 
-
 struct ChoreRow: View {
     let chore: Chores
     @Binding var isEditing: Bool
+    var onEdit: () -> Void
+    var onDelete: () -> Void
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
@@ -74,23 +82,27 @@ struct ChoreRow: View {
             Spacer()
 
             if isEditing {
-                Button("Edit") {
-                    // Your logic to navigate to an edit view for `chore`
+                Button(action: {}) {
+                    Text("Edit")
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
                 }
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(5)
+                .onTapGesture {
+                    onEdit()
+                }
 
-                Button("Delete") {
-                    Task {
-                        await authViewModel.deleteChore(choreID: chore.id ?? "", roomID: authViewModel.currentRoom?.id ?? "")
-                    }
+                Button(action: {}) {
+                    Text("Delete")
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
                 }
-                .padding()
-                .background(Color.red)
-                .foregroundColor(.white)
-                .cornerRadius(5)
+                .onTapGesture {
+                    onDelete()
+                }
             } else {
                 Button(chore.status ? "Done" : "Undone") {
                     Task {
@@ -106,10 +118,101 @@ struct ChoreRow: View {
     }
 }
 
+struct AddChore: View {
+    @Environment(\.presentationMode) var presentationMode  // To manage the view's dismissal
+    @State private var chore: String = ""
+    @State private var selectedPerson: String = "Unassigned"
+    @State private var frequencyText: Int = 1  // Use Int directly for frequency
+    @State private var memberNames: [String] = ["Unassigned"]
+    @EnvironmentObject var authViewModel: AuthViewModel
 
-// You need to ensure that AddChore and EditChore views exist and are implemented correctly.
+    var body: some View {
+        VStack {
+            TextField("Type in here", text: $chore)
+                .padding()
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(5)
 
+            Picker("Assign to", selection: $selectedPerson) {
+                ForEach(memberNames, id: \.self) { name in
+                    Text(name).tag(name)
+                }
+            }
+            .pickerStyle(MenuPickerStyle())
+            .padding()
 
+            Stepper(value: $frequencyText, in: 1...365, step: 1) {
+                Text("Frequency in days: \(frequencyText)")
+            }
+            .padding()
+
+            Button("SAVE", action: addChore)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
+        .padding()
+        .onAppear(perform: loadMembers)
+    }
+
+    private func loadMembers() {
+        guard let roomId = authViewModel.currentRoom?.id else { return }
+        Task {
+            let members = await authViewModel.fetchMembersInRoom(roomId: roomId)
+            memberNames = members.map { $0.name }
+            print("Members loaded: \(memberNames)")
+        }
+    }
+
+    private func addChore() {
+        guard let roomId = authViewModel.currentRoom?.id else { return }
+        Task {
+            await authViewModel.addChore(content: chore, frequency: frequencyText, roomID: roomId)
+            // Dismiss the view after the chore is added
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
+
+struct EditChore: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var chore: Chores? // Use binding to an optional Chores
+    @State private var editedContent: String
+    @State private var editedFrequency: Int
+    @EnvironmentObject var authViewModel: AuthViewModel
+
+    init(chore: Binding<Chores?>) {
+        self._chore = chore
+        _editedContent = State(initialValue: chore.wrappedValue?.content ?? "")
+        _editedFrequency = State(initialValue: chore.wrappedValue?.frequency ?? 1)
+    }
+
+    var body: some View {
+        NavigationView {
+            Form {
+                TextField("Chore Description", text: $editedContent)
+                Stepper("Frequency in days: \(editedFrequency)", value: $editedFrequency, in: 1...365)
+                Button("Save Changes") {
+                    editChore()
+                }
+                .disabled(editedContent.isEmpty)
+            }
+            .navigationBarTitle("Edit Chore", displayMode: .inline)
+            .navigationBarItems(leading: Button("Cancel") {
+                presentationMode.wrappedValue.dismiss()
+            })
+        }
+    }
+
+    private func editChore() {
+        guard let chore = chore, let roomId = authViewModel.currentRoom?.id else { return }
+        Task {
+            await authViewModel.editChore(choreID: chore.id ?? "", newContent: editedContent, newFrequency: editedFrequency, roomID: roomId)
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
 
 //import SwiftUI
 //
