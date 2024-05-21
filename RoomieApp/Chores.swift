@@ -9,8 +9,63 @@ struct ChoresView: View {
     @State private var showAddChore = false
     @State private var editingChore: Chores?
     @State private var showingEditChore = false
+    
+    @State private var showMenuBar = false
 
     var body: some View {
+        ZStack(alignment: .leading) {
+            mainContent
+                .overlay(
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if showMenuBar {
+                                withAnimation {
+                                    showMenuBar = false
+                                }
+                            }
+                        }
+                        .allowsHitTesting(showMenuBar)  // Only enable hit testing when the menu is visible
+                )
+            
+            if showMenuBar {
+                MenuBar(selectedPage: $selectedPage)
+                    .transition(.move(edge: .leading))
+            }
+        }
+    }
+
+    var mainContent: some View {
+        VStack(spacing: 0) {
+            header
+            Spacer()
+            choreList
+        }
+    }
+    
+    var header: some View {
+        HStack {
+            Button(action: {
+                withAnimation {
+                    showMenuBar.toggle()
+                }
+            }) {
+                Image(systemName: "line.horizontal.3")
+                    .frame(width: 38, height: 38)
+            }
+            Spacer()
+            Text("CHORES")
+                .font(.custom("Krona One", size: 20))
+                .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
+            Spacer()
+        }
+        .padding()
+        .background(Color.white)
+        .shadow(radius: 2)
+    }
+
+    var choreList: some View {
         NavigationView {
             VStack {
                 HStack {
@@ -38,12 +93,10 @@ struct ChoresView: View {
                             chore: chore,
                             isEditing: $isEditing,
                             onEdit: {
-                                print("Editing chore")
                                 editingChore = chore
                                 showingEditChore = true
                             },
                             onDelete: {
-                                print("Deleting chore")
                                 guard let roomId = authViewModel.currentRoom?.id, let choreId = chore.id else { return }
                                 Task {
                                     await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
@@ -65,6 +118,7 @@ struct ChoresView: View {
         }
     }
 }
+
 
 struct ChoreRow: View {
     let chore: Chores
