@@ -5,16 +5,19 @@ import SwiftUI
 struct ChoresView: View {
     @Binding var selectedPage: String?
     @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var members: [Member] = []
     @State private var isEditing = false
     @State private var showAddChore = false
     @State private var editingChore: Chores?
     @State private var showingEditChore = false
-    
     @State private var showMenuBar = false
 
     var body: some View {
         ZStack(alignment: .leading) {
             mainContent
+                .onAppear {
+                    loadMembers() // Ensure members are loaded when the view appears
+                }
                 .overlay(
                     Rectangle()
                         .foregroundColor(.clear)
@@ -81,7 +84,8 @@ struct ChoresView: View {
                             Task {
                                 await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
                             }
-                        }
+                        },
+                        memberName: members.indices.contains(chore.last_index) ? members[chore.last_index].name : "Unassigned"
                     )
                 }
             }
@@ -121,6 +125,13 @@ struct ChoresView: View {
         }
         .padding()
     }
+    
+    private func loadMembers() {
+            guard let roomId = authViewModel.currentRoom?.id else { return }
+            Task {
+                members = await authViewModel.fetchMembersInRoom(roomId: roomId)
+            }
+        }
 }
 
 
@@ -129,6 +140,7 @@ struct ChoreRow: View {
     @Binding var isEditing: Bool
     var onEdit: () -> Void
     var onDelete: () -> Void
+    var memberName: String
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
@@ -136,6 +148,7 @@ struct ChoreRow: View {
             VStack(alignment: .leading) {
                 Text(chore.content)
                 Text("Frequency: \(chore.frequency) days").font(.subheadline).foregroundColor(.secondary)
+                Text("Assigned to: \(memberName)").font(.caption).foregroundColor(.gray) // Display the member name
             }
             Spacer()
 
