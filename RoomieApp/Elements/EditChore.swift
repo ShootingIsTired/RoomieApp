@@ -8,12 +8,14 @@ struct EditChore: View {
     @Binding var chore: Chores? // Use binding to an optional Chores
     @State private var editedContent: String
     @State private var editedFrequency: Int
+    @State private var editedStatus: Bool // State for status toggle
     @EnvironmentObject var authViewModel: AuthViewModel
 
     init(chore: Binding<Chores?>) {
         self._chore = chore
         _editedContent = State(initialValue: chore.wrappedValue?.content ?? "")
         _editedFrequency = State(initialValue: chore.wrappedValue?.frequency ?? 1)
+        _editedStatus = State(initialValue: chore.wrappedValue?.status ?? false) // Initialize with the current status
     }
 
     var body: some View {
@@ -21,6 +23,7 @@ struct EditChore: View {
             Form {
                 TextField("Chore Description", text: $editedContent)
                 Stepper("Frequency in days: \(editedFrequency)", value: $editedFrequency, in: 1...365)
+                Toggle("Status", isOn: $editedStatus) // Toggle for editing status
                 Button("Save Changes") {
                     editChore()
                 }
@@ -36,7 +39,7 @@ struct EditChore: View {
     private func editChore() {
         guard let chore = chore, let roomId = authViewModel.currentRoom?.id else { return }
         Task {
-            await authViewModel.editChore(choreID: chore.id ?? "", newContent: editedContent, newFrequency: editedFrequency, roomID: roomId)
+            await authViewModel.editChore(choreID: chore.id ?? "", newContent: editedContent, newFrequency: editedFrequency, newStatus: editedStatus, roomID: roomId)
             presentationMode.wrappedValue.dismiss()
         }
     }

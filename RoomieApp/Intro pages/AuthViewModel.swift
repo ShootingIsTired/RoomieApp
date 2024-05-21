@@ -604,7 +604,7 @@ class AuthViewModel: ObservableObject {
             }
         }
     
-    func editChore(choreID: String, newContent: String, newFrequency: Int, roomID: String) async {
+    func editChore(choreID: String, newContent: String, newFrequency: Int, newStatus: Bool, roomID: String) async {
         guard !roomID.isEmpty, let choreRef = self.currentRoom?.choresData?.first(where: { $0.id == choreID }) else {
             print("Error: No room ID provided or chore not found")
             return
@@ -615,8 +615,10 @@ class AuthViewModel: ObservableObject {
         do {
             try await choreDocumentRef.updateData([
                 "content": newContent,
-                "frequency": newFrequency
+                "status": newStatus,
+                "frequency": newFrequency,
             ])
+            await fetchAllChores(roomID: roomID)  // Fetch all chores again to refresh the list
             print("Chore updated successfully")
         } catch let error {
             print("Error updating chore: \(error.localizedDescription)")
