@@ -39,8 +39,8 @@ struct ChoresView: View {
     var mainContent: some View {
         VStack(spacing: 0) {
             header
-            Spacer()
             choreList
+            editAndAddButtons
         }
     }
     
@@ -67,46 +67,25 @@ struct ChoresView: View {
 
     var choreList: some View {
         NavigationView {
-            VStack {
-                HStack {
-                    Button(isEditing ? "Done" : "Edit Chores") {
-                        isEditing.toggle()
-                    }
-                    .padding()
-                    .foregroundColor(.blue)
-
-                    Spacer()
-
-                    if !isEditing {
-                        Button(action: {
-                            showAddChore = true
-                        }) {
-                            Image(systemName: "plus")
-                        }
-                        .padding()
-                    }
-                }
-
-                List {
-                    ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
-                        ChoreRow(
-                            chore: chore,
-                            isEditing: $isEditing,
-                            onEdit: {
-                                editingChore = chore
-                                showingEditChore = true
-                            },
-                            onDelete: {
-                                guard let roomId = authViewModel.currentRoom?.id, let choreId = chore.id else { return }
-                                Task {
-                                    await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
-                                }
+            List {
+                ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
+                    ChoreRow(
+                        chore: chore,
+                        isEditing: $isEditing,
+                        onEdit: {
+                            editingChore = chore
+                            showingEditChore = true
+                        },
+                        onDelete: {
+                            guard let roomId = authViewModel.currentRoom?.id, let choreId = chore.id else { return }
+                            Task {
+                                await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
-            .navigationBarTitle("Chores", displayMode: .inline)
+            //.navigationBarTitle("Chores", displayMode: .inline)
             .sheet(isPresented: $showingEditChore) {
                 if let editingChore = editingChore {
                     EditChore(chore: .constant(editingChore)).environmentObject(authViewModel)
@@ -116,6 +95,31 @@ struct ChoresView: View {
                 AddChore().environmentObject(authViewModel)
             }
         }
+    }
+
+    var editAndAddButtons: some View {
+        HStack {
+            Button(isEditing ? "Done" : "Edit Chores") {
+                isEditing.toggle()
+            }
+            .padding()
+            .background(isEditing ? Color.green : Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+
+            Spacer()
+
+            Button(action: {
+                showAddChore = true
+            }) {
+                Image(systemName: "plus")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+        }
+        .padding()
     }
 }
 
