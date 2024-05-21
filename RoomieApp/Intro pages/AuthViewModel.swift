@@ -529,8 +529,9 @@ class AuthViewModel: ObservableObject {
 //               print("Error fetching chores: \(error.localizedDescription)")
 //           }
 //       }
+    @Published var choresData: [Chores] = []
     
-    func fetchChores(roomID: String) {
+    func fetchAllChores(roomID: String) {
         guard !roomID.isEmpty else {
             print("Error: No room ID provided")
             return
@@ -552,7 +553,7 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func addChores(content: String, frequency: Int, roomID: String) async {
+    func addChore(content: String, frequency: Int, roomID: String) async {
         guard !roomID.isEmpty else {
             print("Error: No room ID provided")
             return
@@ -565,26 +566,80 @@ class AuthViewModel: ObservableObject {
 
         do {
             let _ = try Firestore.firestore().collection("rooms").document(roomID).collection("chores").addDocument(from: newChore)
+            await fetchAllChores(roomID: roomID)
             print("Chore added successfully")
         } catch let error {
             print("Error adding chore: \(error.localizedDescription)")
         }
     }
     
+//    func toggleChoreStatus(_ chore: Chores) async {
+//        guard let choreID = chore.id, let roomID = currentRoom?.id else { return }
+//
+//        let choreRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
+//        
+//        do {
+//            try await choreRef.updateData([
+//                "status": !chore.status  // Toggle the current status
+//            ])
+//            print("Chore status updated successfully")
+//        } catch let error {
+//            print("Error updating chore status: \(error.localizedDescription)")
+//        }
+//    }
     func toggleChoreStatus(_ chore: Chores) async {
-        guard let choreID = chore.id, let roomID = currentRoom?.id else { return }
+            guard let choreID = chore.id, let roomID = currentRoom?.id else { return }
 
-        let choreRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
+            let newStatus = !chore.status
+            let choreRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
+            
+            do {
+                try await choreRef.updateData(["status": newStatus])
+                if let index = currentRoom?.choresData?.firstIndex(where: {$0.id == choreID}) {
+                    currentRoom?.choresData?[index].status = newStatus
+                }
+                print("Chore status updated successfully")
+            } catch let error {
+                print("Error updating chore status: \(error.localizedDescription)")
+            }
+        }
+    
+    func editChore(choreID: String, newContent: String, newFrequency: Int, roomID: String) async {
+        guard !roomID.isEmpty, let choreRef = self.currentRoom?.choresData?.first(where: { $0.id == choreID }) else {
+            print("Error: No room ID provided or chore not found")
+            return
+        }
+        
+        let choreDocumentRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
         
         do {
-            try await choreRef.updateData([
-                "status": !chore.status  // Toggle the current status
+            try await choreDocumentRef.updateData([
+                "content": newContent,
+                "frequency": newFrequency
             ])
-            print("Chore status updated successfully")
+            print("Chore updated successfully")
         } catch let error {
-            print("Error updating chore status: \(error.localizedDescription)")
+            print("Error updating chore: \(error.localizedDescription)")
         }
     }
+
+    func deleteChore(choreID: String, roomID: String) async {
+        guard !roomID.isEmpty else {
+            print("Error: No room ID provided")
+            return
+        }
+
+        let choreDocumentRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
+        
+        do {
+            try await choreDocumentRef.delete()
+            print("Chore deleted successfully")
+            await fetchAllChores(roomID: roomID)  // Fetch all chores again to refresh the list
+        } catch let error {
+            print("Error deleting chore: \(error.localizedDescription)")
+        }
+    }
+
 
 }
 

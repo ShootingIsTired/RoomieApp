@@ -32,7 +32,7 @@ struct AddChore: View {
             }
             .padding()
 
-            Button("SAVE", action: addChores)
+            Button("SAVE", action: addChore)
                 .padding()
                 .background(Color.blue)
                 .foregroundColor(.white)
@@ -51,10 +51,10 @@ struct AddChore: View {
         }
     }
 
-    private func addChores() {
+    private func addChore() {
         guard let roomId = authViewModel.currentRoom?.id else { return }
         Task {
-            await authViewModel.addChores(content: chore, frequency: frequencyText, roomID: roomId)
+            await authViewModel.addChore(content: chore, frequency: frequencyText, roomID: roomId)
             // Dismiss the view after the chore is added
             presentationMode.wrappedValue.dismiss()
         }

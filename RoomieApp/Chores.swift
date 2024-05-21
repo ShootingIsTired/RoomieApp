@@ -4,142 +4,112 @@ import SwiftUI
 
 struct ChoresView: View {
     @Binding var selectedPage: String?
-    @State private var showMenuBar = false
-    @State private var showAddChore = false
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var isEditing = false
+    @State private var showAddChore = false // For adding a new chore
+    @State private var editingChore: Chores?
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                HStack {
+                    Button(isEditing ? "Done" : "Edit Chores") {
+                        isEditing.toggle()
+                    }
+                    .padding()
+                    .foregroundColor(.blue)
+
+                    Spacer()
+
+                    if !isEditing {
+                        Button(action: {
+                            showAddChore = true
+                        }) {
+                            Image(systemName: "plus")
+                        }
+                        .padding()
+                    }
+                }
+
+                List {
+                    ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
+                        ChoreRow(chore: chore, isEditing: $isEditing)
+                    }
+                    .onDelete(perform: deleteChore)
+                }
+            }
+            .navigationBarTitle("Chores", displayMode: .inline)
+            .sheet(isPresented: $showAddChore) {
+                // Present AddChore view
+                AddChore().environmentObject(authViewModel)
+            }
+            
+        }
+    }
+
+    private func deleteChore(at offsets: IndexSet) {
+        guard let roomId = authViewModel.currentRoom?.id else { return }
+        offsets.forEach { index in
+            if let choreId = authViewModel.currentRoom?.choresData?[index].id {
+                Task {
+                    await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
+                }
+            }
+        }
+    }
+}
+
+
+struct ChoreRow: View {
+    let chore: Chores
+    @Binding var isEditing: Bool
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
-        ZStack(alignment: .leading) {
-            choresContent
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if showMenuBar {
-                        showMenuBar = false
-                    }
-                    if showAddChore {
-                        showAddChore = false
-                    }
-                }
-
-            if showMenuBar {
-                MenuBar(selectedPage: $selectedPage)
-                    .transition(.move(edge: .leading))
-            }
-        }
-        .sheet(isPresented: $showAddChore) {
-                    AddChore()
-                        .environmentObject(authViewModel)
-        }
-    }
-
-    var choresContent: some View {
-        VStack(spacing: 0) {
-            header
-            addButton
-            Spacer()
-            choresListView
-        }
-    }
-    
-    var header: some View {
-        HStack {
-            Button(action: {
-                withAnimation {
-                    showMenuBar.toggle()
-                }
-            }) {
-                Image(systemName: "line.horizontal.3")
-                    .frame(width: 38, height: 38)
-            }
-            Spacer()
-            Text("CHORES")
-                .font(.custom("Krona One", size: 20))
-                .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
-            Spacer()
-        }
-        .padding()
-        .background(Color.white)
-        .shadow(radius: 2)
-    }
-    
-    var addButton: some View {
-        Button(action: {
-            showAddChore = true
-        }) {
-            Text("Add Chore")
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.blue)
-                .cornerRadius(10)
-                .shadow(radius: 5)
-        }
-        .padding(.horizontal)
-    }
-    
-    var choresListView: some View {
-        ScrollView {
-            LazyVStack(spacing: 8) {
-                ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
-                    choreRow(chore)
-                }
-            }
-            .padding(.horizontal)
-            .onAppear {
-                Task {
-                    await authViewModel.fetchChores(roomID: authViewModel.currentRoom?.id ?? "")
-                }
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private func choreRow(_ chore: Chores) -> some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(chore.content)
-                    .padding(.vertical, 10)
-                Text("Assigned to: \(chore.last_index)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                Text("Last date: \(chore.last_time, formatter: dateFormatter)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                Text("Frequency: \(chore.frequency) days").font(.subheadline).foregroundColor(.secondary)
             }
-            
             Spacer()
-            
-            Button(action: {
-                // Toggle the status in Firestore
-                Task {
-                    await authViewModel.toggleChoreStatus(chore)
+
+            if isEditing {
+                Button("Edit") {
+                    // Your logic to navigate to an edit view for `chore`
                 }
-            }) {
-                Text(chore.status ? "Undone" : "Done")
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(chore.status ? Color.red : Color.green)
-                    .cornerRadius(8)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(5)
+
+                Button("Delete") {
+                    Task {
+                        await authViewModel.deleteChore(choreID: chore.id ?? "", roomID: authViewModel.currentRoom?.id ?? "")
+                    }
+                }
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(5)
+            } else {
+                Button(chore.status ? "Done" : "Undone") {
+                    Task {
+                        await authViewModel.toggleChoreStatus(chore)
+                    }
+                }
+                .padding()
+                .background(chore.status ? Color.green : Color.gray)
+                .foregroundColor(.white)
+                .cornerRadius(5)
             }
         }
-        .padding()
-        .background(Color.gray.opacity(0.2))
-        .cornerRadius(10)
-    }
-    
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
     }
 }
 
-struct ChoresView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChoresView(selectedPage: .constant("Chores")).environmentObject(AuthViewModel())
-    }
-}
+
+// You need to ensure that AddChore and EditChore views exist and are implemented correctly.
+
+
 
 //import SwiftUI
 //
