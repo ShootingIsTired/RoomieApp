@@ -531,6 +531,7 @@ class AuthViewModel: ObservableObject {
 //       }
     @Published var choresData: [Chores] = []
     
+    // currently not used
     func fetchAllChores(roomID: String) {
         guard !roomID.isEmpty else {
             print("Error: No room ID provided")
@@ -552,6 +553,69 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchChores(roomID: String, showCompleted: Bool) {
+        guard !roomID.isEmpty else {
+            print("Error: No room ID provided")
+            return
+        }
+
+        let collectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores")
+        let query: Query = showCompleted ? collectionRef : collectionRef.whereField("status", isEqualTo: false)
+
+        query.getDocuments { [weak self] (querySnapshot, error) in
+            if let error = error {
+                print("Error fetching chores: \(error.localizedDescription)")
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                print("No chores found")
+                return
+            }
+
+            self?.currentRoom?.choresData = documents.compactMap { document -> Chores? in
+                try? document.data(as: Chores.self)
+            }
+
+            DispatchQueue.main.async {
+                self?.objectWillChange.send()
+            }
+        }
+    }
+
+    func fetchIncompleteChores(roomID: String) {
+        guard !roomID.isEmpty else {
+            print("Error: No room ID provided")
+            return
+        }
+
+        let choresCollectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores")
+        // Query to fetch chores where 'status' is false
+        choresCollectionRef.whereField("status", isEqualTo: false).getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error fetching incomplete chores: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                print("No incomplete chores found")
+                return
+            }
+            
+            self.currentRoom?.choresData = documents.compactMap { document -> Chores? in
+                try? document.data(as: Chores.self)
+            }
+            
+            DispatchQueue.main.async {
+                // Notify the UI to update as the choresData array has changed.
+                self.objectWillChange.send()
+            }
+            
+            print("Fetched incomplete chores successfully")
+        }
+    }
+
 
     func addChore(content: String, frequency: Int, roomID: String) async {
         guard !roomID.isEmpty else {
@@ -566,7 +630,7 @@ class AuthViewModel: ObservableObject {
 
         do {
             let _ = try Firestore.firestore().collection("rooms").document(roomID).collection("chores").addDocument(from: newChore)
-            await fetchAllChores(roomID: roomID)
+            await fetchIncompleteChores(roomID: roomID)
             print("Chore added successfully")
         } catch let error {
             print("Error adding chore: \(error.localizedDescription)")
@@ -598,6 +662,7 @@ class AuthViewModel: ObservableObject {
                 if let index = currentRoom?.choresData?.firstIndex(where: {$0.id == choreID}) {
                     currentRoom?.choresData?[index].status = newStatus
                 }
+                await fetchIncompleteChores(roomID: roomID)
                 print("Chore status updated successfully")
             } catch let error {
                 print("Error updating chore status: \(error.localizedDescription)")

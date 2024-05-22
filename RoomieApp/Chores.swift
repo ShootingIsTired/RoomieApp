@@ -6,7 +6,11 @@ struct ChoresView: View {
     @Binding var selectedPage: String?
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var members: [Member] = []
-    @State private var isEditing = false
+    @State private var isEditing = false {
+        didSet {
+            loadChores()
+        }
+    }
     @State private var showAddChore = false
     @State private var editingChore: Chores?
     @State private var showingEditChore = false
@@ -16,7 +20,8 @@ struct ChoresView: View {
         ZStack(alignment: .leading) {
             mainContent
                 .onAppear {
-                    loadMembers() // Ensure members are loaded when the view appears
+                    loadMembers()
+                    loadChores()
                 }
                 .overlay(
                     Rectangle()
@@ -38,6 +43,11 @@ struct ChoresView: View {
             }
         }
     }
+    
+    private func loadChores() {
+            guard let roomID = authViewModel.currentRoom?.id else { return }
+            authViewModel.fetchChores(roomID: roomID, showCompleted: isEditing)
+        }
 
     var mainContent: some View {
         VStack(spacing: 0) {
@@ -89,7 +99,9 @@ struct ChoresView: View {
                     )
                 }
             }
-            //.navigationBarTitle("Chores", displayMode: .inline)
+            .onChange(of: isEditing) { _ in
+                loadChores() // Reload chores when editing mode changes
+            }
             .sheet(isPresented: $showingEditChore) {
                 if let editingChore = editingChore {
                     EditChore(chore: .constant(editingChore)).environmentObject(authViewModel)
