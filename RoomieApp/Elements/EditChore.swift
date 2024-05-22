@@ -19,21 +19,45 @@ struct EditChore: View {
     }
 
     var body: some View {
-        NavigationView {
-            Form {
-                TextField("Chore Description", text: $editedContent)
-                Stepper("Frequency in days: \(editedFrequency)", value: $editedFrequency, in: 1...365)
-                Toggle("Status", isOn: $editedStatus) // Toggle for editing status
-                Button("Save Changes") {
-                    editChore()
+        VStack {
+            Spacer()
+            VStack {
+                HStack {
+                    Text("Edit Chore:")
+                        .font(.headline)
+                    Spacer()
+                    Button(action: { self.presentationMode.wrappedValue.dismiss() }) {
+                        Image(systemName: "xmark.circle").foregroundColor(.black)
+                    }
                 }
-                .disabled(editedContent.isEmpty)
+                .padding()
+
+                TextField("Chore Description", text: $editedContent)
+                    .padding()
+                    .foregroundColor(editedContent.isEmpty ? .gray : .black)
+                    .background(Color(red: 0.96, green: 0.96, blue: 0.86).opacity(0.33))
+                    .cornerRadius(8)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+
+                Stepper("Frequency in days: \(editedFrequency)", value: $editedFrequency, in: 1...365)
+                    .padding()
+
+                Toggle("Undone / Done", isOn: $editedStatus)
+                    .padding()
+
+                Button("Save Changes", action: editChore)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
             }
-            .navigationBarTitle("Edit Chore", displayMode: .inline)
-            .navigationBarItems(leading: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            })
+            .padding()
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(radius: 10)
+            Spacer()
         }
+        .background(Color.black.opacity(0.5).edgesIgnoringSafeArea(.all))
     }
 
     private func editChore() {
@@ -44,7 +68,6 @@ struct EditChore: View {
         }
     }
 }
-
 //import Foundation
 //import SwiftUI
 //

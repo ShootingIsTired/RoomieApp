@@ -178,7 +178,7 @@ struct ChoreRow: View {
             VStack(alignment: .leading) {
                 Text(chore.content)
                 Text("Frequency: \(chore.frequency) days").font(.subheadline).foregroundColor(.secondary)
-                Text("Assigned to: \(memberName)").font(.caption).foregroundColor(.gray) // Display the member name
+                Text("Assigned to: \(memberName)").font(.subheadline).foregroundColor(.secondary) 
             }
             Spacer()
 
