@@ -49,7 +49,7 @@ struct Chats:Identifiable, Codable, Equatable {
     var content: String
     var member: DocumentReference
     var post_time: Date
-    var isCurrentUser: Bool?
+    var isCurrentUser: Bool? 
     
     // Implement the Equatable protocol
     static func ==(lhs: Chats, rhs: Chats) -> Bool {

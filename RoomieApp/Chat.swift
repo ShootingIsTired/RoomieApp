@@ -59,7 +59,7 @@ struct ChatRoomView: View {
                 LazyVStack(spacing: 8) {
                     ForEach(authViewModel.currentRoom?.chatsData ?? [], id: \.id) { message in
                         chatMessageRow(message: message)
-                            .id(message.id) // This is important to make sure the ScrollViewReader can identify each message
+                            .id(message.id)
                     }
                 }
                 .padding(.horizontal)

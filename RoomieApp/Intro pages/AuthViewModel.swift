@@ -290,13 +290,21 @@ class AuthViewModel: ObservableObject {
                     userHasRoom = false
                     currentRoom = nil
                     print("Error: Room document could not be parsed")
+                    print("Error: Room ID is nil")
                 }
-            } catch {
+            } else {
                 userHasRoom = false
                 currentRoom = nil
+                print("Error: Room document could not be parsed")
                 print("Failed to fetch room with error \(error.localizedDescription)")
             }
+        } catch {
+            userHasRoom = false
+            currentRoom = nil
+            print("Failed to fetch room with error \(error.localizedDescription)")
         }
+    }
+
         
         
         func fetchSubCollection<T: Decodable>(collectionPath: String, as type: T.Type) async -> [T] {
@@ -454,51 +462,28 @@ class AuthViewModel: ObservableObject {
                 print("Debug: Failed to remove rule with error \(error.localizedDescription)")
             }
         }
-    
+    // AuthViewModel
+
+    // Function to fetch and listen for new chat messages
     func fetchChats(roomID: String) {
-            let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
-            chatsRef.order(by: "post_time", descending: false).addSnapshotListener { [weak self] snapshot, error in
-                guard let documents = snapshot?.documents else {
-                    print("No documents in 'chats'")
-                    return
+        let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+        chatsRef.order(by: "post_time", descending: false).addSnapshotListener { [weak self] snapshot, error in
+            guard let documents = snapshot?.documents else {
+                print("No documents in 'chats'")
+                return
+            }
+            self?.currentRoom?.chatsData = documents.compactMap { document -> Chats? in
+                var chat = try? document.data(as: Chats.self)
+                if let uid = self?.currentUser?.id, let chatMemberID = chat?.member.documentID {
+                    chat?.isCurrentUser = (uid == chatMemberID)
                 }
-                self?.currentRoom?.chatsData = documents.compactMap { document -> Chats? in
-                    var chat = try? document.data(as: Chats.self)
-                    if let uid = self?.currentUser?.id, let chatMemberID = chat?.member.documentID {
-                        chat?.isCurrentUser = (uid == chatMemberID)
-                    }
-                    return chat
-                }
-                DispatchQueue.main.async {
-                    // Notify the UI to update as the chatsData array has changed.
-                    self?.objectWillChange.send()
-                }
+                return chat
+            }
+            DispatchQueue.main.async {
+                // Notify the UI to update as the chatsData array has changed.
+                self?.objectWillChange.send()
             }
         }
-
-
-        // Function to send a new chat message
-        func sendChatMessage(roomID: String, content: String) {
-            let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
-            guard let currentUser = currentUser else { return }
-
-            let newChat = Chats(content: content, member: Firestore.firestore().collection("members").document(currentUser.id ?? ""), post_time: Date(), isCurrentUser: true)
-
-            // Add the chat locally first to make it appear immediately
-            self.currentRoom?.chatsData?.append(newChat)
-
-            do {
-                _ = try chatsRef.addDocument(from: newChat) { error in
-                    if let error = error {
-                        print("Error sending chat message: \(error.localizedDescription)")
-                        // Optionally handle error, e.g., remove the chat from `chatsData` if not successful
-                    }
-                }
-            } catch let error {
-                print("Error sending chat message: \(error.localizedDescription)")
-            }
-        }
-    
     func fetchTasks(roomID: String){
         let tasksRef = Firestore.firestore().collection("rooms").document(roomID).collection("tasks")
         tasksRef.order(by: "time", descending: true).addSnapshotListener { [weak self] snapshot, error in
@@ -513,8 +498,8 @@ class AuthViewModel: ObservableObject {
             }
             DispatchQueue.main.async {
                 // Notify the UI to update as the chatsData array has changed.
-                self?.objectWillChange.send()
             }
+                self?.objectWillChange.send()
         }
     }
     
@@ -605,6 +590,46 @@ class AuthViewModel: ObservableObject {
         } catch {
             print("Debug: Failed to delete task with error \(error.localizedDescription)")
         }
+    }
+}
+
+    // Function to send a new chat message
+    func sendChatMessage(roomID: String, content: String) {
+        let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+        guard let currentUser = currentUser else { return }
+
+        let newChat = Chats(content: content, member: Firestore.firestore().collection("members").document(currentUser.id ?? ""), post_time: Date(), isCurrentUser: true)
+
+        // Add the chat locally first to make it appear immediately
+        self.currentRoom?.chatsData?.append(newChat)
+
+        do {
+            _ = try chatsRef.addDocument(from: newChat) { error in
+                if let error = error {
+                    print("Error sending chat message: \(error.localizedDescription)")
+                    // Optionally handle error, e.g., remove the chat from `chatsData` if not successful
+                }
+            }
+        } catch let error {
+            print("Error sending chat message: \(error.localizedDescription)")
+        }
+    }
+    func fetchSchedules() {
+        guard let roomID = currentRoom?.id else { return }
+        
+        Firestore.firestore().collection("rooms").document(roomID).collection("schedules")
+            .getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else {
+                    print("No schedules found")
+                    return
+                }
+                self.currentRoom?.schedulesData = documents.compactMap { document in
+                    try? document.data(as: Schedules.self)
+                }
+                DispatchQueue.main.async {
+                    self.objectWillChange.send()
+                }
+            }
     }
 }
 

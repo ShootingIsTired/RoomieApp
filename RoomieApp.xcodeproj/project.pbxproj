@@ -10,6 +10,7 @@
 		4B07BD882BF199E1002C44A4 /* ViewMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD872BF199E1002C44A4 /* ViewMembers.swift */; };
 		4B07BD8A2BF19DB8002C44A4 /* ViewRooms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */; };
 		4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD8B2BF20498002C44A4 /* ViewCurrentUser.swift */; };
+		4B7CC2242BF8A7FC000631C0 /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7CC2232BF8A7FC000631C0 /* Schedule.swift */; };
 		4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */; };
 		4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C272BD651AE003CFD77 /* ContentView.swift */; };
 		4BCA0C2A2BD651B0003CFD77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BCA0C292BD651B0003CFD77 /* Assets.xcassets */; };
@@ -96,6 +97,7 @@
 		4B07BD872BF199E1002C44A4 /* ViewMembers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewMembers.swift; path = RoomieApp/ViewMembers.swift; sourceTree = SOURCE_ROOT; };
 		4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewRooms.swift; path = RoomieApp/ViewRooms.swift; sourceTree = SOURCE_ROOT; };
 		4B07BD8B2BF20498002C44A4 /* ViewCurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewCurrentUser.swift; path = RoomieApp/ViewCurrentUser.swift; sourceTree = SOURCE_ROOT; };
+		4B7CC2232BF8A7FC000631C0 /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
 		4BCA0C222BD651AE003CFD77 /* RoomieApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoomieApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppApp.swift; sourceTree = "<group>"; };
 		4BCA0C272BD651AE003CFD77 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				BA098C9C2BD6A79D00E8E436 /* Home.swift */,
 				4BCA0C272BD651AE003CFD77 /* ContentView.swift */,
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
+				4B7CC2232BF8A7FC000631C0 /* Schedule.swift */,
 				4BFF3A2F2BF3D87D0093287A /* Profile.swift */,
 				730CBFDC2BE5712200600AEE /* ViewModels */,
 				730CBFD92BE570DB00600AEE /* Model */,
@@ -512,6 +515,7 @@
 				518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A362BF3D8F30093287A /* AuthViewModel.swift in Sources */,
+				4B7CC2242BF8A7FC000631C0 /* Schedule.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A342BF3D8CC0093287A /* ViewMembers.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
