@@ -119,9 +119,18 @@ struct ChoresView: View {
                 isEditing.toggle()
             }
             .padding()
-            .background(isEditing ? Color.green : Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
+//            .background(isEditing ? Color.green : Color.orange)
+//            .foregroundColor(.white)
+            //.cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke()
+            )
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(red: 1, green: 0.87, blue: 0.44))
+            )
+            .foregroundColor(.black)
 
             Spacer()
 
@@ -130,9 +139,18 @@ struct ChoresView: View {
             }) {
                 Image(systemName: "plus")
                     .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+//                    .background(Color.orange)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke()
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(red: 1, green: 0.87, blue: 0.44))
+                    )
+                    .foregroundColor(.black)
             }
         }
         .padding()
