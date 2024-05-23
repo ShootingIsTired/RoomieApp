@@ -79,7 +79,6 @@ struct ChoresView: View {
     }
 
     var choreList: some View {
-        NavigationView {
             List {
                 ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
                     ChoreRow(
@@ -99,8 +98,9 @@ struct ChoresView: View {
                     )
                 }
             }
-            .onChange(of: isEditing) { _ in
-                loadChores() // Reload chores when editing mode changes
+//            .background(.clear)
+            .onChange(of: isEditing) {
+                loadChores()
             }
             .sheet(isPresented: $showingEditChore) {
                 if let editingChore = editingChore {
@@ -111,8 +111,7 @@ struct ChoresView: View {
                 AddChore().environmentObject(authViewModel)
             }
         }
-    }
-
+    
     var editAndAddButtons: some View {
         HStack {
             Button(isEditing ? "Done" : "Edit Chores") {
