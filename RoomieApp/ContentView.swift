@@ -11,6 +11,7 @@ import Firebase
 struct ContentView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     @Binding var selectedPage: String?
+    
     var body: some View {
         Group{
             if viewModel.currentUser == nil {

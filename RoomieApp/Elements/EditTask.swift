@@ -7,13 +7,16 @@
 
 import Foundation
 import SwiftUI
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct EditTask: View {
     @Binding var task: String
 //    @Binding var selectedDate: Date
     @Binding var selectedTime: Date
     @Binding var selectedPerson: String
-    let people: [String]
+    let members: [Member]
+//    let people: [String]
     let onSaveEdit: () -> Void
     let onCancelEdit: () -> Void
 
@@ -49,7 +52,7 @@ struct EditTask: View {
                     DatePicker("Select Time", selection: $selectedTime, displayedComponents: .hourAndMinute)
                 }.padding(.horizontal)
                 HStack{
-                    SelectPerson(selectedPerson: $selectedPerson, people: people)
+                    SelectPerson(selectedPerson: $selectedPerson, members:members)
                 }.padding(.horizontal)
                 Button(action: onSaveEdit) {
                     Text("SAVE")
@@ -72,17 +75,25 @@ struct EditTask: View {
 
 // Example PreviewProvider
 struct EditTask_Previews: PreviewProvider {
-    static var previews: some View {
-        EditTask(
-            task: .constant("Some task"),
-//            selectedDate: .constant(Date()),
-            selectedTime: .constant(Date()),
-            selectedPerson: .constant("test1"),
-            people: ["Non Specific", "test1", "test2", "test3"],
-            onSaveEdit: { print("Changes saved") },
-            onCancelEdit: { print("Editing cancelled") }
-        )
-        .previewLayout(.sizeThatFits)
-        .padding(10)
-    }
+        struct PreviewWrapper: View {
+            @State private var selectedPerson = "Unassigned"
+            //        let people = ["Non Specific", "test1", "test2", "test3"]
+            let members = [Member]()
+            var body: some View{
+                EditTask(
+                    task: .constant("Complete the project"),
+        //            selectedDate: .constant(Date()),
+                    selectedTime: .constant(Date()),
+                    selectedPerson: $selectedPerson,
+                    members:members,
+                    onSaveEdit: { print("Changes saved") },
+                    onCancelEdit: { print("Cancelled") }
+                )
+            }
+        }
+        static var previews: some View {
+            PreviewWrapper()
+            .previewLayout(.sizeThatFits)
+            .padding(10)
+        }
 }

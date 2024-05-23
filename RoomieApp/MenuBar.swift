@@ -16,7 +16,7 @@ struct MenuBarView: View {
     var body: some View {
         switch selectedPage {
             case "Chat":
-                ChatRoomView(selectedPage: $selectedPage)
+                ChatRoomView(selectedPage: $selectedPage).environmentObject(authViewModel)
             case "Home":
                 HomeView(selectedPage: $selectedPage)
             case "Profile":
@@ -25,8 +25,10 @@ struct MenuBarView: View {
                 LoginView(selectedPage: $selectedPage)
             case "Register":
                 RegisterView(selectedPage: $selectedPage)
-            case "Chores":
-            ChoresView(selectedPage:$selectedPage)
+//            case "Chores":
+//            ChoresView(selectedPage:$selectedPage)
+            case "Schedule":
+                ScheduleView(selectedPage:$selectedPage).environmentObject(authViewModel)
             default:
                 HomeView(selectedPage: $selectedPage)
         }

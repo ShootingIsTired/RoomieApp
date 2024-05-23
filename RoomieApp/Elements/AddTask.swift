@@ -7,13 +7,17 @@
 
 import Foundation
 import SwiftUI
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct AddTask: View {
     @Binding var task: String
 //    @Binding var selectedDate: Date
     @Binding var selectedTime: Date
     @Binding var selectedPerson: String
-    let people: [String]
+    
+//    let people: [String]
+    let members:[Member]
     let onAddTask: () -> Void
     let onCancel: () -> Void
 
@@ -52,7 +56,7 @@ struct AddTask: View {
                     DatePicker("Select Time", selection: $selectedTime, displayedComponents: .hourAndMinute)
                 }.padding(.horizontal)
                 HStack{
-                    SelectPerson(selectedPerson: $selectedPerson, people: people)
+                    SelectPerson(selectedPerson: $selectedPerson, members: members)
                 }.padding(.horizontal)
                 Button(action: onAddTask) {
                     Text("SAVE")
@@ -144,16 +148,24 @@ struct AddTask: View {
 //}
 
 struct AddTaskView_Previews: PreviewProvider {
+    struct PreviewWrapper: View {
+        @State private var selectedPerson = "Unassigned"
+        //        let people = ["Non Specific", "test1", "test2", "test3"]
+        let members = [Member]()
+        var body: some View{
+            AddTask(
+                task: .constant("Complete the project"),
+    //            selectedDate: .constant(Date()),
+                selectedTime: .constant(Date()),
+                selectedPerson: $selectedPerson,
+                members:members,
+                onAddTask: { print("Task added") },
+                onCancel: { print("Cancelled") }
+            )
+        }
+    }
     static var previews: some View {
-        AddTask(
-            task: .constant("Complete the project"),
-//            selectedDate: .constant(Date()),
-            selectedTime: .constant(Date()),
-            selectedPerson: .constant("Unassigned"),
-            people: ["Non Specific", "test1", "test2", "test3"],
-            onAddTask: { print("Task added") },
-            onCancel: { print("Cancelled") }
-        )
+        PreviewWrapper()
         .previewLayout(.sizeThatFits)
         .padding(10)
     }

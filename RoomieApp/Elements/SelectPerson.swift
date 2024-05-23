@@ -5,97 +5,23 @@
 //  Created by Fiona on 2024/5/5.
 //
 
-//import Foundation
-//import SwiftUI
-//
-//struct SelectPerson: View {
-//    @Binding var selectedPerson: String
-//    @State private var showPersonPicker = false
-//    let people: [String]
-//    
-//    var body: some View {
-//        Button{
-//            self.showPersonPicker.toggle()
-//        }label:{
-//            HStack {
-//                Image("person")
-//                    .frame(width: 16, height: 16)
-//                Text(selectedPerson)
-//                    .foregroundStyle(.black)
-//                Image("Polygon 1")
-//                    .frame(width: 16, height: 16)
-//            }
-//        }
-//        if showPersonPicker{
-//            Picker("",selection: $selectedPerson){
-//                ForEach(people, id:\.self){
-//                    person in
-//                    Button{
-//                    }label:{
-//                        Text(person).tag(person)
-//                            .onTapGesture {
-//                                self.selectedPerson = person
-//                                self.showPersonPicker = false  // Hide picker after selection
-//                            }
-//                    }
-//                }
-//            }
-//            .pickerStyle(WheelPickerStyle())
-//            .onChange(of: selectedPerson){
-//                self.showPersonPicker = false  // Ensure picker hides when disappearing
-//            }
-//        }
-////        Menu {
-////            ForEach(people, id: \.self) { person in
-////                Button(person) {
-////                    self.selectedPerson = person
-////                }
-////            }
-////        } label: {
-////            HStack {
-////                Image("person")
-////                    .frame(width: 16, height: 16)
-////                Text(selectedPerson)
-////                    .foregroundStyle(.black)
-////                Image("Polygon 1")
-////                    .frame(width: 16, height: 16)
-////            }
-////        }
-////        .onAppear {
-////            self.selectedPerson = "Unassigned"  // 重置选项为“Unassigned”每次视图出现时
-////        }
-////        .onDisappear {
-////            self.selectedPerson = "Unassigned"  // 视图消失时重置
-////        }
-//    }
-//}
-//
-////import SwiftUI
-//
-//struct SelectPerson_Previews: PreviewProvider {
-//    struct PreviewWrapper: View {
-//        @State private var selectedPerson = "Unassigned"  // Initial state for the preview
-//        let people = ["Non Specific", "test1", "test2", "test3"]  // Sample data
-//
-//        var body: some View {
-//            SelectPerson(selectedPerson: $selectedPerson, people: people)
-//        }
-//    }
-//
-//    static var previews: some View {
-//        PreviewWrapper()
-//            .previewLayout(.sizeThatFits)
-//            .padding(10)  // Optional: Adds padding around the preview for clarity
-//    }
-//}
-
 import SwiftUI
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct SelectPerson: View {
     @Binding var selectedPerson: String
     @State private var showPersonPicker = false
-    let people: [String]
-
+//    let people: [String]
+    let members: [Member]
+    
+    private func memberName(for id: String) -> String {
+            if let member = members.first(where: { $0.id == id }) {
+                return member.name
+            }
+            return id // Fallback to showing the ID if no match is found
+        }
+    
     var body: some View {
         HStack{  // Ensure no spacing between elements in the VStack
             // Button to toggle picker visibility
@@ -105,7 +31,7 @@ struct SelectPerson: View {
                 HStack {
 //                    Image("person").frame(width: 16, height: 16)
                     Image(systemName: "person").foregroundColor(.black)
-                    Text(selectedPerson)
+                    Text(memberName(for: selectedPerson))
                         .foregroundStyle(.black)
 //                    Image("Polygon 1")
                     Image(systemName: "chevron.right")
@@ -117,9 +43,12 @@ struct SelectPerson: View {
             // Picker appears directly under the button without any space
             if showPersonPicker {
                 Picker("", selection: $selectedPerson) {
-                    ForEach(people, id: \.self) { person in
-                        Text(person)
-                            .tag(person)
+//                    Text("Unassigned").tag("Unassigned")
+                    Text("Non Specific")
+                        .tag("Non Specific")
+                    ForEach(members, id: \.id){ member in
+                            Text(member.name)
+                            .tag(String(member.id ?? "Unassigned"))
                     }
                 }
                 .accentColor(.black)
@@ -132,6 +61,7 @@ struct SelectPerson: View {
             }
         }
         .onChange(of: selectedPerson) { _ in
+//            print(selectedPerson)
             self.showPersonPicker = false  // Hide picker when selection changes
         }
     }
@@ -141,11 +71,12 @@ struct SelectPerson: View {
 // Preview provider for SwiftUI previews
 struct SelectPerson_Previews: PreviewProvider {
     struct PreviewWrapper: View {
-        @State private var selectedPerson = "Unassigned"
-        let people = ["Non Specific", "test1", "test2", "test3"]
+        @State private var selectedPerson = String()
+//        let people = ["Non Specific", "test1", "test2", "test3"]
+        let members = [Member]()
 
         var body: some View {
-            SelectPerson(selectedPerson: $selectedPerson, people: people)
+            SelectPerson(selectedPerson: $selectedPerson, members: members)
         }
     }
 

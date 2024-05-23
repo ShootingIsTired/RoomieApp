@@ -1,112 +1,126 @@
 import SwiftUI
 
-// Define a struct to model individual chat messages
-struct ChatMessage: Identifiable, Equatable {
-    let id: UUID = UUID() // Unique identifier for each message
-    let content: String // The text content of the message
-    let isCurrentUser: Bool // To differentiate between the current user and others
-}
-
 struct ChatRoomView: View {
     @Binding var selectedPage: String?
     @State private var messageText = ""
-    @State private var messages: [ChatMessage] = [] // The array that simulates a database
-    @State private var showMenuBar = false // State to manage the visibility of the menu
+    @State private var showMenuBar = false
+    @EnvironmentObject var authViewModel: AuthViewModel
+
     var body: some View {
-        ZStack(alignment: .leading){
-            Chat
+        ZStack(alignment: .leading) {
+            chatContent
                 .contentShape(Rectangle())
-                .onTapGesture{
-                    if showMenuBar{
+                .onTapGesture {
+                    if showMenuBar {
                         showMenuBar = false
                     }
                 }
+            
             if showMenuBar {
                 MenuBar(selectedPage: $selectedPage)
                     .transition(.move(edge: .leading))
             }
         }
     }
-
-    var Chat: some View {
+    
+    var chatContent: some View {
         VStack(spacing: 0) {
-            // Header at the top
-            HStack {
-                // Toggle button for the menu
-                Button(action: {
-                        // Toggle the visibility of the menu
-                        withAnimation {
-                            showMenuBar.toggle()
-                        }
-                    }) {
-                    Image("menu")
-                    .frame(width: 38, height: 38)}
-                Spacer()
-                Text("CHAT")
-                    .font(.custom("Krona One", size: 20))
-                    .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
-                Spacer()
-            }
-            .padding()
-            .background(Color.white)
-            .shadow(radius: 2)
-
-            // Chat content goes here
-            ScrollViewReader { scrollViewProxy in
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(messages) { message in
-                            HStack {
-                                if message.isCurrentUser {
-                                    Spacer()
-                                    Text(message.content)
-                                        .padding(10)
-                                        .background(Color.blue)
-                                        .foregroundColor(Color.white)
-                                        .cornerRadius(10)
-                                } else {
-                                    Text(message.content)
-                                        .padding(10)
-                                        .background(Color.gray.opacity(0.2))
-                                        .cornerRadius(10)
-                                    Spacer()
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                .onChange(of: messages) {
-                    if let lastMessage = messages.last {
-                        scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
-                    }
-                }
-            }
-
-            // Text field at the bottom
-            HStack {
-                TextField("Type a message...", text: $messageText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                Button(action: sendMessage) {
-                    Image(systemName: "arrow.up.circle.fill")
-                        .foregroundColor(.blue)
-                }
-            }
-            .padding(.horizontal)
-            .frame(height: 70)
-            .background(Color.white)
-            .shadow(radius: 2)
+            header
+            Spacer()
+            messagesView
+            messageInputField
         }
-        .edgesIgnoringSafeArea(.bottom) // Allow the text field to be at the bottom edge
+    }
+    
+    var header: some View {
+        HStack {
+            Button(action: {
+                withAnimation {
+                    showMenuBar.toggle()
+                }
+            }) {
+                Image(systemName: "line.horizontal.3")
+                    .frame(width: 38, height: 38)
+            }
+            Spacer()
+            Text("CHAT")
+                .font(.custom("Krona One", size: 20))
+                .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
+            Spacer()
+        }
+        .padding()
+        .background(Color.white)
+        .shadow(radius: 2)
+    }
+    
+    var messagesView: some View {
+        ScrollViewReader { scrollViewProxy in
+            ScrollView {
+                LazyVStack(spacing: 8) {
+                    ForEach(authViewModel.currentRoom?.chatsData ?? [], id: \.id) { message in
+                        chatMessageRow(message: message)
+                            .id(message.id)
+                    }
+                }
+                .padding(.horizontal)
+                .onChange(of: authViewModel.currentRoom?.chatsData?.count) { _ in
+                    if let lastMessage = authViewModel.currentRoom?.chatsData?.last?.id {
+                        withAnimation {
+                            scrollViewProxy.scrollTo(lastMessage, anchor: .bottom)
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                authViewModel.fetchChats(roomID: authViewModel.currentRoom?.id ?? "")
+            }
+        }
     }
 
-    func sendMessage() {
-        // Avoid sending empty messages
-        if !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let newMessage = ChatMessage(content: messageText, isCurrentUser: true)
-            messages.append(newMessage) // Append the new message to the messages array
-            messageText = "" // Clear the text field
+    var messageInputField: some View {
+        HStack {
+            TextField("Type a message...", text: $messageText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.leading, 10)
+
+            Button(action: {
+                if let roomID = authViewModel.currentRoom?.id, !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    authViewModel.sendChatMessage(roomID: roomID, content: messageText)
+                    messageText = ""
+                }
+            }) {
+                Image(systemName: "paperplane.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.blue)
+            }
+            .padding(.trailing, 10)
+        }
+        .frame(height: 50)
+        .background(Color.white)
+        .cornerRadius(25)
+        .shadow(radius: 2)
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder
+    private func chatMessageRow(message: Chats) -> some View {
+        HStack {
+            if message.isCurrentUser ?? false {
+                Spacer()
+                Text(message.content)
+                    .padding(10)
+                    .background(Color.blue)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(10)
+            } else {
+                Text(message.content)
+                    .padding(10)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                Spacer()
+            }
         }
     }
 }
@@ -114,9 +128,10 @@ struct ChatRoomView: View {
 struct ChatRoomView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
         @State var selectedPage: String? = "Chat"
+        @StateObject var authViewModel = AuthViewModel()
 
         var body: some View {
-            ChatRoomView(selectedPage: $selectedPage)
+            ChatRoomView(selectedPage: $selectedPage).environmentObject(authViewModel)
         }
     }
 
