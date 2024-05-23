@@ -164,6 +164,7 @@ class AuthViewModel: ObservableObject {
             if let birthday = birthday { updatedData["birthday"] = birthday }
             if let department = department { updatedData["department"] = department }
             if let room = room { updatedData["room"] = room }
+            if let index = index { updatedData["index"] = index }
             
             // Update the user document in Firestore
             try await Firestore.firestore().collection("members").document(uid).updateData(updatedData)
