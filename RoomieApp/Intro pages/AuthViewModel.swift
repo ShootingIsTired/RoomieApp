@@ -247,7 +247,6 @@ class AuthViewModel: ObservableObject {
             
             // Step 5: Update the current user's room property and index with this DocumentReference
             await updateMember(room: roomReference, index: newIndex)
-            await fetchMember()
             if let user = currentUser {
                 await fetchRoom(for: user)
                 print(user)
