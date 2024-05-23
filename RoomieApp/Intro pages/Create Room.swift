@@ -43,40 +43,69 @@ struct CreateRoomView: View {
                         .onAppear {
                                 self.id = viewModel.newRoomID ?? "create room fail"
                             }
-                    HStack {
-                        //sub title
-                        VStack {
+                    VStack{
+                        Spacer().frame(height:40)
+                        HStack{
                             Text("Room ID:")
                                 .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60
-                                )
-                                .padding(.trailing, 2)
-                            Text("Room Name:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60)
-                                .padding(.trailing, 2)
-                        }
-                        //text field
-                        VStack {
+                                .frame(width:100,alignment:.leading)
+                                .padding(.leading, 20)
+                                .multilineTextAlignment(.leading)
                             Text(id)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
-                                .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                            
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:20)
+                        HStack{
+                            Text("Room Name:")
+                                .font(.headline)
+                                .frame(width:120, alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
                             TextField("Set Your Room Name", text: $roomName)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
                                 .padding()
-                                .background {textFieldBorder}
                                 .multilineTextAlignment(.center)
-                        }
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
                     }
+//                    HStack {
+//                        //sub title
+//                        VStack {
+//                            Text("Room ID:")
+//                                .font(.headline)
+//                                .foregroundColor(.black)
+//                                .bold()
+//                                .frame(width: 100, height: 60
+//                                )
+//                                .padding(.trailing, 2)
+//                            Text("Room Name:")
+//                                .font(.headline)
+//                                .foregroundColor(.black)
+//                                .bold()
+//                                .frame(width: 100, height: 60)
+//                                .padding(.trailing, 2)
+//                        }
+//                        //text field
+//                        VStack {
+//                            Text(id)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                            
+//                            TextField("Set Your Room Name", text: $roomName)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                        }
+//                    }
                     
                     //Buttoom
                     NavigationLink(destination: MenuBarView()
@@ -119,7 +148,7 @@ struct CreateRoomView: View {
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 230, height: 35)
+            .frame(width: 350, height: 45)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(

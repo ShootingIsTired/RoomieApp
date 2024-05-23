@@ -39,39 +39,65 @@ struct JoinRoomView: View {
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
-                    HStack {
-                        VStack {
+                    VStack{
+                        Spacer().frame(height:40)
+                        HStack{
                             Text("Room Name:")
                                 .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60
-                                )
-                                .padding(.trailing, 2)
-                            Text("Room ID:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 60)
-                                .padding(.trailing, 2)
-                            
-                        }
-                        VStack {
+                                .frame(width:130,alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
                             TextField("Enter Room Name", text: $roomName)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
+                                .multilineTextAlignment(.leading)
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
+                        HStack{
+                            Text("Room ID: ")
+                                .font(.headline)
+                                .frame(width:130, alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
                             TextField("Enter Your Room ID", text: $roomID)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                        }
-                        
+                                .multilineTextAlignment(.leading)
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
                     }
+//                    HStack {
+//                        VStack {
+//                            Text("Room Name:")
+//                                .font(.headline)
+//                                .foregroundColor(.black)
+//                                .bold()
+//                                .frame(width: 100, height: 60
+//                                )
+//                                .padding(.trailing, 2)
+//                            Text("Room ID:")
+//                                .font(.headline)
+//                                .foregroundColor(.black)
+//                                .bold()
+//                                .frame(width: 100, height: 60)
+//                                .padding(.trailing, 2)
+//                            
+//                        }
+//                        VStack {
+//                            TextField("Enter Room Name", text: $roomName)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                            TextField("Enter Your Room ID", text: $roomID)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                        }
+//                    }
                     
                     NavigationLink(destination: MenuBarView()
                         .navigationBarBackButtonHidden(), isActive: $isActive) {
@@ -110,7 +136,7 @@ struct JoinRoomView: View {
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 230, height: 35)
+            .frame(width: 350, height: 40)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(
