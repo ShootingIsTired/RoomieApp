@@ -65,7 +65,7 @@ struct ChoresView: View {
                 }
             }) {
                 Image(systemName: "line.horizontal.3")
-                    .frame(width: 38, height: 38)
+                    .imageScale(.large)
             }
             Spacer()
             Text("CHORES")
@@ -98,7 +98,7 @@ struct ChoresView: View {
                     )
                 }
             }
-//            .background(.clear)
+            .scrollContentBackground(.hidden)
             .onChange(of: isEditing) {
                 loadChores()
             }

@@ -551,27 +551,72 @@ class AuthViewModel: ObservableObject {
                 }
             }
         }
-        
+//        
+//    func editChore(choreID: String, newContent: String, newFrequency: Int, newStatus: Bool, roomID: String) async {
+//        guard !roomID.isEmpty, let choreRef = self.currentRoom?.choresData?.first(where: { $0.id == choreID }) else {
+//            print("Error: No room ID provided or chore not found")
+//            return
+//        }
+//        
+//        let choreDocumentRef = Firestore.firestore().collection("rooms").document(roomID).collection("chores").document(choreID)
+//        
+//        do {
+//            try await choreDocumentRef.updateData([
+//                "content": newContent,
+//                "status": newStatus,
+//                "frequency": newFrequency,
+//            ])
+//            await fetchAllChores(roomID: roomID)  // Fetch all chores again to refresh the list
+//            print("Chore updated successfully")
+//        } catch let error {
+//            print("Error updating chore: \(error.localizedDescription)")
+//        }
+//    }
+    
         func updateTask(roomID: String, taskID: String, time: Date? = nil, content: String? = nil, assigned_person: String? = nil) async {
+            let taskRef = Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID)
             do {
-                var updatedData: [String: Any] = [:]
-                if let time = time { updatedData["time"] = time }
-                if let content = content { updatedData["content"] = content }
-                if let assigned_person = assigned_person {
-                    if assigned_person != "Unassigned" && assigned_person != "Non Specific" {
-                        updatedData["assigned_person"] = Firestore.firestore().collection("members").document(assigned_person)
-                        updatedData["isUnassigned"] = false
-                    } else if assigned_person == "Unassigned" {
-                        updatedData["assigned_person"] = NSNull()
-                        updatedData["isUnassigned"] = true
-                    } else if assigned_person == "Non Specific" {
-                        updatedData["assigned_person"] = NSNull()
-                        updatedData["isUnassigned"] = false
-                    }
+                if assigned_person == "Unassigned"{
+                    try await taskRef.updateData([
+                    "time": time,
+                    "content": content,
+                    "isUnassigned" : true
+                ])
                 }
-                print("Updating task ID: \(taskID) in room ID: \(roomID) with data: \(updatedData)")
-                try await Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID).updateData(updatedData)
-                print("Debug: Successfully updated task")
+                else if assigned_person == "Non Specific"{
+                    try await taskRef.updateData([
+                    "time": time,
+                    "content": content,
+                    "isUnassigned" : false
+                ])
+                }
+                else{
+                    try await taskRef.updateData([
+                    "time": time,
+                    "content": content,
+                    "isUnassigned" : false,
+                    "assigned_person": Firestore.firestore().collection("members").document(assigned_person!)
+                ])
+                }
+                    
+//                var updatedData: [String: Any] = [:]
+//                if let time = time { updatedData["time"] = time }
+//                if let content = content { updatedData["content"] = content }
+//                if let assigned_person = assigned_person {
+//                    if assigned_person != "Unassigned" && assigned_person != "Non Specific" {
+//                        updatedData["assigned_person"] = Firestore.firestore().collection("members").document(assigned_person)
+//                        updatedData["isUnassigned"] = false
+//                    } else if assigned_person == "Unassigned" {
+////                        updatedData["assigned_person"] = NSNull()
+//                        updatedData["isUnassigned"] = true
+//                    } else if assigned_person == "Non Specific" {
+////                        updatedData["assigned_person"] = NSNull()
+//                        updatedData["isUnassigned"] = false
+//                    }
+//                }
+//                print("Updating task ID: \(taskID) in room ID: \(roomID) with data: \(updatedData)")
+//                try await Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID).updateData(updatedData)
+//                print("Debug: Successfully updated task")
                 await fetchTasks(roomID: roomID)
             } catch {
                 print("Debug: Fail to update task with error \(error.localizedDescription)")
@@ -610,9 +655,6 @@ class AuthViewModel: ObservableObject {
                 print("Error sending chat message: \(error.localizedDescription)")
             }
         }
-        
-    }
-    
     
 //    func fetchChores(roomID: String) async {
 //        guard !roomID.isEmpty else {
@@ -635,6 +677,7 @@ class AuthViewModel: ObservableObject {
 //               print("Error fetching chores: \(error.localizedDescription)")
 //           }
 //       }
+    
     @Published var choresData: [Chores] = []
     
     // currently not used

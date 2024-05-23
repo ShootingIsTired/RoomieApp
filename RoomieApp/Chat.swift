@@ -40,7 +40,7 @@ struct ChatRoomView: View {
                 }
             }) {
                 Image(systemName: "line.horizontal.3")
-                    .frame(width: 38, height: 38)
+                    .imageScale(.large)
             }
             Spacer()
             Text("CHAT")
