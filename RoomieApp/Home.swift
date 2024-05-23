@@ -176,7 +176,10 @@ struct HomeView: View {
             Text(task.content)
                 .frame(/*width: 80, */alignment: .leading)
             Spacer()
-            Text("Unassigned")
+            HStack{
+                Image(systemName: "person")
+                Text("Unassigned")
+            }
             Spacer()
             if editUnassigned {
                 Button(action: {
@@ -230,6 +233,7 @@ struct HomeView: View {
     private func sectionHeader(title: String, isEditing: Binding<Bool>, showAddButton: Bool = false) -> some View {
         HStack {
             Text(title)
+                .font(Font.custom("Noto Sans", size: 20))
             Spacer()
             if !isEditing.wrappedValue {
                 if showAddButton {
@@ -263,28 +267,26 @@ struct HomeView: View {
     }
 
     private func addNewTask() {
+        resetTaskState()
         if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             authViewModel.addNewTask(roomID: roomID, time: selectedTime, content: content, assigned_person: selectedPerson)
-            resetTaskState()
-            hideOverlays()
         }
+        hideOverlays()
     }
 
     private func saveEditTask() {
-        Task {
             if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
+                Task{
+                    await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
+                }
             }
-        }
-        resetTaskState()
+        hideOverlays()
     }
 
     private func resetTaskState() {
         content = ""
         selectedPerson = "Unassigned"
         selectedTime = Date()
-        showAddTask = false
-        showEditTask = false
     }
 
     private func hideOverlays() {
