@@ -1,427 +1,332 @@
-//
-//
-//  ContentView.swift
-//  sad_project
-//
-//  Created by Fiona on 2024/4/19.
-//
-
 import SwiftUI
-
-struct Taskk: Identifiable {
-    var id = UUID()
-//    var date: Date
-    var time: Date
-    var content: String
-    var person: String
-}
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct HomeView: View {
     @Binding var selectedPage: String?
     @State private var showMenuBar = false
-    @State private var currentPage = "home"
-    @EnvironmentObject var viewModel: AuthViewModel
-    
     @State private var showAddTask = false
-    @State private var tasks:[Taskk] = [
-        Taskk(/*date:Date(),*/time:Date(), content:"abcd",person:"test1"),
-        Taskk(/*date:Date(),*/time:Date(), content:"abcd",person:"Unassigned"),Taskk(/*date:Date(),*/time:Date(), content:"abcd",person:"Non Specific")
-    ]
-    
-    @State private var today = Date()
-    
-    @State private var task = ""
-    @State private var selectedPerson = ""  // 存儲當前選擇的人員名稱
-    let people:[String] = ["Non Specific","test1","test2","test3"]
-    
-    @State private var selectedDate = Date()
-    @State private var selectedTime = Date()
-    @State private var currentTaskId = UUID()
-
+    @State private var showEditTask = false
     @State private var editReminder = false
     @State private var editUnassigned = false
-    @State private var showEditTask = false
-    
+    @State private var tasks: [Tasks] = []
+    @State private var content = ""
+    @State private var selectedPerson = "Unassigned"
+    @State private var selectedTime = Date()
+    @State private var currentTaskId = ""
+
+    @EnvironmentObject var authViewModel: AuthViewModel
+
     var body: some View {
-        ZStack(alignment: .leading){
-            Home
-                .contentShape(Rectangle())
-                .onTapGesture{
-                    if showMenuBar{
-                        showMenuBar = false
+        ZStack(alignment: .leading) {
+            if let members = authViewModel.currentRoom?.membersData {
+                Home
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        hideOverlays()
                     }
-                    if showAddTask{
-                        showAddTask = false
-                    }
-                    if showEditTask{
-                        showEditTask = false
-                    }
+
+                if showMenuBar {
+                    MenuBar(selectedPage: $selectedPage)
+                        .transition(.move(edge: .leading))
                 }
-            if showMenuBar {
-                MenuBar(selectedPage: $selectedPage)
-                    .transition(.move(edge: .leading))
-            }
-            if showAddTask {
-                AddTask(task: $task, /*selectedDate: $selectedDate,*/ selectedTime: $selectedTime, selectedPerson: $selectedPerson, people: people, onAddTask: {
-                    addNewTask()
-                    showAddTask = false
-                }, onCancel: {
-                    showAddTask = false
-                })
-            }
-            if showEditTask{
-                EditTask(task: $task, /*selectedDate: $selectedDate,*/ selectedTime: $selectedTime, selectedPerson: $selectedPerson, people: people, onSaveEdit: {saveEditTask()
-                    showEditTask = false},
-                 onCancelEdit: {showEditTask = false})
+
+                if showAddTask {
+                    AddTask(
+                        task: $content,
+                        selectedTime: $selectedTime,
+                        selectedPerson: $selectedPerson,
+                        members: members,
+                        onAddTask: addNewTask,
+                        onCancel: {
+                            showAddTask = false
+                            resetTaskState()
+                            hideOverlays()
+                        }
+                    )
+                }
+
+                if showEditTask {
+                    EditTask(
+                        task: $content,
+                        selectedTime: $selectedTime,
+                        selectedPerson: $selectedPerson,
+                        members: members,
+                        onSaveEdit: saveEditTask,
+                        onCancelEdit: {
+                            showEditTask = false
+                            resetTaskState()
+                            hideOverlays()
+                        }
+                    )
+                }
             }
         }
-    }
-    
-    func addNewTask(){
-        if !task
-            .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let newTask = Taskk(/*date:selectedDate,*/ time:selectedTime, content:task, person:selectedPerson)
-            tasks.append(newTask)
-            task = ""
-            selectedPerson = "Unassigned"
-            selectedDate = Date()
-            selectedTime = Date()
-        }
-    }
-    
-    func saveEditTask() {
-        if let index = tasks.firstIndex(where: { $0.id == currentTaskId }) {
-            tasks[index].content = task
-//            tasks[index].date = selectedDate
-            tasks[index].time = selectedTime
-            tasks[index].person = selectedPerson
-        }
-        task = ""
-        selectedPerson = "Unassigned"
-        selectedDate = Date()
-        selectedTime = Date()
     }
 
-    
-    var Home: some View{
+    private var Home: some View {
         VStack(spacing: 0) {
-            HStack {
-                // Toggle button for the menu
-                Button(action: {
-                        // Toggle the visibility of the menu
-                        withAnimation {
-                            showMenuBar.toggle()
-                        }
-                    }) {
-                    Image("menu")
-                    .frame(width: 38, height: 38)}
-                Spacer()
-                Text("HOME")
-                    .font(.custom("Krona One", size: 20))
-                    .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
-                Spacer()
-            }
-            .padding()
-            .background(Color.white)
-            .shadow(radius: 2)
-            
-            VStack{
-                HStack{
-                    Text("Reminders")
-//                        .font(Font.custom("Jacques Francois", size: 20))
-                        .foregroundColor(.black)
-//                        .padding()
-                    Spacer()
-                    if !editReminder{
-                        Button{
-                            self.editReminder = true
-                        }label:{
-                            Text("EDIT")
-                        .padding(5)
-                        .cornerRadius(8)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke()
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(red: 1, green: 0.87, blue: 0.44))
-                )
-                .foregroundColor(.black)
-                    }
-                    else{
-                        Button{
-                            self.editReminder = false
-                        }label:{
-                            Text("BACK")
-                        .padding(5)
-                        .cornerRadius(8)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke()
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(red: 1, green: 0.87, blue: 0.44))
-                )
-                .foregroundColor(.black)
-                    }
-                }
-                .padding(.horizontal,30)
-                .padding(.vertical,15)
-                ScrollView{
-                    VStack{
-                        ForEach($tasks){
-                            $task in
-                            if formattedDate(task.time) == formattedDate(today) &&
-                             task.person != "Unassigned"
-                            {
-                                if !editReminder{
-                                    HStack{
-                                        Text(formattedDate(task.time))
-                                            .frame(width:50,alignment:.leading)
-                                        Spacer()
-                                        Text(formattedTime(task.time))
-                                            .frame(width:70,alignment:.leading)
-                                        Spacer()
-                                        Text(task.content)
-                                            .frame(width:80,alignment:.leading)
-                                        Spacer()
-                                        HStack{
-                                            if task.person != "Non Specific"{
-                                                Image("person")
-                                                Text(task.person)
-                                            }
-                                            else{
-                                                Image("person-x")
-                                                Text(task.person)
-                                            }
-                                        }
-                                        .frame(width:140,alignment:/*.trailing*/.leading)
-                                    }
-                                    .padding(10)
-                                    .background(
-                                        Rectangle()
-                                          .foregroundColor(.clear)
-                                          .frame(width: 370 )
-                                          .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                                          .cornerRadius(15)
-                                    )
-                                }
-                                else{
-                                    Button{
-                                        currentTaskId = task.id // Set the current task ID
-                                            self.task = task.content
-//                                            self.selectedDate = task.date
-                                            self.selectedTime = task.time
-                                            self.selectedPerson = task.person
-                                            self.showEditTask = true
-                                    }label:{
-                                        Text(formattedDate(task.time))
-                                            .frame(width:50,alignment:.leading)
-                                        Spacer()
-                                        Text(formattedTime(task.time))
-                                            .frame(width:70,alignment:.leading)
-                                        Spacer()
-                                        Text(task.content)
-                                            .frame(width:80,alignment:.leading)
-                                        Spacer()
-                                        HStack{
-                                            if task.person != "Non Specific"{
-                                                Image("person")
-                                                Text(task.person)
-                                            }
-                                            else{
-                                                Image("person-x")
-                                                Text(task.person)
-                                            }
-                                        }
-                                        .frame(width:140,alignment:/*.trailing*/.leading)
-                                    }
-                                    .foregroundColor(.black)
-                                    .padding(10)
-                                    .background(
-                                        Rectangle()
-                                          .foregroundColor(.clear)
-                                          .frame(width: 370 )
-                                          .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                                          .cornerRadius(15)
-                                    )
-                                }
-                            }
-                        }
-                    }.background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                        .padding(.horizontal)
-                }
-                }
-//            .frame(maxWidth: 370)
-//            .padding(.horizontal)
-            VStack{
-                HStack{
-                    Text("Unassigned Tasks")
-//                        .font(Font.custom("Jacques Francois", size: 20))
-                    Spacer()
-                    
-                    if !editUnassigned{
-                        Button{
-                                showAddTask.toggle()
-                            selectedPerson = "Unassigned"
-                        }label:{
-                            Text("ADD")
-                        .padding(5)
-                        .cornerRadius(8)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke()
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(red: 1, green: 0.87, blue: 0.44))
-                )
-                .foregroundColor(.black)
-                        Button{
-                            editUnassigned = true
-                        }label:{
-                            Text("EDIT")
-                        .padding(5)
-                        .cornerRadius(8)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke()
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(red: 1, green: 0.87, blue: 0.44))
-                )
-                .foregroundColor(.black)
-                    }
-                    else{
-                        Button{
-                            editUnassigned = false
-                            task = ""
-//                            selectedDate = Date()
-                            selectedTime = Date()
-                            selectedPerson = "Unassigned"
-                        }label:{
-                            Text("BACK")
-                        .padding(5)
-                        .cornerRadius(8)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke()
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(red: 1, green: 0.87, blue: 0.44))
-                )
-                .foregroundColor(.black)
-                    }
-                }
-                .padding(15)
-//                .padding(.horizontal,15)
-//                .padding(.vertical,15)
-                ScrollView{
-                    VStack{
-                        ForEach($tasks){
-                            $task in
-                            if task.person == "Unassigned"{
-                                if !editUnassigned{
-                                    HStack
-                                    {
-                                        Text(formattedDate(task.time))
-                                            .frame(width:50,alignment:.leading)
-                                        Spacer()
-                                        Text(formattedTime(task.time))
-                                            .frame(width:70,alignment:.leading)
-                                        Spacer()
-                                        Text(task.content)
-                                            .frame(width:80,alignment:.leading)
-                                        VStack{
-                                            SelectPerson(selectedPerson: $task.person, people: people)
-                                        }
-                                        .frame(width:140)
-                                    }
-                                    .foregroundColor(.black)
-                                    .padding(10)
-                                    .background(
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 370)
-                                            .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                                            .cornerRadius(15))
-                                }
-                                else{
-                                    Button{
-                                        currentTaskId = task.id // Set the current task ID
-                                            self.task = task.content
-//                                            self.selectedDate = task.date
-                                            self.selectedTime = task.time
-                                            self.selectedPerson = task.person
-                                            self.showEditTask = true
-                                    }label:
-                                    {
-                                        Text(formattedDate(task.time))
-                                            .frame(width:50,alignment:.leading)
-                                        Spacer()
-                                        Text(formattedTime(task.time))
-                                            .frame(width:70,alignment:.leading)
-                                        Spacer()
-                                        Text(task.content)
-                                            .frame(width:80,alignment:.leading)
-                                        HStack{
-        //                                    SelectPerson(selectedPerson: $task.person, people: people)
-                                            Image("person")
-                                            Text(task.person)
-                                        }
-                                        .frame(width:140)
-                                    }
-                                    .foregroundColor(.black)
-                                    .padding(10)
-                                    .background(
-                                        Rectangle()
-                                            .foregroundColor(.clear)
-                                            .frame(width: 370)
-                                            .background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                                            .cornerRadius(15))
-                                }
-                            }
-                        }
-                    }.background(Color(red: 0.96, green: 0.96, blue: 0.93))
-                }
-                .padding(.horizontal)
-                }
+            header
+            reminderSection
+            unassignedTasksSection
         }
-        .frame(maxHeight:.infinity, alignment:.top)
+        .frame(maxHeight: .infinity, alignment: .top)
+    }
+
+    private var header: some View {
+        HStack {
+            Button(action: toggleMenuBar) {
+                Image("menu")
+                    .frame(width: 38, height: 38)
+            }
+            Spacer()
+            Text("HOME")
+                .font(.custom("Krona One", size: 20))
+                .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
+            Spacer()
+        }
+        .padding()
+        .background(Color.white)
+        .shadow(radius: 2)
+    }
+
+    @ViewBuilder private func reminderRow(task: Tasks) -> some View {
+        HStack {
+            Text(formattedDate(task.time))
+                .frame(width: 50, alignment: .leading)
+            Spacer()
+            Text(formattedTime(task.time))
+                .frame(width: 70, alignment: .leading)
+            Spacer()
+            Text(task.content)
+                .frame(width: 80, alignment: .leading)
+            Spacer()
+            HStack {
+                if task.assigned_person != nil, task.isUnassigned == false {
+                    Image("person")
+                } else {
+                    Image("person-x")
+                }
+                if task.assigned_person == nil {
+                    Text("Non Specific")
+                } else {
+                    Text(memberName(for: task.assigned_person!.documentID))
+                }
+            }
+            .frame(width: 140, alignment: .leading)
+            Spacer()
+            if editReminder {
+                Button(action: {
+                    Task {
+                        await authViewModel.removeTask(roomID: authViewModel.currentRoom?.id ?? "", taskID: task.id ?? "")
+                    }
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.red)
+                }
+            } else {
+                Image(systemName: "chevron.right")
+            }
+        }
+        .padding(10)
+        .background(
+            Rectangle()
+                .foregroundColor(.clear)
+                .frame(width: 370)
+                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                .cornerRadius(15)
+        )
+        .onTapGesture {
+            self.selectedPerson = task.assigned_person?.documentID ?? "Non Specific"
+            self.selectedTime = task.time
+            self.content = task.content
+            self.currentTaskId = task.id!
+            self.showEditTask = true
+            print(self.selectedPerson,
+                  self.selectedTime,
+                  self.content)
+        }
+    }
+
+    private var reminderSection: some View {
+        VStack {
+            sectionHeader(title: "Reminders", isEditing: $editReminder)
+            ScrollView {
+                VStack {
+                    ForEach(authViewModel.currentRoom?.tasksData ?? [], id: \.id) { task in
+                        if task.isUnassigned == false {
+                            reminderRow(task: task)
+                        }
+                    }
+                }
+                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                .padding(.horizontal)
+            }
+        }
+    }
+
+    @ViewBuilder private func unassignedTaskRow(task: Tasks) -> some View {
+        HStack {
+            Text(formattedDate(task.time))
+                .frame(width: 50, alignment: .leading)
+            Spacer()
+            Text(formattedTime(task.time))
+                .frame(width: 70, alignment: .leading)
+            Spacer()
+            Text(task.content)
+                .frame(width: 80, alignment: .leading)
+            Spacer()
+            Text("Unassigned")
+            Spacer()
+            if editUnassigned {
+                Button(action: {
+                    Task {
+                        await authViewModel.removeTask(roomID: authViewModel.currentRoom?.id ?? "", taskID: task.id ?? "")
+                    }
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.red)
+                }
+            } else {
+                Image(systemName: "chevron.right")
+            }
+        }
+        .padding(10)
+        .background(
+            Rectangle()
+                .foregroundColor(.clear)
+                .frame(width: 370)
+                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                .cornerRadius(15)
+        )
+        .onTapGesture {
+            self.selectedPerson = "Unassigned"
+            self.selectedTime = task.time
+            self.content = task.content
+            self.currentTaskId = task.id!
+            self.showEditTask = true
+        }
+    }
+
+    private var unassignedTasksSection: some View {
+        VStack {
+            if authViewModel.currentRoom?.membersData != nil {
+                sectionHeader(title: "Unassigned Tasks", isEditing: $editUnassigned, showAddButton: true)
+                ScrollView {
+                    VStack {
+                        ForEach(authViewModel.currentRoom?.tasksData ?? [], id: \.id) { task in
+                            if task.isUnassigned == true {
+                                unassignedTaskRow(task: task)
+                            }
+                        }
+                    }
+                    .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+                    .padding(.horizontal)
+                }
+            }
+        }
+    }
+
+    private func sectionHeader(title: String, isEditing: Binding<Bool>, showAddButton: Bool = false) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            if !isEditing.wrappedValue {
+                if showAddButton {
+                    Button(action: { showAddTask.toggle() }) {
+                        Text("ADD")
+                            .padding(5)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(red: 1, green: 0.87, blue: 0.44)))
+                            .foregroundColor(.black)
+                    }
+                }
+                Button(action: { isEditing.wrappedValue = true }) {
+                    Text("EDIT")
+                        .padding(5)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(red: 1, green: 0.87, blue: 0.44)))
+                        .foregroundColor(.black)
+                }
+            } else {
+                Button(action: {
+                    isEditing.wrappedValue = false
+                    resetTaskState()
+                }) {
+                    Text("BACK")
+                        .padding(5)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(red: 1, green: 0.87, blue: 0.44)))
+                        .foregroundColor(.black)
+                }
+            }
+        }
+        .padding(.horizontal, 30)
+        .padding(.vertical, 15)
+    }
+
+    private func addNewTask() {
+        if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            authViewModel.addNewTask(roomID: roomID, time: selectedTime, content: content, assigned_person: selectedPerson)
+            resetTaskState()
+            hideOverlays()
+        }
+    }
+
+    private func saveEditTask() {
+        Task {
+            if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
+            }
+        }
+        resetTaskState()
+    }
+
+    private func resetTaskState() {
+        content = ""
+        selectedPerson = "Unassigned"
+        selectedTime = Date()
+        showAddTask = false
+        showEditTask = false
+    }
+
+    private func hideOverlays() {
+        showMenuBar = false
+        showAddTask = false
+        showEditTask = false
+    }
+
+    private func toggleMenuBar() {
+        withAnimation {
+            showMenuBar.toggle()
+        }
+    }
+
+    private func memberName(for id: String) -> String {
+        if let member = authViewModel.currentRoom?.membersData?.first(where: { $0.id == id }) {
+            return member.name
+        }
+        return id // Fallback to showing the ID if no match is found
     }
 }
 
 private func formattedTime(_ time: Date) -> String {
     let formatter = DateFormatter()
-    formatter.dateStyle = .none // Use short date style for compact display
     formatter.timeStyle = .short
-        return formatter.string(from: time)
-    }
+    return formatter.string(from: time)
+}
 
 private func formattedDate(_ date: Date) -> String {
     let formatter = DateFormatter()
-    formatter.dateStyle = .short // Use short date style for compact display
-    formatter.timeStyle = .none
     formatter.dateFormat = "MM/dd"
     return formatter.string(from: date)
 }
 
-
-
 struct HomeView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
         @State var selectedPage: String? = "Home"
+        @StateObject var authViewModel = AuthViewModel()
+
         var body: some View {
             HomeView(selectedPage: $selectedPage)
+                .environmentObject(authViewModel)
         }
     }
 

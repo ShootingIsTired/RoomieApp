@@ -10,10 +10,27 @@ import SwiftUI
 import SwiftData
 
 struct GetRoomView: View {
+    @EnvironmentObject var viewModel: AuthViewModel
     @State private var id: String = "123456"
     @State private var roomName = ""
     @State private var isActiveJoin = false
     @State private var isActiveCreate = false
+    let newRoom = Rooms(
+        id: nil,
+        name: "Default Room",
+        rules: [],
+        members: nil,
+        tasks: nil,
+        schedules: nil,
+        chores: nil,
+        chats: nil,
+        membersData: nil,
+        tasksData: nil,
+        schedulesData: nil,
+        choresData: nil,
+        chatsData: nil
+    )
+    
     var body: some View {
         NavigationView{
             ZStack{
@@ -56,19 +73,22 @@ struct GetRoomView: View {
                                             }
                                         }
                                     }
+                                
+                                
+                                
                                 NavigationLink(destination: CreateRoomView()
                                     .navigationBarBackButtonHidden(), isActive: $isActiveCreate) {
-                                        Button {
-                                            Task {                                                isActiveCreate = true
+                                        Button{
+                                            Task{
+                                                await viewModel.createRoom(newRoom: newRoom)
+                                                isActiveCreate = true
                                             }
                                         } label: {
-                                            VStack {
-                                                Text("Create a New Room")
-                                                    .font(.headline)
-                                                    .foregroundColor(.black)
-                                                    .frame(width: 400.0, height: 42.0)
-                                                    .background(ButtomBorder)
-                                            }
+                                            Text("Create a New Room")
+                                                .font(.headline)
+                                                .foregroundColor(.black)
+                                                .frame(width: 400.0, height: 42.0)
+                                                .background(ButtomBorder)
                                         }
                                     }
                             }

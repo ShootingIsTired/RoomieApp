@@ -22,12 +22,17 @@ class AuthViewModel: ObservableObject {
     @Published var IsLoggedIn = false
     @Published var currentRoom: Rooms?
     @Published var userHasRoom = false
+    @Published var newRoomReference: DocumentReference?
+    @Published var newRoomID: String?
+    
     private var lastDocumentSnapshot: DocumentSnapshot?
     @Published var isMoreDataAvailable = true
     
-    init(firebaseUserSession: FirebaseAuth.User? = nil, currentUser: Member? = nil) {
+    init(firebaseUserSession: FirebaseAuth.User? = nil, currentUser: Member? = nil, newRoomReference:DocumentReference? = nil,newRoomID: String? = nil) {
         self.firebaseUserSession = firebaseUserSession
         self.currentUser = currentUser
+        self.newRoomReference = nil
+        self.newRoomID = "00000000"
         Task {
             await fetchMember()
             if let user = currentUser {
@@ -159,6 +164,7 @@ class AuthViewModel: ObservableObject {
             if let birthday = birthday { updatedData["birthday"] = birthday }
             if let department = department { updatedData["department"] = department }
             if let room = room { updatedData["room"] = room }
+            if let index = index { updatedData["index"] = index }
             
             // Update the user document in Firestore
             try await Firestore.firestore().collection("members").document(uid).updateData(updatedData)
@@ -171,14 +177,17 @@ class AuthViewModel: ObservableObject {
     }
     
     //Add Room to Member
-    func addNewRoomAndUpdateMember(newRoom: Rooms) async {
+    func createRoom(newRoom: Rooms) async {
         do {
             // Step 1: Create the room in Firestore
-            let roomRef = try Firestore.firestore().collection("rooms").addDocument(from: newRoom)
+            let newRoomRef = try Firestore.firestore().collection("rooms").addDocument(from: newRoom)
             
-            // Step 2: Update the member's room property with the new room's DocumentReference
-            await updateMember(room: roomRef)
-            print("Room added and member updated successfully")
+            // Step 2: Store the new room's DocumentReference in newRoomReference
+            self.newRoomReference = newRoomRef
+            
+            // Step 3: Convert the new room's DocumentReference to a string
+            newRoomID = newRoomRef.documentID
+            print("New room created with ID: \(String(describing: newRoomID))")
         } catch let error {
             print("Error adding room or updating member: \(error.localizedDescription)")
         }
@@ -215,7 +224,6 @@ class AuthViewModel: ObservableObject {
         do {
             // Step 1: Query Firestore for the room with the provided name and password
             let querySnapshot = try await Firestore.firestore().collection("rooms")
-                .whereField("name", isEqualTo: roomName)
                 .whereField(FieldPath.documentID(), isEqualTo: roomID)
                 .getDocuments()
             
@@ -239,14 +247,18 @@ class AuthViewModel: ObservableObject {
             
             // Step 5: Update the current user's room property and index with this DocumentReference
             await updateMember(room: roomReference, index: newIndex)
-            await fetchMember()
+            if let user = currentUser {
+                await fetchRoom(for: user)
+                print(user)
+            }
             print("Room updated successfully for the current user")
         } catch {
             print("Error updating room for the current user: \(error.localizedDescription)")
-        }}
-        
-        
-        //Room
+        }
+    }
+    
+    
+    //Room
     func fetchRoom(for user: Member) async {
         do {
             guard let roomRef = user.room else {
@@ -268,7 +280,7 @@ class AuthViewModel: ObservableObject {
                     self.currentRoom?.schedulesData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/schedules", as: Schedules.self)
                     self.currentRoom?.choresData = await fetchSubCollection(collectionPath: "rooms/\(roomId)/chores", as: Chores.self)
                     fetchChats(roomID: roomId)  // Start listening to chat messages
-
+                    fetchTasks(roomID: roomId)
                     DispatchQueue.main.async {
                         self.objectWillChange.send()
                     }
@@ -279,6 +291,7 @@ class AuthViewModel: ObservableObject {
                 userHasRoom = false
                 currentRoom = nil
                 print("Error: Room document could not be parsed")
+                print("Error: Room ID is nil")
             }
         } catch {
             userHasRoom = false
@@ -286,166 +299,165 @@ class AuthViewModel: ObservableObject {
             print("Failed to fetch room with error \(error.localizedDescription)")
         }
     }
-
-        
-        
-        func fetchSubCollection<T: Decodable>(collectionPath: String, as type: T.Type) async -> [T] {
-            var results = [T]()
-            do {
-                let querySnapshot = try await Firestore.firestore().collection(collectionPath).getDocuments()
-                for document in querySnapshot.documents {
-                    if let data = try? document.data(as: T.self) {
-                        results.append(data)
-                    }
+    
+    
+    func fetchSubCollection<T: Decodable>(collectionPath: String, as type: T.Type) async -> [T] {
+        var results = [T]()
+        do {
+            let querySnapshot = try await Firestore.firestore().collection(collectionPath).getDocuments()
+            for document in querySnapshot.documents {
+                if let data = try? document.data(as: T.self) {
+                    results.append(data)
                 }
-            } catch {
-                print("Failed to fetch sub-collection at \(collectionPath) with error \(error.localizedDescription)")
             }
-            return results
+        } catch {
+            print("Failed to fetch sub-collection at \(collectionPath) with error \(error.localizedDescription)")
         }
-        
-        func fetchMembersInRoom(roomId: String) async -> [Member] {
-            var members = [Member]()
-            do {
-                // Fetch the members sub-collection from the specified room
-                let querySnapshot = try await Firestore.firestore().collection("rooms/\(roomId)/members").getDocuments()
-                print("Successfully fetched members sub-collection for roomId: \(roomId)")
-                
-                for document in querySnapshot.documents {
-                    // Extract the member reference from each document
-                    if let memberRef = document.data()["member"] as? DocumentReference {
-                        print("Found member reference: \(memberRef.path)")
-                        
-                        // Fetch the member document using the reference
-                        let memberSnapshot = try await memberRef.getDocument()
-                        
-                        if let member = try? memberSnapshot.data(as: Member.self) {
-                            // Add the member to the members array
-                            members.append(member)
-                        } else {
-                            print("Failed to decode member data from document at path: \(memberRef.path)")
-                        }
+        return results
+    }
+    
+    func fetchMembersInRoom(roomId: String) async -> [Member] {
+        var members = [Member]()
+        do {
+            // Fetch the members sub-collection from the specified room
+            let querySnapshot = try await Firestore.firestore().collection("rooms/\(roomId)/members").getDocuments()
+            print("Successfully fetched members sub-collection for roomId: \(roomId)")
+            
+            for document in querySnapshot.documents {
+                // Extract the member reference from each document
+                if let memberRef = document.data()["member"] as? DocumentReference {
+                    print("Found member reference: \(memberRef.path)")
+                    
+                    // Fetch the member document using the reference
+                    let memberSnapshot = try await memberRef.getDocument()
+                    
+                    if let member = try? memberSnapshot.data(as: Member.self) {
+                        // Add the member to the members array
+                        members.append(member)
                     } else {
-                        print("No valid member reference found in document with ID: \(document.documentID)")
+                        print("Failed to decode member data from document at path: \(memberRef.path)")
                     }
-                }
-            } catch {
-                print("Failed to fetch members in room \(roomId) with error \(error.localizedDescription)")
-            }
-            // Print the number of members fetched
-            print("Fetched \(members.count) members for roomId: \(roomId)")
-            return members
-        }
-        
-        func deleteMemberFromRoom(memberID: String) async {
-            do {
-                guard let roomID = currentRoom?.id else {
-                    print("Error: No current room ID available")
-                    return
-                }
-                
-                // Step 1: Delete the member reference from the room's members sub-collection
-                let membersSubCollectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("members")
-                let querySnapshot = try await membersSubCollectionRef.whereField("member", isEqualTo: Firestore.firestore().collection("members").document(memberID)).getDocuments()
-                
-                for document in querySnapshot.documents {
-                    try await document.reference.delete()
-                }
-                
-                // Step 2: Update the top-level member document to remove the room reference
-                let memberRef = Firestore.firestore().collection("members").document(memberID)
-                try await memberRef.updateData(["room": FieldValue.delete()])
-                
-                // Check if the deleted member is the current user
-                if memberID == firebaseUserSession?.uid {
-                    signOut()  // Log out the current user
-                }
-                
-                // Refresh the room's member data locally
-                if let currentUser = currentUser {
-                    await fetchRoom(for: currentUser)
-                }
-            } catch {
-                print("Failed to delete member from room wit3h error: \(error.localizedDescription)")
-            }
-        }
-        
-        func updateRoom(roomID: String, newName: String) async {
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            do {
-                let roomRef = Firestore.firestore().collection("rooms").document(roomID)
-                try await roomRef.updateData(["name": newName])
-                // Fetch the updated room to ensure local state is consistent
-                if let user = currentUser {
-                    await fetchRoom(for: user)
                 } else {
-                    print("Debug: currentUser is nil")
+                    print("No valid member reference found in document with ID: \(document.documentID)")
                 }
-            } catch {
-                print("Debug: Failed to add rule with error \(error.localizedDescription)")
             }
+        } catch {
+            print("Failed to fetch members in room \(roomId) with error \(error.localizedDescription)")
         }
-        
-        func addRule(rule: String) async {
-            guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
-                print("Error: Current room or room ID is nil")
+        // Print the number of members fetched
+        print("Fetched \(members.count) members for roomId: \(roomId)")
+        return members
+    }
+    
+    func deleteMemberFromRoom(memberID: String) async {
+        do {
+            guard let roomID = currentRoom?.id else {
+                print("Error: No current room ID available")
                 return
             }
             
-            // Make a mutable copy of the rules array
-            var updatedRules = currentRoom.rules
+            // Step 1: Delete the member reference from the room's members sub-collection
+            let membersSubCollectionRef = Firestore.firestore().collection("rooms").document(roomID).collection("members")
+            let querySnapshot = try await membersSubCollectionRef.whereField("member", isEqualTo: Firestore.firestore().collection("members").document(memberID)).getDocuments()
             
-            // Add the new rule to the mutable copy
-            updatedRules.append(rule)
-            
-            // Update Firestore with the modified rules
-            do {
-                let roomRef = Firestore.firestore().collection("rooms").document(roomID)
-                try await roomRef.updateData(["rules": updatedRules])
-                // Fetch the updated room to ensure local state is consistent
-                if let user = currentUser {
-                    await fetchRoom(for: user)
-                } else {
-                    print("Debug: currentUser is nil")
-                }
-            } catch {
-                print("Debug: Failed to add rule with error \(error.localizedDescription)")
+            for document in querySnapshot.documents {
+                try await document.reference.delete()
             }
+            
+            // Step 2: Update the top-level member document to remove the room reference
+            let memberRef = Firestore.firestore().collection("members").document(memberID)
+            try await memberRef.updateData(["room": FieldValue.delete()])
+            
+            // Check if the deleted member is the current user
+            if memberID == firebaseUserSession?.uid {
+                signOut()  // Log out the current user
+            }
+            
+            // Refresh the room's member data locally
+            if let currentUser = currentUser {
+                await fetchRoom(for: currentUser)
+            }
+        } catch {
+            print("Failed to delete member from room wit3h error: \(error.localizedDescription)")
         }
-        
-        func removeRule(rule: String) async {
-            guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
-                print("Error: Current room or room ID is nil")
-                return
-            }
-            
-            // Make a mutable copy of the rules array
-            var updatedRules = currentRoom.rules
-            
-            // Remove the rule from the mutable copy
-            if let ruleIndex = updatedRules.firstIndex(of: rule) {
-                updatedRules.remove(at: ruleIndex)
+    }
+    
+    func updateRoom(roomID: String, newName: String) async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        do {
+            let roomRef = Firestore.firestore().collection("rooms").document(roomID)
+            try await roomRef.updateData(["name": newName])
+            // Fetch the updated room to ensure local state is consistent
+            if let user = currentUser {
+                await fetchRoom(for: user)
             } else {
-                print("Error: Rule not found in current room")
-                return
+                print("Debug: currentUser is nil")
             }
-            
-            // Update Firestore with the modified rules
-            do {
-                let roomRef = Firestore.firestore().collection("rooms").document(roomID)
-                try await roomRef.updateData(["rules": updatedRules])
-                // Fetch the updated room to ensure local state is consistent
-                if let user = currentUser {
-                    await fetchRoom(for: user)
-                } else {
-                    print("Debug: currentUser is nil")
-                }
-            } catch {
-                print("Debug: Failed to remove rule with error \(error.localizedDescription)")
-            }
+        } catch {
+            print("Debug: Failed to add rule with error \(error.localizedDescription)")
         }
+    }
+    
+    func addRule(rule: String) async {
+        guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
+            print("Error: Current room or room ID is nil")
+            return
+        }
+        
+        // Make a mutable copy of the rules array
+        var updatedRules = currentRoom.rules
+        
+        // Add the new rule to the mutable copy
+        updatedRules.append(rule)
+        
+        // Update Firestore with the modified rules
+        do {
+            let roomRef = Firestore.firestore().collection("rooms").document(roomID)
+            try await roomRef.updateData(["rules": updatedRules])
+            // Fetch the updated room to ensure local state is consistent
+            if let user = currentUser {
+                await fetchRoom(for: user)
+            } else {
+                print("Debug: currentUser is nil")
+            }
+        } catch {
+            print("Debug: Failed to add rule with error \(error.localizedDescription)")
+        }
+    }
+    
+    func removeRule(rule: String) async {
+        guard let currentRoom = currentRoom, let roomID = currentRoom.id else {
+            print("Error: Current room or room ID is nil")
+            return
+        }
+        
+        // Make a mutable copy of the rules array
+        var updatedRules = currentRoom.rules
+        
+        // Remove the rule from the mutable copy
+        if let ruleIndex = updatedRules.firstIndex(of: rule) {
+            updatedRules.remove(at: ruleIndex)
+        } else {
+            print("Error: Rule not found in current room")
+            return
+        }
+        
+        // Update Firestore with the modified rules
+        do {
+            let roomRef = Firestore.firestore().collection("rooms").document(roomID)
+            try await roomRef.updateData(["rules": updatedRules])
+            // Fetch the updated room to ensure local state is consistent
+            if let user = currentUser {
+                await fetchRoom(for: user)
+            } else {
+                print("Debug: currentUser is nil")
+            }
+        } catch {
+            print("Debug: Failed to remove rule with error \(error.localizedDescription)")
+        }
+    }
     // AuthViewModel
-
+    
     // Function to fetch and listen for new chat messages
     func fetchChats(roomID: String) {
         let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
@@ -467,46 +479,140 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-
-
-    // Function to send a new chat message
-    func sendChatMessage(roomID: String, content: String) {
-        let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
-        guard let currentUser = currentUser else { return }
-
-        let newChat = Chats(content: content, member: Firestore.firestore().collection("members").document(currentUser.id ?? ""), post_time: Date(), isCurrentUser: true)
-
-        // Add the chat locally first to make it appear immediately
-        self.currentRoom?.chatsData?.append(newChat)
-
-        do {
-            _ = try chatsRef.addDocument(from: newChat) { error in
-                if let error = error {
-                    print("Error sending chat message: \(error.localizedDescription)")
-                    // Optionally handle error, e.g., remove the chat from `chatsData` if not successful
-                }
-            }
-        } catch let error {
-            print("Error sending chat message: \(error.localizedDescription)")
-        }
-    }
-    func fetchSchedules() {
-        guard let roomID = currentRoom?.id else { return }
         
-        Firestore.firestore().collection("rooms").document(roomID).collection("schedules")
-            .getDocuments { snapshot, error in
+        func fetchTasks(roomID: String){
+            let tasksRef = Firestore.firestore().collection("rooms").document(roomID).collection("tasks")
+            tasksRef.order(by: "time", descending: true).addSnapshotListener { [weak self] snapshot, error in
                 guard let documents = snapshot?.documents else {
-                    print("No schedules found")
+                    print("No documents in 'tasks'")
                     return
                 }
-                self.currentRoom?.schedulesData = documents.compactMap { document in
-                    try? document.data(as: Schedules.self)
+                self?.currentRoom?.tasksData = documents.compactMap { document -> Tasks? in
+                    let task = try? document.data(as: Tasks.self)
+                    
+                    return task
                 }
                 DispatchQueue.main.async {
-                    self.objectWillChange.send()
+                    // Notify the UI to update as the chatsData array has changed.
+                    
+                    self?.objectWillChange.send()
                 }
             }
+        }
+        
+        func addNewTask(roomID: String, time: Date, content: String, assigned_person: String){
+            let tasksRef = Firestore.firestore().collection("rooms").document(roomID).collection("tasks")
+            
+            if assigned_person != "Unassigned" && assigned_person != "Non Specific"{
+                let memberRef = Firestore.firestore().collection("members").document(assigned_person)
+                
+                let newTask = Tasks(time: time, content: content, assigned_person: memberRef, isUnassigned: false)
+                
+                self.currentRoom?.tasksData?.append(newTask)
+                
+                do{
+                    _ = try tasksRef.addDocument(from: newTask){ error in
+                        if let error = error {
+                            print("Error add task: \(error.localizedDescription)")
+                        }
+                    }
+                } catch let error {
+                    print("Error add task: \(error.localizedDescription)")
+                }
+            }
+            if assigned_person == "Unassigned"{
+                let newTask = Tasks(time: time, content: content, isUnassigned: true)
+                
+                self.currentRoom?.tasksData?.append(newTask)
+                
+                do{
+                    _ = try tasksRef.addDocument(from: newTask){ error in
+                        if let error = error {
+                            print("Error add task: \(error.localizedDescription)")
+                        }
+                    }
+                } catch let error {
+                    print("Error add task: \(error.localizedDescription)")
+                }
+            }
+            if assigned_person == "Non Specific"{
+                let newTask = Tasks(time: time, content: content, isUnassigned: false)
+                
+                self.currentRoom?.tasksData?.append(newTask)
+                
+                do{
+                    _ = try tasksRef.addDocument(from: newTask){ error in
+                        if let error = error {
+                            print("Error add task: \(error.localizedDescription)")
+                        }
+                    }
+                } catch let error {
+                    print("Error add task: \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        func updateTask(roomID: String, taskID: String, time: Date? = nil, content: String? = nil, assigned_person: String? = nil) async {
+            do {
+                var updatedData: [String: Any] = [:]
+                if let time = time { updatedData["time"] = time }
+                if let content = content { updatedData["content"] = content }
+                if let assigned_person = assigned_person {
+                    if assigned_person != "Unassigned" && assigned_person != "Non Specific" {
+                        updatedData["assigned_person"] = Firestore.firestore().collection("members").document(assigned_person)
+                        updatedData["isUnassigned"] = false
+                    } else if assigned_person == "Unassigned" {
+                        updatedData["assigned_person"] = NSNull()
+                        updatedData["isUnassigned"] = true
+                    } else if assigned_person == "Non Specific" {
+                        updatedData["assigned_person"] = NSNull()
+                        updatedData["isUnassigned"] = false
+                    }
+                }
+                print("Updating task ID: \(taskID) in room ID: \(roomID) with data: \(updatedData)")
+                try await Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID).updateData(updatedData)
+                print("Debug: Successfully updated task")
+                await fetchTasks(roomID: roomID)
+            } catch {
+                print("Debug: Fail to update task with error \(error.localizedDescription)")
+            }
+        }
+        
+        func removeTask(roomID: String, taskID: String) async {
+            do {
+                let taskDocument = Firestore.firestore().collection("rooms").document(roomID).collection("tasks").document(taskID)
+                try await taskDocument.delete()
+                print("Debug: Successfully deleted task with ID \(taskID)")
+                await fetchTasks(roomID: roomID)
+            } catch {
+                print("Debug: Failed to delete task with error \(error.localizedDescription)")
+            }
+        }
+        
+        // Function to send a new chat message
+        func sendChatMessage(roomID: String, content: String) {
+            let chatsRef = Firestore.firestore().collection("rooms").document(roomID).collection("chats")
+            guard let currentUser = currentUser else { return }
+            
+            let newChat = Chats(content: content, member: Firestore.firestore().collection("members").document(currentUser.id ?? ""), post_time: Date(), isCurrentUser: true)
+            
+            // Add the chat locally first to make it appear immediately
+            self.currentRoom?.chatsData?.append(newChat)
+            
+            do {
+                _ = try chatsRef.addDocument(from: newChat) { error in
+                    if let error = error {
+                        print("Error sending chat message: \(error.localizedDescription)")
+                        // Optionally handle error, e.g., remove the chat from `chatsData` if not successful
+                    }
+                }
+            } catch let error {
+                print("Error sending chat message: \(error.localizedDescription)")
+            }
+        }
+        
     }
+    
     
 //    func fetchChores(roomID: String) async {
 //        guard !roomID.isEmpty else {
@@ -709,4 +815,3 @@ class AuthViewModel: ObservableObject {
 
 
 }
-

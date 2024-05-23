@@ -16,6 +16,7 @@ struct LoginView: View {
     @Binding var selectedPage: String?
     @State private var email = ""
     @State private var password = ""
+    @State private var text = ""
     @EnvironmentObject var viewModel: AuthViewModel
     var body: some View {
         if viewModel.IsLoggedIn {
@@ -50,39 +51,40 @@ struct LoginView: View {
                     .font(.title)
                     .bold()
                     .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
-                HStack {
-                    VStack {
-                        Text("Email:")
-                            .font(.headline)
-                            .foregroundColor(.black)
-                            .bold()
-                            .frame(width: 100, height: 60
-                            )
-                            .padding(.trailing, 2)
-                        Text("Password:")
-                            .font(.headline)
-                            .foregroundColor(.black)
-                            .bold()
-                            .frame(width: 100, height: 60)
-                            .padding(.trailing, 2)
+                
+                VStack{
+                    HStack {
+                        VStack{
+                            Spacer().frame(height:40)
+                            HStack{
+                                Text("Email: ")
+                                    .font(.headline)
+                                    .frame(width:100,alignment:.leading)
+                                    .padding(.leading, 40)
+                                    .multilineTextAlignment(.leading)
+                                TextField("Please enter your email", text: $email)
+                                    .font(Font.custom("Noto Sans", size: 16))
+                                    .bold()
+                                    .multilineTextAlignment(.leading)
+                            }.background {textFieldBorder}
+                            Spacer().frame(height:40)
+                            HStack{
+                                Text("Password: ")
+                                    .font(.headline)
+                                    .frame(width:100, alignment:.leading)
+                                    .padding(.leading, 40)
+                                    .multilineTextAlignment(.leading)
+                                TextField("Please enter your password", text: $password)
+                                    .font(Font.custom("Noto Sans", size: 16))
+                                    .bold()
+                                    .multilineTextAlignment(.leading)
+                            }.background {textFieldBorder}
+                            Spacer().frame(height:40)
+                        }
+                        
                     }
-                    VStack {
-                        TextField("Please enter your email", text: $email)
-                            .font(Font.custom("Noto Sans", size: 16))
-                            .bold()
-                            .padding()
-                            .background {textFieldBorder}
-                            .multilineTextAlignment(.center)
-                        TextField("Please enter your password", text: $password)
-                            .font(Font.custom("Noto Sans", size: 16))
-                            .bold()
-                            .padding()
-                            .background {textFieldBorder}
-                            .multilineTextAlignment(.center)
-                    }
-                    
-                    
                 }
+                
                 
                 //Login Buttom
                 Button {
@@ -104,7 +106,7 @@ struct LoginView: View {
                     RegisterView(selectedPage: $selectedPage)
 //                        .navigationBarBackButtonHidden()
                 } label: {
-                    HStack {
+                    VStack {
                         Text("Don't Have Account?")
                             .font(.subheadline)
                             .foregroundColor(.black)
@@ -118,32 +120,32 @@ struct LoginView: View {
                 }
                 
                 //Join and Create Room Buttom
-                HStack{
-                    NavigationLink {
-                        JoinRoomView()
-//                            .navigationBarBackButtonHidden()
-                    } label: {
-                        VStack {
-                            Text("Join Room")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.black)
-                                .frame(width: 90.0, height: 22.0)
-                        }
-                    }
-                    NavigationLink {
-                        CreateRoomView()
-//                            .navigationBarBackButtonHidden()
-                    } label: {
-                        VStack {
-                            Text("Create Room")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.black)
-                                .frame(width: 90.0, height: 22.0)
-                        }
-                    }
-                }
+//                HStack{
+//                    NavigationLink {
+//                        JoinRoomView()
+////                            .navigationBarBackButtonHidden()
+//                    } label: {
+//                        VStack {
+//                            Text("Join Room")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 90.0, height: 22.0)
+//                        }
+//                    }
+//                    NavigationLink {
+//                        CreateRoomView()
+////                            .navigationBarBackButtonHidden()
+//                    } label: {
+//                        VStack {
+//                            Text("Create Room")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 90.0, height: 22.0)
+//                        }
+//                    }
+//                }
                 
             }
             .padding()
@@ -163,13 +165,14 @@ struct LoginView: View {
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 230, height: 35)
+            .frame(width: 350, height: 45)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(
-            RoundedRectangle(cornerRadius: 15)
+            RoundedRectangle(cornerRadius: 20)
             .inset(by: -1)
-            .stroke(Color(red: 0, green: 0.23, blue:0.44).opacity(0.8), lineWidth: 2)
+            .stroke(Color(red: 0, green: 0.23, blue:0.44)
+            .opacity(0.8), lineWidth: 2)
 
             )
         

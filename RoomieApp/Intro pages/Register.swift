@@ -47,65 +47,85 @@ struct RegisterView: View {
                         .bold()
                         .frame(width: 200, height: 40)
                         .foregroundColor(Color(#colorLiteral(red: 0.18, green: 0.38, blue: 0.56, alpha: 1)))
-                    HStack {
-                        VStack {
-                            Text("Name:")
+                    VStack{
+                        Spacer().frame(height:40)
+                        HStack{
+                            Text("Name: ")
                                 .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 45
-                                )
-                                .padding(.trailing, 2)
-                            Text("Birthday:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 50
-                                )
-                                .padding(.trailing, 2)
-                            Text("Email:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 50
-                                )
-                                .padding(.trailing, 2)
-                            Text("Password:")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                                .bold()
-                                .frame(width: 100, height: 50)
-                                .padding(.trailing, 2)
-                        }
-                        VStack {
+                                .frame(width:100,alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
                             TextField("Please enter your name", text: $name)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                            TextField("Please enter your bithday", text: $birthday)
+                                .multilineTextAlignment(.leading)
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
+                        HStack{
+                            Text("Birthday: ")
+                                .font(.headline)
+                                .frame(width:100, alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
+                            TextField("Please enter your birthday", text: $birthday)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
+                                .multilineTextAlignment(.leading)
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
+                        HStack{
+                            Text("Email: ")
+                                .font(.headline)
+                                .frame(width:100, alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
                             TextField("Please enter your email", text: $email)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
+                                .multilineTextAlignment(.leading)
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
+                        HStack{
+                            Text("Password: ")
+                                .font(.headline)
+                                .frame(width:100, alignment:.leading)
+                                .padding(.leading, 40)
+                                .multilineTextAlignment(.leading)
                             TextField("Please enter your password", text: $password)
                                 .font(Font.custom("Noto Sans", size: 16))
                                 .bold()
-                                .padding()
-                                .background {textFieldBorder}
-                                .multilineTextAlignment(.center)
-                        }
-                        
-                        
+                                .multilineTextAlignment(.leading)
+                        }.background {textFieldBorder}
+                        Spacer().frame(height:40)
                     }
+//                    HStack {
+//                        VStack {
+//                            TextField("Please enter your name", text: $name)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                            TextField("Please enter your bithday", text: $birthday)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                            TextField("Please enter your email", text: $email)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                            TextField("Please enter your password", text: $password)
+//                                .font(Font.custom("Noto Sans", size: 16))
+//                                .bold()
+//                                .padding()
+//                                .background {textFieldBorder}
+//                                .multilineTextAlignment(.center)
+//                        }
+//                    }
                     
                     NavigationLink(destination: LoginView(selectedPage: $selectedPage)
                         .navigationBarBackButtonHidden(), isActive: $isActive) {
@@ -146,14 +166,13 @@ struct RegisterView: View {
     var textFieldBorder: some View {
             Rectangle()
             .foregroundColor(.clear)
-            .frame(width: 230, height: 35)
+            .frame(width: 350, height: 40)
             .background(Color(red: 1, green: 0.87, blue: 0.44))
             .cornerRadius(15)
             .overlay(
             RoundedRectangle(cornerRadius: 15)
             .inset(by: -1)
             .stroke(Color(red: 0, green: 0.23, blue:0.44).opacity(0.8), lineWidth: 2)
-
             )
         
         }

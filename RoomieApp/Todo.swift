@@ -18,12 +18,12 @@ struct Todo: Identifiable, Hashable{
     var notes: String
 }
 
-
 struct Tasks: Identifiable, Codable {
     @DocumentID var id: String?
     var time: Date
     var content: String
-    var assigned_person: DocumentReference
+    var assigned_person: DocumentReference?
+    var isUnassigned: Bool
 }
 
 struct Schedules: Identifiable, Codable {
@@ -70,7 +70,7 @@ struct Members: Identifiable, Codable {
     var email: String
     var password: String
     var room: DocumentReference?
-    var index: Int? = 0
+    var index: Int? = 999
 }
 
 struct Rooms: Identifiable, Codable {
