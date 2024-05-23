@@ -611,22 +611,5 @@ class AuthViewModel: ObservableObject {
             }
         }
         
-        func fetchSchedules() {
-            guard let roomID = currentRoom?.id else { return }
-            
-            Firestore.firestore().collection("rooms").document(roomID).collection("schedules")
-                .getDocuments { snapshot, error in
-                    guard let documents = snapshot?.documents else {
-                        print("No schedules found")
-                        return
-                    }
-                    self.currentRoom?.schedulesData = documents.compactMap { document in
-                        try? document.data(as: Schedules.self)
-                    }
-                    DispatchQueue.main.async {
-                        self.objectWillChange.send()
-                    }
-                }
-        }
     }
     
