@@ -9,6 +9,7 @@ struct ScheduleView: View {
     @State private var showMenuBar = false
     @State private var selectedDate = Date()
     @State private var showingAddSchedulePopup = false
+    @State private var selectedEventID: String? = nil
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -122,13 +123,12 @@ struct ScheduleView: View {
         }).sorted(by: { $0.start_time < $1.start_time }) {
             HStack(spacing: 5) {
                 ForEach(events) { event in
-                    EventView(event: event)
+                    EventView(event: event, selectedEventID: $selectedEventID)
                         .environmentObject(authViewModel)
                 }
             }
         }
     }
-
 
     func changeDay(by days: Int) {
         if let newDate = Calendar.current.date(byAdding: .day, value: days, to: selectedDate) {
@@ -232,6 +232,7 @@ struct ScheduleView: View {
 }
 struct EventView: View {
     var event: Schedules
+    @Binding var selectedEventID: String?
     @State private var member: Member? = nil
     @EnvironmentObject var authViewModel: AuthViewModel
 
@@ -286,7 +287,11 @@ struct EventView: View {
         .shadow(radius: 2)
         .padding(.vertical, 2)
         .frame(width: calculateEventWidth())
-        .frame(minHeight: 60)
+        .frame(minHeight: 100)
+        .zIndex(selectedEventID == event.id ? 1 : 0) // Adjust z-index based on selection
+        .onTapGesture {
+            selectedEventID = event.id // Set the selected event ID on tap
+        }
     }
     
     func formattedTimeRange(start: Date, end: Date) -> String {
@@ -300,8 +305,9 @@ struct EventView: View {
     func calculateHeight(from start: Date, to end: Date, in geometry: GeometryProxy) -> CGFloat {
         let duration = end.timeIntervalSince(start)
         let hourHeight = geometry.size.height / 16
-        let calculatedHeight = hourHeight * CGFloat(duration / 70)
-        let minHeight: CGFloat = 250
+        let calculatedHeight = hourHeight * CGFloat(duration / 3600) * 6
+        let minHeight: CGFloat = 100
+        print("height", max(calculatedHeight, minHeight), calculatedHeight)
         return max(calculatedHeight, minHeight)
     }
 
@@ -330,6 +336,8 @@ struct EventView: View {
         return max(calculatedWidth, minWidth)
     }
 }
+
+
 
 extension Schedules {
     var modeColor: Color {
