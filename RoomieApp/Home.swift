@@ -81,7 +81,7 @@ struct HomeView: View {
             }
             Spacer()
             Text("HOME")
-                .font(.custom("Krona One", size: 20))
+                .font(.title)
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
         }

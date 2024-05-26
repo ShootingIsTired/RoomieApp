@@ -80,7 +80,8 @@ struct ProfileView: View {
             }
             Spacer()
             Text("PROFILE")
-                .font(.custom("Krona One", size: 20))
+                .font(.title)
+                .bold()
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
         }
@@ -115,6 +116,7 @@ struct ProfileView: View {
                 Text("Rules")
                     .font(Font.custom("Noto Sans", size: 20))
                 Spacer()
+                    .bold()
                 Button("ADD") {
                     showingAddRulePopup = true
                 }
@@ -187,6 +189,7 @@ struct ProfileView: View {
                     Text("SAVE")
                         .font(Font.custom("Noto Sans", size: 16))
                         .fontWeight(.bold)
+                    
                         .foregroundColor(.white)
                         .padding(.vertical, 10)
                         .padding(.horizontal, 50)
@@ -391,6 +394,7 @@ struct ProfileView: View {
         }
     }
 }
+
 
 struct ColoredButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {

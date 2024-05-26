@@ -73,7 +73,7 @@ struct ScheduleView: View {
             }
             Spacer()
             Text("\(formattedDate(selectedDate))")
-                .font(.custom("Krona One", size: 18))
+                .font(.title)
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
             Button(action: {
