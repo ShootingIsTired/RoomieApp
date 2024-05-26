@@ -9,6 +9,7 @@ struct ScheduleView: View {
     @State private var showMenuBar = false
     @State private var selectedDate = Date()
     @State private var showingAddSchedulePopup = false
+    @State private var selectedEventID: String? = nil
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -119,18 +120,15 @@ struct ScheduleView: View {
             let eventHour = calendar.component(.hour, from: event.start_time)
             let eventDay = calendar.isDate(event.start_time, inSameDayAs: selectedDate)
             return eventHour == hour && eventDay
-        }) {
-            HStack(spacing: 5) { // Use HStack to stack overlapping events
+        }).sorted(by: { $0.start_time < $1.start_time }) {
+            HStack(spacing: 5) {
                 ForEach(events) { event in
-                    EventView(event: event)
+                    EventView(event: event, selectedEventID: $selectedEventID)
                         .environmentObject(authViewModel)
                 }
             }
         }
     }
-
-
-
 
     func changeDay(by days: Int) {
         if let newDate = Calendar.current.date(byAdding: .day, value: days, to: selectedDate) {
@@ -234,14 +232,30 @@ struct ScheduleView: View {
 }
 struct EventView: View {
     var event: Schedules
+    @Binding var selectedEventID: String?
     @State private var member: Member? = nil
     @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("\(formattedTimeRange(start: event.start_time, end: event.end_time))")
-                .font(.caption)
-                .foregroundColor(.white)
+        VStack(alignment: .leading) {
+            HStack {
+                Text("\(formattedTimeRange(start: event.start_time, end: event.end_time))")
+                    .font(.caption)
+                    .foregroundColor(.white)
+                Spacer()
+                if authViewModel.currentUser?.id == member?.id {
+                    Button(action: {
+                        Task {
+                            await authViewModel.deleteSchedule(event: event)
+                        }
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.red)
+                            .imageScale(.small)
+                            .padding(.leading, 4)
+                    }
+                }
+            }
             Text(event.content)
                 .font(.headline)
                 .foregroundColor(.white)
@@ -249,6 +263,7 @@ struct EventView: View {
                 Text(member.name)
                     .font(.subheadline)
                     .foregroundColor(.white)
+                Spacer()
                 Text(event.mode)
                     .font(.caption)
                     .foregroundColor(.white)
@@ -262,12 +277,21 @@ struct EventView: View {
             }
         }
         .padding(10)
-        .background(event.modeColor)
+        .background(GeometryReader { geometry in
+            Rectangle()
+                .fill(event.modeColor)
+                .frame(height: calculateHeight(from: event.start_time, to: event.end_time, in: geometry))
+        })
         .cornerRadius(10)
         .foregroundColor(.white)
         .shadow(radius: 2)
         .padding(.vertical, 2)
-        .frame(width: calculateEventWidth(), height: eventDurationInMinutes(event: event))
+        .frame(width: calculateEventWidth())
+        .frame(minHeight: 100)
+        .zIndex(selectedEventID == event.id ? 1 : 0) // Adjust z-index based on selection
+        .onTapGesture {
+            selectedEventID = event.id // Set the selected event ID on tap
+        }
     }
     
     func formattedTimeRange(start: Date, end: Date) -> String {
@@ -277,10 +301,14 @@ struct EventView: View {
         let endTime = formatter.string(from: end)
         return "\(startTime) ~ \(endTime)"
     }
-
-    func eventDurationInMinutes(event: Schedules) -> CGFloat {
-        let duration = event.end_time.timeIntervalSince(event.start_time) / 60
-        return CGFloat(duration)
+    
+    func calculateHeight(from start: Date, to end: Date, in geometry: GeometryProxy) -> CGFloat {
+        let duration = end.timeIntervalSince(start)
+        let hourHeight = geometry.size.height / 16
+        let calculatedHeight = hourHeight * CGFloat(duration / 3600) * 6
+        let minHeight: CGFloat = 100
+        print("height", max(calculatedHeight, minHeight), calculatedHeight)
+        return max(calculatedHeight, minHeight)
     }
 
     private func fetchMemberData() {
@@ -300,12 +328,12 @@ struct EventView: View {
         }
     }
 
-    // Helper function to calculate the width of the event based on the number of overlapping events
     private func calculateEventWidth() -> CGFloat {
-        let overlappingEvents = authViewModel.currentRoom?.schedulesData?.filter { otherEvent in
-            return otherEvent.start_time < event.end_time && otherEvent.end_time > event.start_time
-        } ?? []
-        return UIScreen.main.bounds.width / CGFloat(overlappingEvents.count) - 20
+        let overlappingEvents = authViewModel.overlappingEvents(for: event)
+        let calculatedWidth = (UIScreen.main.bounds.width - 100) / CGFloat(overlappingEvents.count)
+        let minWidth: CGFloat = 150
+        
+        return max(calculatedWidth, minWidth)
     }
 }
 
@@ -317,7 +345,7 @@ extension Schedules {
         case "Normal":
             return .blue
         case "Alone":
-            return .red
+            return .orange
         case "Quiet":
             return .green
         default:
@@ -343,6 +371,14 @@ struct ScheduleView_Previews: PreviewProvider {
 
 // Extend AuthViewModel to fetch and add schedules for a specific date
 extension AuthViewModel {
+    func overlappingEvents(for event: Schedules) -> [Schedules] {
+        let oneHour: TimeInterval = 1800 // 1 hour in seconds
+        return currentRoom?.schedulesData?.filter { otherEvent in
+            return (otherEvent.start_time < event.end_time && otherEvent.end_time > event.start_time) ||
+                   abs(otherEvent.start_time.timeIntervalSince(event.end_time)) < oneHour ||
+                   abs(otherEvent.end_time.timeIntervalSince(event.start_time)) < oneHour
+        } ?? []
+    }
     func fetchSchedules(for date: Date) {
         print("___fetch schedule for", date)
         guard let roomID = currentRoom?.id else { return }
@@ -382,6 +418,17 @@ extension AuthViewModel {
             fetchSchedules(for: Date())
         } catch {
             print("Failed to add schedule: \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteSchedule(event: Schedules) async {
+        guard let roomID = currentRoom?.id, let eventID = event.id else { return }
+
+        do {
+            try await Firestore.firestore().collection("rooms").document(roomID).collection("schedules").document(eventID).delete()
+            fetchSchedules(for: Date())
+        } catch {
+            print("Failed to delete schedule: \(error.localizedDescription)")
         }
     }
 }

@@ -1,11 +1,73 @@
-////
-////  EditChore.swift
-////  RoomieApp
-////
-////  Created by Fiona on 2024/5/9.
-////
-//
-//import Foundation
+//  EditChore.swift
+//  RoomieApp
+
+import SwiftUI
+
+struct EditChore: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var chore: Chores? // Use binding to an optional Chores
+    @State private var editedContent: String
+    @State private var editedFrequency: Int
+    @State private var editedStatus: Bool // State for status toggle
+    @EnvironmentObject var authViewModel: AuthViewModel
+
+    init(chore: Binding<Chores?>) {
+        self._chore = chore
+        _editedContent = State(initialValue: chore.wrappedValue?.content ?? "")
+        _editedFrequency = State(initialValue: chore.wrappedValue?.frequency ?? 1)
+        _editedStatus = State(initialValue: chore.wrappedValue?.status ?? false) // Initialize with the current status
+    }
+
+    var body: some View {
+        VStack {
+            Spacer()
+            VStack {
+                HStack {
+                    Text("Edit Chore:")
+                        .font(.headline)
+                    Spacer()
+                    Button(action: { self.presentationMode.wrappedValue.dismiss() }) {
+                        Image(systemName: "xmark.circle").foregroundColor(.black)
+                    }
+                }
+                .padding()
+
+                TextField("Chore Description", text: $editedContent)
+                    .padding()
+                    .foregroundColor(editedContent.isEmpty ? .gray : .black)
+                    .background(Color(red: 0.96, green: 0.96, blue: 0.86).opacity(0.33))
+                    .cornerRadius(8)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+
+                Stepper("Frequency in days: \(editedFrequency)", value: $editedFrequency, in: 1...365)
+                    .padding()
+
+                Toggle("Undone / Done", isOn: $editedStatus)
+                    .padding()
+
+                Button("Save Changes", action: editChore)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding()
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(radius: 10)
+            Spacer()
+        }
+        .background(Color.black.opacity(0.5).edgesIgnoringSafeArea(.all))
+    }
+
+    private func editChore() {
+        guard let chore = chore, let roomId = authViewModel.currentRoom?.id else { return }
+        Task {
+            await authViewModel.editChore(choreID: chore.id ?? "", newContent: editedContent, newFrequency: editedFrequency, newStatus: editedStatus, roomID: roomId)
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
 //import Foundation
 //import SwiftUI
 //
@@ -20,8 +82,6 @@
 ////    @Binding var task: String
 ////    @Binding var selectedDate: Date
 ////    @Binding var selectedTime: Date
-//
-//
 //
 //    var body: some View {
 //        VStack {

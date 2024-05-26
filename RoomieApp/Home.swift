@@ -76,8 +76,8 @@ struct HomeView: View {
     private var header: some View {
         HStack {
             Button(action: toggleMenuBar) {
-                Image("menu")
-                    .frame(width: 38, height: 38)
+                Image(systemName: "line.horizontal.3")
+                    .imageScale(.large)
             }
             Spacer()
             Text("HOME")
@@ -93,13 +93,13 @@ struct HomeView: View {
     @ViewBuilder private func reminderRow(task: Tasks) -> some View {
         HStack {
             Text(formattedDate(task.time))
-                .frame(width: 50, alignment: .leading)
+                .frame(/*width: 50, */alignment: .leading)
             Spacer()
             Text(formattedTime(task.time))
-                .frame(width: 70, alignment: .leading)
+                .frame(/*width: 70,*/ alignment: .leading)
             Spacer()
             Text(task.content)
-                .frame(width: 80, alignment: .leading)
+                .frame(/*width: 80,*/ alignment: .leading)
             Spacer()
             HStack {
                 if task.assigned_person != nil, task.isUnassigned == false {
@@ -113,7 +113,7 @@ struct HomeView: View {
                     Text(memberName(for: task.assigned_person!.documentID))
                 }
             }
-            .frame(width: 140, alignment: .leading)
+            .frame(/*width: 140, */alignment: .leading)
             Spacer()
             if editReminder {
                 Button(action: {
@@ -142,9 +142,9 @@ struct HomeView: View {
             self.content = task.content
             self.currentTaskId = task.id!
             self.showEditTask = true
-            print(self.selectedPerson,
-                  self.selectedTime,
-                  self.content)
+//            print(self.selectedPerson,
+//                  self.selectedTime,
+//                  self.content)
         }
     }
 
@@ -159,7 +159,7 @@ struct HomeView: View {
                         }
                     }
                 }
-                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+//                .background(Color(red: 0.96, green: 0.96, blue: 0.93))
                 .padding(.horizontal)
             }
         }
@@ -168,15 +168,18 @@ struct HomeView: View {
     @ViewBuilder private func unassignedTaskRow(task: Tasks) -> some View {
         HStack {
             Text(formattedDate(task.time))
-                .frame(width: 50, alignment: .leading)
+                .frame(/*width: 50,*/ alignment: .leading)
             Spacer()
             Text(formattedTime(task.time))
-                .frame(width: 70, alignment: .leading)
+                .frame(/*width: 70, */alignment: .leading)
             Spacer()
             Text(task.content)
-                .frame(width: 80, alignment: .leading)
+                .frame(/*width: 80, */alignment: .leading)
             Spacer()
-            Text("Unassigned")
+            HStack{
+                Image(systemName: "person")
+                Text("Unassigned")
+            }
             Spacer()
             if editUnassigned {
                 Button(action: {
@@ -220,7 +223,7 @@ struct HomeView: View {
                             }
                         }
                     }
-                    .background(Color(red: 0.96, green: 0.96, blue: 0.93))
+//                    .background(Color(red: 0.96, green: 0.96, blue: 0.93))
                     .padding(.horizontal)
                 }
             }
@@ -230,6 +233,7 @@ struct HomeView: View {
     private func sectionHeader(title: String, isEditing: Binding<Bool>, showAddButton: Bool = false) -> some View {
         HStack {
             Text(title)
+                .font(Font.custom("Noto Sans", size: 20))
             Spacer()
             if !isEditing.wrappedValue {
                 if showAddButton {
@@ -263,28 +267,26 @@ struct HomeView: View {
     }
 
     private func addNewTask() {
+        resetTaskState()
         if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             authViewModel.addNewTask(roomID: roomID, time: selectedTime, content: content, assigned_person: selectedPerson)
-            resetTaskState()
-            hideOverlays()
         }
+        hideOverlays()
     }
 
     private func saveEditTask() {
-        Task {
             if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
+                Task{
+                    await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
+                }
             }
-        }
-        resetTaskState()
+        hideOverlays()
     }
 
     private func resetTaskState() {
         content = ""
         selectedPerson = "Unassigned"
         selectedTime = Date()
-        showAddTask = false
-        showEditTask = false
     }
 
     private func hideOverlays() {

@@ -1,29 +1,223 @@
-////
-////  Chores.swift
-////  RoomieApp
-////
-////  Created by Fiona on 2024/5/5.
-////
-//
-////import Foundation
-//
-////
-////  AddChores.swift
-////  RoomieApp
-////
-////  Created by Fiona on 2024/5/2.
-////
-//
-////import Foundation
-//
-////
-////  Chores.swift
-////  RoomieApp
-////
-////  Created by 松浦明日香 on 2024/04/29.
-////
-//
-//import Foundation
+//  Chores.swift
+//  RoomieApp
+import SwiftUI
+
+struct ChoresView: View {
+    @Binding var selectedPage: String?
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var members: [Member] = []
+    @State private var isEditing = false {
+        didSet {
+            loadChores()
+        }
+    }
+    @State private var showAddChore = false
+    @State private var editingChore: Chores?
+    @State private var showingEditChore = false
+    @State private var showMenuBar = false
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            mainContent
+                .onAppear {
+                    loadMembers()
+                    loadChores()
+                }
+                .overlay(
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if showMenuBar {
+                                withAnimation {
+                                    showMenuBar = false
+                                }
+                            }
+                        }
+                        .allowsHitTesting(showMenuBar)  // Only enable hit testing when the menu is visible
+                )
+            
+            if showMenuBar {
+                MenuBar(selectedPage: $selectedPage)
+                    .transition(.move(edge: .leading))
+            }
+        }
+    }
+    
+    private func loadChores() {
+            guard let roomID = authViewModel.currentRoom?.id else { return }
+            authViewModel.fetchChores(roomID: roomID, showCompleted: isEditing)
+        }
+
+    var mainContent: some View {
+        VStack(spacing: 0) {
+            header
+            choreList
+            editAndAddButtons
+        }
+    }
+    
+    var header: some View {
+        HStack {
+            Button(action: {
+                withAnimation {
+                    showMenuBar.toggle()
+                }
+            }) {
+                Image(systemName: "line.horizontal.3")
+                    .imageScale(.large)
+            }
+            Spacer()
+            Text("CHORES")
+                .font(.custom("Krona One", size: 20))
+                .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
+            Spacer()
+        }
+        .padding()
+        .background(Color.white)
+        .shadow(radius: 2)
+    }
+
+    var choreList: some View {
+            List {
+                ForEach(authViewModel.currentRoom?.choresData ?? [], id: \.id) { chore in
+                    ChoreRow(
+                        chore: chore,
+                        isEditing: $isEditing,
+                        onEdit: {
+                            editingChore = chore
+                            showingEditChore = true
+                        },
+                        onDelete: {
+                            guard let roomId = authViewModel.currentRoom?.id, let choreId = chore.id else { return }
+                            Task {
+                                await authViewModel.deleteChore(choreID: choreId, roomID: roomId)
+                            }
+                        },
+                        memberName: members.indices.contains(chore.last_index) ? members[chore.last_index].name : "Unassigned"
+                    )
+                }
+            }
+            .scrollContentBackground(.hidden)
+            .onChange(of: isEditing) {
+                loadChores()
+            }
+            .sheet(isPresented: $showingEditChore) {
+                if let editingChore = editingChore {
+                    EditChore(chore: .constant(editingChore)).environmentObject(authViewModel)
+                }
+            }
+            .sheet(isPresented: $showAddChore) {
+                AddChore().environmentObject(authViewModel)
+            }
+        }
+    
+    var editAndAddButtons: some View {
+        HStack {
+            Button(isEditing ? "Done" : "Edit Chores") {
+                isEditing.toggle()
+            }
+            .padding()
+//            .background(isEditing ? Color.green : Color.orange)
+//            .foregroundColor(.white)
+            //.cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke()
+            )
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color(red: 1, green: 0.87, blue: 0.44))
+            )
+            .foregroundColor(.black)
+
+            Spacer()
+
+            Button(action: {
+                showAddChore = true
+            }) {
+                Image(systemName: "plus")
+                    .padding()
+//                    .background(Color.orange)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke()
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(red: 1, green: 0.87, blue: 0.44))
+                    )
+                    .foregroundColor(.black)
+            }
+        }
+        .padding()
+    }
+    
+    private func loadMembers() {
+            guard let roomId = authViewModel.currentRoom?.id else { return }
+            Task {
+                members = await authViewModel.fetchMembersInRoom(roomId: roomId)
+            }
+        }
+}
+
+
+struct ChoreRow: View {
+    let chore: Chores
+    @Binding var isEditing: Bool
+    var onEdit: () -> Void
+    var onDelete: () -> Void
+    var memberName: String
+    @EnvironmentObject var authViewModel: AuthViewModel
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(chore.content)
+                Text("Frequency: \(chore.frequency) days").font(.subheadline).foregroundColor(.secondary)
+                Text("Assigned to: \(memberName)").font(.subheadline).foregroundColor(.secondary) 
+            }
+            Spacer()
+
+            if isEditing {
+                Button(action: {}) {
+                    Text("Edit")
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }
+                .onTapGesture {
+                    onEdit()
+                }
+
+                Button(action: {}) {
+                    Text("Delete")
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }
+                .onTapGesture {
+                    onDelete()
+                }
+            } else {
+                Button(chore.status ? "Done" : "Undone") {
+                    Task {
+                        await authViewModel.toggleChoreStatus(chore)
+                    }
+                }
+                .padding()
+                .background(chore.status ? Color.green : Color.gray)
+                .foregroundColor(.white)
+                .cornerRadius(5)
+            }
+        }
+    }
+}
+
 //import SwiftUI
 //
 //struct Chore: Identifiable {
