@@ -34,16 +34,16 @@ struct GetRoomView: View {
     var body: some View {
         NavigationView{
             ZStack{
-                LinearGradient(
-                            gradient: Gradient(stops: [
-                                Gradient.Stop(color: Color(red: 1, green: 0.98, blue: 0.92), location: 0.00),
-                                Gradient.Stop(color: Color(red: 0.88, green: 0.92, blue: 0.94), location: 0.29),
-                                Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.94), location: 1.00)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                        .edgesIgnoringSafeArea(.all)
+//                LinearGradient(
+//                            gradient: Gradient(stops: [
+//                                Gradient.Stop(color: Color(red: 1, green: 0.98, blue: 0.92), location: 0.00),
+//                                Gradient.Stop(color: Color(red: 0.88, green: 0.92, blue: 0.94), location: 0.29),
+//                                Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.94), location: 1.00)
+//                            ]),
+//                            startPoint: .topLeading,
+//                            endPoint: .bottomTrailing
+//                        )
+//                        .edgesIgnoringSafeArea(.all)
                     VStack{
                         Image("Roomie Create Icon")
                             .resizable()

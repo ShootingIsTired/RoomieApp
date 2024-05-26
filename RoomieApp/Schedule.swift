@@ -74,7 +74,8 @@ struct ScheduleView: View {
             }
             Spacer()
             Text("\(formattedDate(selectedDate))")
-                .font(.title)
+                .font(Font.custom("Noto Sans", size: 20))
+                .bold()
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
             Button(action: {

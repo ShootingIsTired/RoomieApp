@@ -42,7 +42,8 @@ struct MenuBar: View {
         VStack {
             ZStack {
                 Text("ROOMIE")
-                    .font(Font.custom("Krona One", size: 20))
+                    .font(Font.custom("Krona One", size: 24))
+                    .bold()
                     .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             }
             .frame(alignment: .top)
@@ -53,27 +54,32 @@ struct MenuBar: View {
 //                    .padding()
                     
                 Button("PROFILE") { selectedPage = "Profile" }
-                    .font(.custom("Jacques Francois", size: 18))
+                    .font(.custom("Noto Sans", size: 18))
+                    .bold()
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("HOME") { selectedPage = "Home" }
-                    .font(.custom("Jacques Francois", size: 18))
+                    .font(.custom("Noto Sans", size: 18))
+                    .bold()
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("CHORES") { selectedPage = "Chores" }
-                    .font(.custom("Jacques Francois", size: 18))
+                    .font(.custom("Noto Sans", size: 18))
+                    .bold()
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("SCHEDULE") { selectedPage = "Schedule" }
-                    .font(.custom("Jacques Francois", size: 18))
+                    .font(.custom("Noto Sans", size: 18))
+                    .bold()
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("CHAT") { selectedPage = "Chat" }
-                    .font(.custom("Jacques Francois", size: 18))
+                    .font(.custom("Noto Sans", size: 18))
+                    .bold()
                     .foregroundColor(.black)
                     .padding()
                     
@@ -96,7 +102,7 @@ struct MenuBar: View {
                     Image("logout_outline")
                         .frame(width: 28, height: 28)
                     Text("LEAVE")
-                        .font(Font.custom("Jacques Francois", size: 16))
+                        .font(Font.custom("Noto Sans", size: 16))
                         .foregroundColor(.black)
                 }
             }

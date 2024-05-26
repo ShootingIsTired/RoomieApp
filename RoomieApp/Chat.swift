@@ -44,7 +44,8 @@ struct ChatRoomView: View {
             }
             Spacer()
             Text("CHAT")
-                .font(.custom("Krona One", size: 20))
+                .font(Font.custom("Noto Sans", size: 24))
+                .bold()
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
         }

@@ -81,7 +81,8 @@ struct HomeView: View {
             }
             Spacer()
             Text("HOME")
-                .font(.title)
+                .font(Font.custom("Noto Sans", size: 24))
+                .bold()
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
         }
@@ -93,10 +94,10 @@ struct HomeView: View {
     @ViewBuilder private func reminderRow(task: Tasks) -> some View {
         HStack {
             Text(formattedDate(task.time))
-                .frame(/*width: 50, */alignment: .leading)
+                .frame(width: 50, alignment: .leading)
             Spacer()
             Text(formattedTime(task.time))
-                .frame(/*width: 70,*/ alignment: .leading)
+                .frame(width: 70,alignment: .leading)
             Spacer()
             Text(task.content)
                 .frame(/*width: 80,*/ alignment: .leading)
@@ -168,10 +169,10 @@ struct HomeView: View {
     @ViewBuilder private func unassignedTaskRow(task: Tasks) -> some View {
         HStack {
             Text(formattedDate(task.time))
-                .frame(/*width: 50,*/ alignment: .leading)
+                .frame(width: 50, alignment: .leading)
             Spacer()
             Text(formattedTime(task.time))
-                .frame(/*width: 70, */alignment: .leading)
+                .frame(width: 70, alignment: .leading)
             Spacer()
             Text(task.content)
                 .frame(/*width: 80, */alignment: .leading)

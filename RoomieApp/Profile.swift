@@ -80,7 +80,7 @@ struct ProfileView: View {
             }
             Spacer()
             Text("PROFILE")
-                .font(.title)
+                .font(Font.custom("Noto Sans", size: 24))
                 .bold()
                 .foregroundColor(Color(red: 0, green: 0.23, blue: 0.44))
             Spacer()
@@ -277,9 +277,11 @@ struct ProfileView: View {
         HStack(spacing: 5) {
             Text(memberInRoom.name)
                 .font(Font.custom("Noto Sans", size: 18))
+                .frame(width:80)
             Spacer()
             Text(memberInRoom.birthday)
                 .font(Font.custom("Noto Sans", size: 16))
+                .frame(width:70,alignment: .leading)
             Spacer()
             Text(memberInRoom.status)
                 .font(Font.custom("Noto Sans", size: 16))
@@ -320,6 +322,7 @@ struct ProfileView: View {
             Group {
                 if isEditingMyInfo {
                     TextField("Name", text: $editedName)
+                    
                     TextField("Birthday", text: $editedBirthday)
                     TextField("Email", text: $editedEmail)
                     TextField("Password", text: $editedPassword)
