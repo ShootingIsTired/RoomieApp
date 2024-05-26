@@ -126,17 +126,17 @@ struct CreateRoomView: View {
                             }
                         }
                     
-                    NavigationLink {
-                        JoinRoomView()
-                    } label: {
-                        VStack {
-                            Text("Join Room")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.black)
-                                .frame(width: 90.0, height: 22.0)
-                        }
-                    }
+//                    NavigationLink {
+//                        JoinRoomView()
+//                    } label: {
+//                        VStack {
+//                            Text("Join Room")
+//                                .font(.subheadline)
+//                                .underline()
+//                                .foregroundColor(.black)
+//                                .frame(width: 90.0, height: 22.0)
+//                        }
+//                    }
                 }
                 .padding()
             }
