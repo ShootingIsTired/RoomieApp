@@ -53,26 +53,31 @@ struct MenuBar: View {
 //                    .padding()
                     
                 Button("PROFILE") { selectedPage = "Profile" }
+                    .accessibility(identifier: "profileButton")
                     .font(.custom("Jacques Francois", size: 18))
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("HOME") { selectedPage = "Home" }
+                    .accessibility(identifier: "homeButton")
                     .font(.custom("Jacques Francois", size: 18))
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("CHORES") { selectedPage = "Chores" }
+                    .accessibility(identifier: "choresButton")
                     .font(.custom("Jacques Francois", size: 18))
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("SCHEDULE") { selectedPage = "Schedule" }
+                    .accessibility(identifier: "scheduleButton")
                     .font(.custom("Jacques Francois", size: 18))
                     .foregroundColor(.black)
                     .padding()
                     
                 Button("CHAT") { selectedPage = "Chat" }
+                    .accessibility(identifier: "chatButton")
                     .font(.custom("Jacques Francois", size: 18))
                     .foregroundColor(.black)
                     .padding()
@@ -100,6 +105,7 @@ struct MenuBar: View {
                         .foregroundColor(.black)
                 }
             }
+            .accessibility(identifier: "leaveButton")
             .frame(alignment: .bottom)
             .padding()
         }
