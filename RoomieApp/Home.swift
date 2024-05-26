@@ -37,7 +37,7 @@ struct HomeView: View {
                         selectedTime: $selectedTime,
                         selectedPerson: $selectedPerson,
                         members: members,
-                        onAddTask: addNewTask,
+                        onAddTask:       addNewTask,
                         onCancel: {
                             showAddTask = false
                             resetTaskState()
@@ -237,7 +237,9 @@ struct HomeView: View {
             Spacer()
             if !isEditing.wrappedValue {
                 if showAddButton {
-                    Button(action: { showAddTask.toggle() }) {
+                    Button(action: { showAddTask.toggle()
+                        resetTaskState()
+                    }) {
                         Text("ADD")
                             .padding(5)
                             .background(RoundedRectangle(cornerRadius: 8).fill(Color(red: 1, green: 0.87, blue: 0.44)))
@@ -267,7 +269,7 @@ struct HomeView: View {
     }
 
     private func addNewTask() {
-        resetTaskState()
+//        resetTaskState()
         if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             authViewModel.addNewTask(roomID: roomID, time: selectedTime, content: content, assigned_person: selectedPerson)
         }
@@ -275,11 +277,11 @@ struct HomeView: View {
     }
 
     private func saveEditTask() {
-            if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Task{
-                    await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
-                }
+        if let roomID = authViewModel.currentRoom?.id, !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            Task{
+                await authViewModel.updateTask(roomID: roomID, taskID: currentTaskId, time: selectedTime, content: content, assigned_person: selectedPerson)
             }
+        }
         hideOverlays()
     }
 
