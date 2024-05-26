@@ -100,7 +100,7 @@ struct HomeView: View {
                 .frame(width: 70,alignment: .leading)
             Spacer()
             Text(task.content)
-                .frame(/*width: 80,*/ alignment: .leading)
+                .frame(width: 100, alignment: .leading)
             Spacer()
             HStack {
                 if task.assigned_person != nil, task.isUnassigned == false {
@@ -114,7 +114,7 @@ struct HomeView: View {
                     Text(memberName(for: task.assigned_person!.documentID))
                 }
             }
-            .frame(/*width: 140, */alignment: .leading)
+            .frame(width: 100, alignment: .leading)
             Spacer()
             if editReminder {
                 Button(action: {
