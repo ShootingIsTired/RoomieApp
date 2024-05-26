@@ -48,7 +48,7 @@ struct CreateRoomView: View {
                         HStack{
                             Text("Room ID:")
                                 .font(.headline)
-                                .frame(width:100,alignment:.leading)
+                                .frame(width:80,alignment:.leading)
                                 .padding(.leading, 20)
                                 .multilineTextAlignment(.leading)
                             Text(id)

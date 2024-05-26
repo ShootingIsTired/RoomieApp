@@ -115,7 +115,7 @@ struct ChoresView: View {
     
     var editAndAddButtons: some View {
         HStack {
-            Button(isEditing ? "Done" : "Edit Chores") {
+            Button(isEditing ? "Back" : "Chores List") {
                 isEditing.toggle()
             }
             .padding()
@@ -205,13 +205,13 @@ struct ChoreRow: View {
                     onDelete()
                 }
             } else {
-                Button(chore.status ? "Done" : "Undone") {
+                Button(chore.status ? "Undone" : "Done") {
                     Task {
                         await authViewModel.toggleChoreStatus(chore)
                     }
                 }
                 .padding()
-                .background(chore.status ? Color.green : Color.gray)
+                .background(chore.status ? Color.gray : Color.green)
                 .foregroundColor(.white)
                 .cornerRadius(5)
             }

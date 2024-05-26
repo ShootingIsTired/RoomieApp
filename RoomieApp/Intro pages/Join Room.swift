@@ -44,8 +44,8 @@ struct JoinRoomView: View {
                         HStack{
                             Text("Room Name:")
                                 .font(.headline)
-                                .frame(width:130,alignment:.leading)
-                                .padding(.leading, 40)
+                                .frame(width:110,alignment:.leading)
+                                .padding(.leading, 20)
                                 .multilineTextAlignment(.leading)
                             TextField("Enter Room Name", text: $roomName)
                                 .font(Font.custom("Noto Sans", size: 16))
@@ -56,8 +56,8 @@ struct JoinRoomView: View {
                         HStack{
                             Text("Room ID: ")
                                 .font(.headline)
-                                .frame(width:130, alignment:.leading)
-                                .padding(.leading, 40)
+                                .frame(width:110, alignment:.leading)
+                                .padding(.leading, 20)
                                 .multilineTextAlignment(.leading)
                             TextField("Enter Your Room ID", text: $roomID)
                                 .font(Font.custom("Noto Sans", size: 16))
