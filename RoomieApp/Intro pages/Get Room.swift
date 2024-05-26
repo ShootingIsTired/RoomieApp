@@ -57,7 +57,7 @@ struct GetRoomView: View {
                         HStack {
                             VStack {
                                 NavigationLink(destination: JoinRoomView()
-                                    .navigationBarBackButtonHidden(), isActive: $isActiveJoin) {
+                                    , isActive: $isActiveJoin) {
                                         Button {
                                             Task {
 //                                                try await 
@@ -77,7 +77,7 @@ struct GetRoomView: View {
                                 
                                 
                                 NavigationLink(destination: CreateRoomView()
-                                    .navigationBarBackButtonHidden(), isActive: $isActiveCreate) {
+                                    , isActive: $isActiveCreate) {
                                         Button{
                                             Task{
                                                 await viewModel.createRoom(newRoom: newRoom)
