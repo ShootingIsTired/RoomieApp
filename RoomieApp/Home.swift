@@ -7,7 +7,7 @@ struct HomeView: View {
     @State private var showMenuBar = false
     @State private var showAddTask = false
     @State private var showEditTask = false
-    @State private var editReminder = false
+    @State private var editAssigned = false
     @State private var editUnassigned = false
     @State private var tasks: [Tasks] = []
     @State private var content = ""
@@ -67,7 +67,7 @@ struct HomeView: View {
     private var Home: some View {
         VStack(spacing: 0) {
             header
-            reminderSection
+            assignedTasksSection
             unassignedTasksSection
         }
         .frame(maxHeight: .infinity, alignment: .top)
@@ -91,7 +91,7 @@ struct HomeView: View {
         .shadow(radius: 2)
     }
 
-    @ViewBuilder private func reminderRow(task: Tasks) -> some View {
+    @ViewBuilder private func assignedTaskRow(task: Tasks) -> some View {
         HStack {
             Text(formattedDate(task.time))
                 .frame(width: 50, alignment: .leading)
@@ -116,7 +116,7 @@ struct HomeView: View {
             }
             .frame(width: 100, alignment: .leading)
             Spacer()
-            if editReminder {
+            if editAssigned {
                 Button(action: {
                     Task {
                         await authViewModel.removeTask(roomID: authViewModel.currentRoom?.id ?? "", taskID: task.id ?? "")
@@ -149,14 +149,14 @@ struct HomeView: View {
         }
     }
 
-    private var reminderSection: some View {
+    private var assignedTasksSection: some View {
         VStack {
-            sectionHeader(title: "Assigned Tasks", isEditing: $editReminder)
+            sectionHeader(title: "Assigned Tasks", isEditing: $editAssigned)
             ScrollView {
                 VStack {
                     ForEach(authViewModel.currentRoom?.tasksData ?? [], id: \.id) { task in
                         if task.isUnassigned == false {
-                            reminderRow(task: task)
+                            assignedTaskRow(task: task)
                         }
                     }
                 }
