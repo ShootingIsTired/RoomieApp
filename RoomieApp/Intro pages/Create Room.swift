@@ -63,7 +63,7 @@ struct CreateRoomView: View {
                             Text("Room Name:")
                                 .font(.headline)
                                 .frame(width:120, alignment:.leading)
-                                .padding(.leading, 40)
+                                .padding(.leading, 20)
                                 .multilineTextAlignment(.leading)
                             TextField("Set Your Room Name", text: $roomName)
                                 .font(Font.custom("Noto Sans", size: 16))
