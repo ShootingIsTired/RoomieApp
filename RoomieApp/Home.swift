@@ -151,7 +151,7 @@ struct HomeView: View {
 
     private var reminderSection: some View {
         VStack {
-            sectionHeader(title: "Reminders", isEditing: $editReminder)
+            sectionHeader(title: "Assigned Tasks", isEditing: $editReminder)
             ScrollView {
                 VStack {
                     ForEach(authViewModel.currentRoom?.tasksData ?? [], id: \.id) { task in
