@@ -6,19 +6,38 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct ContentView: View {
+    @EnvironmentObject var viewModel: AuthViewModel
+    @Binding var selectedPage: String?
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group{
+            if viewModel.currentUser == nil {
+                // 1. 還沒登入
+                LoginView(selectedPage: $selectedPage)
+            } else if viewModel.currentRoom == nil {
+                // 2. 登入但沒有房間
+                GetRoomView()
+            } else if viewModel.currentRoom != nil && viewModel.currentUser != nil {
+                // 3. 登入且有房間
+                MenuBarView()
+            }
         }
-        .padding()
     }
+
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    struct PreviewWrapper: View {
+        @State var selectedPage: String? = "Root"
+        var body: some View {
+            ContentView(selectedPage: $selectedPage)
+        }
+    }
+
+    static var previews: some View {
+        PreviewWrapper()
+    }
 }
