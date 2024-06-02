@@ -10,6 +10,11 @@
 
 👤 **資管三 B10705022 謝宛軒、B10705026 黃如珩、B10705035 許毓庭、B10705037 關凱欣、B10705039 松浦明日香**
 
+## Environment
+- Frontend：SwiftUI
+- Backend：Firebase
+- iPhone 15 Pro
+  
 ## File Structure
 
 - **README.md**: Provides setup instructions and information about the project.
@@ -47,3 +52,7 @@
   - **Register.swift**: Allow members to  create account
 - **Preview Content**: Contains content used for previewing the app in Xcode.
 - **Text**: Contains text files related to the project.
+
+## Build Setup (Local)
+- `git clone https://github.com/ShootingIsTired/RoomieApp.git`
+- open the `RoomieApp` file with Xcode and run
