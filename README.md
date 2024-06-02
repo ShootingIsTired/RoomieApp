@@ -2,7 +2,7 @@
 # Welcome to RoomieApp 👋
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://reurl.cc/EjYEZR)
 
-> Roomie 是專為同住者設計的App，旨在提升居住品質。它提供宿舍Profile、事件提醒和互助、家事分工、共享行程及狀態、匿名聊天室等功能。通過顯示室友生日、宿舍公約、提醒每日行程、協助家事分配，讓室友間的互動更加和諧，居住環境更加舒適。
+> Roomie 是專為同住者設計的 App，旨在提升居住品質。同住者們可以透過建立 Room 來一同管理同住事宜，App 提供事件提醒和互助、家事分工、共享行程及狀態、匿名聊天室等功能。通過顯示同住者生日、建立住宿公約、提醒每日行程、協助家事分配，讓室友間的互動更加和諧，居住環境更加舒適。
 
 ### ✨ [Demo Video](https://reurl.cc/mMzEv7)
 ### ✨ [Introduction Documentation](https://drive.google.com/file/d/1naASfpKSqLARGcWLwZSepyMqwOWqP8po/view)
