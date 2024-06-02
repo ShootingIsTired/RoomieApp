@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4B07BD882BF199E1002C44A4 /* ViewMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD872BF199E1002C44A4 /* ViewMembers.swift */; };
-		4B07BD8A2BF19DB8002C44A4 /* ViewRooms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */; };
 		4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD8B2BF20498002C44A4 /* ViewCurrentUser.swift */; };
 		4B7CC2242BF8A7FC000631C0 /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7CC2232BF8A7FC000631C0 /* Schedule.swift */; };
 		4BADB3652C02FA330078D8EF /* MenuBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BADB3642C02FA330078D8EF /* MenuBarTest.swift */; };
@@ -23,8 +22,6 @@
 		4BCA0C512BD66D5E003CFD77 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C502BD66D5E003CFD77 /* Chat.swift */; };
 		4BE77F212BE5E3D0000D7F55 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		4BFF3A302BF3D87D0093287A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFF3A2F2BF3D87D0093287A /* Profile.swift */; };
-		4BFF3A322BF3D8C70093287A /* ViewCurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFF3A312BF3D8C70093287A /* ViewCurrentUser.swift */; };
-		4BFF3A342BF3D8CC0093287A /* ViewMembers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFF3A332BF3D8CC0093287A /* ViewMembers.swift */; };
 		4BFF3A362BF3D8F30093287A /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFF3A352BF3D8F30093287A /* AuthViewModel.swift */; };
 		510A913C2BF3618E0089FE76 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		510A913E2BF361F60089FE76 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -62,7 +59,6 @@
 		730CBFD62BE56F9D00600AEE /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 730CBFD52BE56F9D00600AEE /* FirebaseStorage */; };
 		730CBFD82BE56F9D00600AEE /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 730CBFD72BE56F9D00600AEE /* FirebaseStorageCombine-Community */; };
 		730CBFDB2BE5710000600AEE /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730CBFDA2BE5710000600AEE /* Todo.swift */; };
-		730CBFDE2BE5714E00600AEE /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730CBFDD2BE5714E00600AEE /* ViewModel.swift */; };
 		BA098C9D2BD6A79D00E8E436 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9C2BD6A79D00E8E436 /* Home.swift */; };
 		BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */; };
 		BA098CA52BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA098CA22BD6A7B500E8E436 /* JacquesFrancois-Regular.ttf */; };
@@ -97,7 +93,6 @@
 
 /* Begin PBXFileReference section */
 		4B07BD872BF199E1002C44A4 /* ViewMembers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewMembers.swift; path = RoomieApp/ViewMembers.swift; sourceTree = SOURCE_ROOT; };
-		4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewRooms.swift; path = RoomieApp/ViewRooms.swift; sourceTree = SOURCE_ROOT; };
 		4B07BD8B2BF20498002C44A4 /* ViewCurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewCurrentUser.swift; path = RoomieApp/ViewCurrentUser.swift; sourceTree = SOURCE_ROOT; };
 		4B7CC2232BF8A7FC000631C0 /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
 		4BADB3642C02FA330078D8EF /* MenuBarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarTest.swift; sourceTree = "<group>"; };
@@ -115,9 +110,7 @@
 		4BCA0C432BD651B0003CFD77 /* RoomieAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4BCA0C502BD66D5E003CFD77 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		4BFF3A2F2BF3D87D0093287A /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
-		4BFF3A312BF3D8C70093287A /* ViewCurrentUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewCurrentUser.swift; path = RoomieApp/ViewCurrentUser.swift; sourceTree = SOURCE_ROOT; };
-		4BFF3A332BF3D8CC0093287A /* ViewMembers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewMembers.swift; path = RoomieApp/ViewMembers.swift; sourceTree = SOURCE_ROOT; };
-		4BFF3A352BF3D8F30093287A /* AuthViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthViewModel.swift; path = "RoomieApp/Intro pages/AuthViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		4BFF3A352BF3D8F30093287A /* AuthViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthViewModel.swift; path = RoomieApp/AuthViewModel.swift; sourceTree = SOURCE_ROOT; };
 		514499972BE8C1B1000BC9F7 /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
 		514499992BE8C3F4000BC9F7 /* Create Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Create Room.swift"; sourceTree = "<group>"; };
 		5144999B2BE8C4E1000BC9F7 /* Join Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Join Room.swift"; sourceTree = "<group>"; };
@@ -125,7 +118,6 @@
 		51E8A0D22BDF7B2A0036AD8B /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		730CBFA02BE56EBB00600AEE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		730CBFDA2BE5710000600AEE /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Todo.swift; path = RoomieApp/Todo.swift; sourceTree = SOURCE_ROOT; };
-		730CBFDD2BE5714E00600AEE /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewModel.swift; path = RoomieApp/ViewModel.swift; sourceTree = SOURCE_ROOT; };
 		BA098C9C2BD6A79D00E8E436 /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		BA098CA02BD6A7AF00E8E436 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -228,7 +220,7 @@
 				4BCA0C502BD66D5E003CFD77 /* Chat.swift */,
 				4B7CC2232BF8A7FC000631C0 /* Schedule.swift */,
 				4BFF3A2F2BF3D87D0093287A /* Profile.swift */,
-				730CBFDC2BE5712200600AEE /* ViewModels */,
+				4BFF3A352BF3D8F30093287A /* AuthViewModel.swift */,
 				730CBFD92BE570DB00600AEE /* Model */,
 				4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */,
 				BA098C9E2BD6A7A600E8E436 /* MenuBar.swift */,
@@ -295,18 +287,6 @@
 				730CBFDA2BE5710000600AEE /* Todo.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		730CBFDC2BE5712200600AEE /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				4BFF3A352BF3D8F30093287A /* AuthViewModel.swift */,
-				4BFF3A332BF3D8CC0093287A /* ViewMembers.swift */,
-				4BFF3A312BF3D8C70093287A /* ViewCurrentUser.swift */,
-				730CBFDD2BE5714E00600AEE /* ViewModel.swift */,
-				4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		BA098CA42BD6A7B500E8E436 /* Text */ = {
@@ -518,18 +498,14 @@
 				BAC15C302BED6B9400288F1D /* AddChore.swift in Sources */,
 				BAC15C212BE75D5800288F1D /* SelectPerson.swift in Sources */,
 				BAC15C2C2BEC30DF00288F1D /* EditTask.swift in Sources */,
-				4B07BD8A2BF19DB8002C44A4 /* ViewRooms.swift in Sources */,
 				5144999A2BE8C3F4000BC9F7 /* Create Room.swift in Sources */,
 				4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */,
-				4BFF3A322BF3D8C70093287A /* ViewCurrentUser.swift in Sources */,
 				4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */,
-				730CBFDE2BE5714E00600AEE /* ViewModel.swift in Sources */,
 				518A9B142BF3E5F500C89949 /* Get Room.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
 				4BFF3A362BF3D8F30093287A /* AuthViewModel.swift in Sources */,
 				4B7CC2242BF8A7FC000631C0 /* Schedule.swift in Sources */,
 				510A913C2BF3618E0089FE76 /* (null) in Sources */,
-				4BFF3A342BF3D8CC0093287A /* ViewMembers.swift in Sources */,
 				BA098C9F2BD6A7A600E8E436 /* MenuBar.swift in Sources */,
 				BAC15C2E2BECB42C00288F1D /* EditChore.swift in Sources */,
 				BAC15C2A2BEC229800288F1D /* AddTask.swift in Sources */,
