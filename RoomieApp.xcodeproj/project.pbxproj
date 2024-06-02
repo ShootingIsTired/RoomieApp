@@ -11,6 +11,8 @@
 		4B07BD8A2BF19DB8002C44A4 /* ViewRooms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */; };
 		4B07BD8C2BF20498002C44A4 /* ViewCurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07BD8B2BF20498002C44A4 /* ViewCurrentUser.swift */; };
 		4B7CC2242BF8A7FC000631C0 /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7CC2232BF8A7FC000631C0 /* Schedule.swift */; };
+		4BADB3652C02FA330078D8EF /* MenuBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BADB3642C02FA330078D8EF /* MenuBarTest.swift */; };
+		4BADB3692C02FAF00078D8EF /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 4BADB3682C02FAF00078D8EF /* ViewInspector */; };
 		4BCA0C262BD651AE003CFD77 /* RoomieAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */; };
 		4BCA0C282BD651AE003CFD77 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCA0C272BD651AE003CFD77 /* ContentView.swift */; };
 		4BCA0C2A2BD651B0003CFD77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BCA0C292BD651B0003CFD77 /* Assets.xcassets */; };
@@ -98,6 +100,8 @@
 		4B07BD892BF19DB8002C44A4 /* ViewRooms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewRooms.swift; path = RoomieApp/ViewRooms.swift; sourceTree = SOURCE_ROOT; };
 		4B07BD8B2BF20498002C44A4 /* ViewCurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewCurrentUser.swift; path = RoomieApp/ViewCurrentUser.swift; sourceTree = SOURCE_ROOT; };
 		4B7CC2232BF8A7FC000631C0 /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
+		4BADB3642C02FA330078D8EF /* MenuBarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarTest.swift; sourceTree = "<group>"; };
+		4BADB3662C02FACF0078D8EF /* RoomieAppTests-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RoomieAppTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		4BCA0C222BD651AE003CFD77 /* RoomieApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoomieApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BCA0C252BD651AE003CFD77 /* RoomieAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomieAppApp.swift; sourceTree = "<group>"; };
 		4BCA0C272BD651AE003CFD77 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BADB3692C02FAF00078D8EF /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +253,8 @@
 			isa = PBXGroup;
 			children = (
 				4BCA0C372BD651B0003CFD77 /* RoomieAppTests.swift */,
+				4BADB3662C02FACF0078D8EF /* RoomieAppTests-Bridging-Header.h */,
+				4BADB3642C02FA330078D8EF /* MenuBarTest.swift */,
 			);
 			path = RoomieAppTests;
 			sourceTree = "<group>";
@@ -389,6 +396,9 @@
 				4BCA0C352BD651B0003CFD77 /* PBXTargetDependency */,
 			);
 			name = RoomieAppTests;
+			packageProductDependencies = (
+				4BADB3682C02FAF00078D8EF /* ViewInspector */,
+			);
 			productName = RoomieAppTests;
 			productReference = 4BCA0C332BD651B0003CFD77 /* RoomieAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -426,6 +436,7 @@
 					};
 					4BCA0C322BD651B0003CFD77 = {
 						CreatedOnToolsVersion = 15.3;
+						LastSwiftMigration = 1540;
 						TestTargetID = 4BCA0C212BD651AE003CFD77;
 					};
 					4BCA0C3C2BD651B0003CFD77 = {
@@ -445,6 +456,7 @@
 			mainGroup = 4BCA0C192BD651AE003CFD77;
 			packageReferences = (
 				730CBFA22BE56F9D00600AEE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				4BADB3672C02FAF00078D8EF /* XCRemoteSwiftPackageReference "ViewInspector" */,
 			);
 			productRefGroup = 4BCA0C232BD651AE003CFD77 /* Products */;
 			projectDirPath = "";
@@ -531,6 +543,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BADB3652C02FA330078D8EF /* MenuBarTest.swift in Sources */,
 				4BCA0C382BD651B0003CFD77 /* RoomieAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -753,6 +766,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -764,6 +778,8 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "RoomieAppTests/RoomieAppTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RoomieApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RoomieApp";
@@ -775,6 +791,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -786,6 +803,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "RoomieAppTests/RoomieAppTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RoomieApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RoomieApp";
@@ -876,6 +894,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4BADB3672C02FAF00078D8EF /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nalexn/ViewInspector";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.11;
+			};
+		};
 		730CBFA22BE56F9D00600AEE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -887,6 +913,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4BADB3682C02FAF00078D8EF /* ViewInspector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BADB3672C02FAF00078D8EF /* XCRemoteSwiftPackageReference "ViewInspector" */;
+			productName = ViewInspector;
+		};
 		730CBFA32BE56F9D00600AEE /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 730CBFA22BE56F9D00600AEE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

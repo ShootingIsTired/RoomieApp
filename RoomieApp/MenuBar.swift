@@ -106,6 +106,7 @@ struct MenuBar: View {
                         .foregroundColor(.black)
                 }
             }
+            .accessibility(identifier: "leaveButton")
             .frame(alignment: .bottom)
             .padding()
         }
