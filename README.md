@@ -17,20 +17,20 @@
 - **RoomieApp**:
   - **RoomieApp.entitlements**
   - **GoogleService-Info.plist**
-  - **Info.plist**
-  - **AuthViewModel.swift**
-  - **Chat.swift**
-  - **Chores.swift**
-  - **ContentView.swift**
-  - **Home.swift**: Can display all the tasks in the future
+  - **Info.plist**: File that use to connect firebase
+  - **AuthViewModel.swift**: All the related functions.
+  - **Chat.swift**: Allow members to chat anonymously.
+  - **Chores.swift**: Allow members to view undone chores, modify the status and add new chores
+  - **ContentView.swift**: Root of the App
+  - **Home.swift**: Can display all the tasks in the future and allow users to modified.
   - **MenuBar.swift**: Allow members to log out and show all the related pages.
   - **Package.swift**
-  - **Profile.swift**
+  - **Profile.swift**: Allow members to view and modify household rules, household member information and their account information.
   - **RoomieAppApp.swift**
-  - **Schedule.swift**
-  - **Todo.swift**
+  - **Schedule.swift**: Allow members to view all roomates' schedule and modify their own schedule.
+  - **Todo.swift**: Struct of all the entities.
 - **Assets.xcassets**: Asset catalog for storing image assets used in the app.
-- **Elements**: Contains various UI elements used throughout the app.
+- **Elements**: Contains various UI elements that used throughout different pages in the app.
   - **AddChore.swift**
   - **AddTask.swift**
   - **ChooseDate.swift**
@@ -40,15 +40,10 @@
   - **EditTask.swift**
   - **SelectPerson.swift**
 - **Intro pages**: Contains introductory pages for first-time users.
-  - **Create Room.swift**: Create a room for new user.
-  - **Get Room.swift**: User c
+  - **Create Room.swift**: Allow members to create a new room.
+  - **Get Room.swift**: Allow members to choose if they want to create or join a new room.
   - **Join Room.swift**: Allow members to join an existing room.
-  - **Login.swift**
-  - **Member.swift**
+  - **Login.swift** Allow members to login
   - **Register.swift**: Allow members to  create account
 - **Preview Content**: Contains content used for previewing the app in Xcode.
 - **Text**: Contains text files related to the project.
-- **ViewModels**: Contains view model files used in the MVVM architecture.
-  - **ViewCurrentUser.swift**
-  - **ViewMembers.swift**
-  - **ViewRooms.swift**
